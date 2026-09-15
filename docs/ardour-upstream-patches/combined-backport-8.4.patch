@@ -1,0 +1,107 @@
+diff --git a/libs/ardour/session_state.cc b/libs/ardour/session_state.cc
+index 4e1de12..aa0fbc0 100644
+--- a/libs/ardour/session_state.cc
++++ b/libs/ardour/session_state.cc
+@@ -406,10 +406,12 @@ Session::post_engine_init ()
+ 
+ 	set_clean ();
+ 
+-	/* Now, finally, we can [ask the butler to] fill the playback buffers */
+-
+-	BootMessage (_("Filling playback buffers"));
+-	request_locate (transport_sample(), true);
++	/* When loading, Session::session_loaded () will do this.
++	 * Backport of upstream ed7f7e26af93; retain 8.4 set_clean above. */
++	if (!loading ()) {
++		BootMessage (_("Filling playback buffers"));
++		request_locate (transport_sample(), true);
++	}
+ 
+ 	reset_xrun_count ();
+ 	return 0;
+diff --git a/libs/ardour/transport_fsm.cc b/libs/ardour/transport_fsm.cc
+index 53ea395..9b25abd 100644
+--- a/libs/ardour/transport_fsm.cc
++++ b/libs/ardour/transport_fsm.cc
+@@ -590,6 +590,7 @@ TransportFSM::start_locate_while_stopped (Event const & l) const
+ 	assert (l.type == Locate);
+ 	DEBUG_TRACE (DEBUG::TFSMEvents, "start_locate_while_stopped\n");
+ 
++	_last_locate = l;
+ 	set_roll_after (compute_should_roll (l.ltd));
+ 	api->locate (l.target, l.for_loop_end, l.force);
+ }
+diff --git a/libs/surfaces/osc/osc.cc b/libs/surfaces/osc/osc.cc
+index c542416..74faac4 100644
+--- a/libs/surfaces/osc/osc.cc
++++ b/libs/surfaces/osc/osc.cc
+@@ -1872,14 +1872,15 @@ OSC::set_surface (uint32_t b_size, uint32_t strips, uint32_t fb, uint32_t gm, ui
+ 	s->bank_size = b_size;
+ 	s->strip_types = strips;
+ 	s->feedback = fb;
++	if (s->sel_obs) {
++		s->sel_obs->set_feedback(fb);
++	}
+ 	s->gainmode = gm;
+ 	if (s->strip_types[10]) {
+ 		s->usegroup = PBD::Controllable::UseGroup;
+ 	} else {
+ 		s->usegroup = PBD::Controllable::NoGroup;
+ 	}
+-	s->send_page_size = se_size;
+-	s->plug_page_size = pi_size;
+ 	if (s->temp_mode) {
+ 		s->temp_mode = TempOff;
+ 	}
+@@ -1952,6 +1953,9 @@ OSC::set_surface_feedback (uint32_t fb, lo_message msg)
+ 	}
+ 	OSCSurface *s = get_surface(get_address (msg), true);
+ 	s->feedback = fb;
++	if (s->sel_obs) {
++		s->sel_obs->set_feedback(fb);
++	}
+ 
+ 	strip_feedback (s, true);
+ 	global_feedback (s);
+diff --git a/libs/surfaces/osc/osc_select_observer.cc b/libs/surfaces/osc/osc_select_observer.cc
+index a965b2f..5efb441 100644
+--- a/libs/surfaces/osc/osc_select_observer.cc
++++ b/libs/surfaces/osc/osc_select_observer.cc
+@@ -68,8 +68,7 @@ OSCSelectObserver::OSCSelectObserver (OSC& o, ARDOUR::Session& s, ArdourSurface:
+ 	session = &s;
+ 	addr = lo_address_new_from_url 	(sur->remote_url.c_str());
+ 	gainmode = sur->gainmode;
+-	feedback = sur->feedback;
+-	in_line = feedback[2];
++	set_feedback(sur->feedback);
+ 	send_page_size = sur->send_page_size;
+ 	send_size = send_page_size;
+ 	send_page = sur->send_page;
+@@ -93,6 +92,15 @@ OSCSelectObserver::~OSCSelectObserver ()
+ 	lo_address_free (addr);
+ }
+ 
++void
++OSCSelectObserver::set_feedback (std::bitset<32> fb)
++{
++	feedback = fb;
++	in_line = fb[2];
++	// No explicit refresh, callers should take care of that to
++	// prevent duplicate refreshing
++}
++
+ void
+ OSCSelectObserver::no_strip ()
+ {
+diff --git a/libs/surfaces/osc/osc_select_observer.h b/libs/surfaces/osc/osc_select_observer.h
+index 171a985..0206bec 100644
+--- a/libs/surfaces/osc/osc_select_observer.h
++++ b/libs/surfaces/osc/osc_select_observer.h
+@@ -54,6 +54,7 @@ class OSCSelectObserver
+ 	void set_plugin_id (int id, uint32_t page);
+ 	void set_plugin_page (uint32_t page);
+ 	void set_plugin_size (uint32_t size);
++	void set_feedback (std::bitset<32> fb);
+ 
+   private:
+ 	std::shared_ptr<ARDOUR::Stripable> _strip;

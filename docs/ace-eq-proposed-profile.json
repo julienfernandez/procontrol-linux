@@ -1,0 +1,241 @@
+{
+  "status": "proposed_not_connected",
+  "plugin_uri": "urn:ardour:a-eq",
+  "source": "/usr/lib/lv2/a-eq.lv2/a-eq.ttl",
+  "note": "Resolve runtime OSC controllable parameter IDs by descriptor; these are LV2 port indices, not assumed OSC IDs. Bandwidth is in octaves, not Q.",
+  "pages": [
+    {
+      "name": "Low and bands 1-2",
+      "symbols": [
+        "freql",
+        "gl",
+        "freq1",
+        "g1",
+        "bw1",
+        "freq2",
+        "g2",
+        "bw2"
+      ]
+    },
+    {
+      "name": "Bands 3-4 and high",
+      "symbols": [
+        "freq3",
+        "g3",
+        "bw3",
+        "freq4",
+        "g4",
+        "bw4",
+        "freqh",
+        "gh"
+      ]
+    },
+    {
+      "name": "Gain and band enable",
+      "symbols": [
+        "master",
+        "filtogl",
+        "filtog1",
+        "filtog2",
+        "filtog3",
+        "filtog4",
+        "filtogh",
+        "enable"
+      ]
+    }
+  ],
+  "parameters": [
+    {
+      "lv2_port_index": 0,
+      "symbol": "freql",
+      "label": "Frequency L",
+      "minimum": 20.0,
+      "maximum": 20000.0,
+      "default": 160.0
+    },
+    {
+      "lv2_port_index": 1,
+      "symbol": "gl",
+      "label": "Gain L",
+      "minimum": -20.0,
+      "maximum": 20.0,
+      "default": 0.0
+    },
+    {
+      "lv2_port_index": 2,
+      "symbol": "freq1",
+      "label": "Frequency 1",
+      "minimum": 20.0,
+      "maximum": 20000.0,
+      "default": 300.0
+    },
+    {
+      "lv2_port_index": 3,
+      "symbol": "g1",
+      "label": "Gain 1",
+      "minimum": -20.0,
+      "maximum": 20.0,
+      "default": 0.0
+    },
+    {
+      "lv2_port_index": 4,
+      "symbol": "bw1",
+      "label": "Bandwidth 1",
+      "minimum": 0.1,
+      "maximum": 4.0,
+      "default": 1.0
+    },
+    {
+      "lv2_port_index": 5,
+      "symbol": "freq2",
+      "label": "Frequency 2",
+      "minimum": 20.0,
+      "maximum": 20000.0,
+      "default": 1000.0
+    },
+    {
+      "lv2_port_index": 6,
+      "symbol": "g2",
+      "label": "Gain 2",
+      "minimum": -20.0,
+      "maximum": 20.0,
+      "default": 0.0
+    },
+    {
+      "lv2_port_index": 7,
+      "symbol": "bw2",
+      "label": "Bandwidth 2",
+      "minimum": 0.1,
+      "maximum": 4.0,
+      "default": 1.0
+    },
+    {
+      "lv2_port_index": 8,
+      "symbol": "freq3",
+      "label": "Frequency 3",
+      "minimum": 20.0,
+      "maximum": 20000.0,
+      "default": 2500.0
+    },
+    {
+      "lv2_port_index": 9,
+      "symbol": "g3",
+      "label": "Gain 3",
+      "minimum": -20.0,
+      "maximum": 20.0,
+      "default": 0.0
+    },
+    {
+      "lv2_port_index": 10,
+      "symbol": "bw3",
+      "label": "Bandwidth 3",
+      "minimum": 0.1,
+      "maximum": 4.0,
+      "default": 1.0
+    },
+    {
+      "lv2_port_index": 11,
+      "symbol": "freq4",
+      "label": "Frequency 4",
+      "minimum": 20.0,
+      "maximum": 20000.0,
+      "default": 6000.0
+    },
+    {
+      "lv2_port_index": 12,
+      "symbol": "g4",
+      "label": "Gain 4",
+      "minimum": -20.0,
+      "maximum": 20.0,
+      "default": 0.0
+    },
+    {
+      "lv2_port_index": 13,
+      "symbol": "bw4",
+      "label": "Bandwidth 4",
+      "minimum": 0.1,
+      "maximum": 4.0,
+      "default": 1.0
+    },
+    {
+      "lv2_port_index": 14,
+      "symbol": "freqh",
+      "label": "Frequency H",
+      "minimum": 20.0,
+      "maximum": 20000.0,
+      "default": 9000.0
+    },
+    {
+      "lv2_port_index": 15,
+      "symbol": "gh",
+      "label": "Gain H",
+      "minimum": -20.0,
+      "maximum": 20.0,
+      "default": 0.0
+    },
+    {
+      "lv2_port_index": 16,
+      "symbol": "master",
+      "label": "Master Gain",
+      "minimum": -20.0,
+      "maximum": 20.0,
+      "default": 0.0
+    },
+    {
+      "lv2_port_index": 17,
+      "symbol": "filtogl",
+      "label": "Filter L",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 1.0
+    },
+    {
+      "lv2_port_index": 18,
+      "symbol": "filtog1",
+      "label": "Filter 1",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 1.0
+    },
+    {
+      "lv2_port_index": 19,
+      "symbol": "filtog2",
+      "label": "Filter 2",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 1.0
+    },
+    {
+      "lv2_port_index": 20,
+      "symbol": "filtog3",
+      "label": "Filter 3",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 1.0
+    },
+    {
+      "lv2_port_index": 21,
+      "symbol": "filtog4",
+      "label": "Filter 4",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 1.0
+    },
+    {
+      "lv2_port_index": 22,
+      "symbol": "filtogh",
+      "label": "Filter H",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 1.0
+    },
+    {
+      "lv2_port_index": 23,
+      "symbol": "enable",
+      "label": "Enable",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 1.0
+    }
+  ]
+}

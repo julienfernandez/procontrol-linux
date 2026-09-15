@@ -1,0 +1,28 @@
+{
+  "device": "Digidesign ProControl MAINUNIT 1.37",
+  "address_base": "decimal",
+  "confirmed_pairs": [
+    [
+      10,
+      42
+    ],
+    [
+      11,
+      43
+    ],
+    [
+      12,
+      44
+    ],
+    [
+      13,
+      45
+    ]
+  ],
+  "evidence": "User confirmed 10/42 then 11/43, 12/44, 13/45 on 2026-09-14",
+  "active_master_pair": [
+    10,
+    42
+  ],
+  "note": "Address pairs confirmed; no additional audio source assignment requested. Do not infer the remaining pairs or collapse eight addresses into the six settings slots."
+}

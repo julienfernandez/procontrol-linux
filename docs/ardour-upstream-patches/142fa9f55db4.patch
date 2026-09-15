@@ -1,0 +1,91 @@
+From 142fa9f55db4c3488edf417feeb94bdc8e7d5809 Mon Sep 17 00:00:00 2001
+From: Matthijs Kooijman <matthijs@stdin.nl>
+Date: Sun, 30 Jun 2024 13:29:09 +0200
+Subject: [PATCH] osc: Let OSCSelectObserver know about feedback config changes
+
+Before this commit, OSCSelectObserver would read the feedback value when
+it was created, but then never update it anymore. In practice, the
+OSCSelectObserver is created on startup, and when the surface connects
+and configures feeback, this value is not applied.
+
+For example, when sending `/set_surface` with a feedback value of
+4 (Send SSID as path extension), `/strip/*` would get their ssid put
+into the path, but `/select/plugin/*` messages would not have their
+parameter id in the path. When setting the corresponding checkbox in the
+default feedback preferences, it is applied as expected.
+
+This commit passes the new feedback value to the OSCSelectObserver
+instance whenever it changes, which ensures the value is applied as
+expected.
+---
+ libs/surfaces/osc/osc.cc                 |  6 ++++++
+ libs/surfaces/osc/osc_select_observer.cc | 12 ++++++++++--
+ libs/surfaces/osc/osc_select_observer.h  |  1 +
+ 3 files changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/libs/surfaces/osc/osc.cc b/libs/surfaces/osc/osc.cc
+index 11e7c5fae91..a81a7bef4a2 100644
+--- a/libs/surfaces/osc/osc.cc
++++ b/libs/surfaces/osc/osc.cc
+@@ -1873,6 +1873,9 @@ OSC::set_surface (uint32_t b_size, uint32_t strips, uint32_t fb, uint32_t gm, ui
+ 	s->bank_size = b_size;
+ 	s->strip_types = strips;
+ 	s->feedback = fb;
++	if (s->sel_obs) {
++		s->sel_obs->set_feedback(fb);
++	}
+ 	s->gainmode = gm;
+ 	if (s->strip_types[10]) {
+ 		s->usegroup = PBD::Controllable::UseGroup;
+@@ -1953,6 +1956,9 @@ OSC::set_surface_feedback (uint32_t fb, lo_message msg)
+ 	}
+ 	OSCSurface *s = get_surface(get_address (msg), true);
+ 	s->feedback = fb;
++	if (s->sel_obs) {
++		s->sel_obs->set_feedback(fb);
++	}
+ 
+ 	strip_feedback (s, true);
+ 	global_feedback (s);
+diff --git a/libs/surfaces/osc/osc_select_observer.cc b/libs/surfaces/osc/osc_select_observer.cc
+index a965b2f322c..5efb441ebcb 100644
+--- a/libs/surfaces/osc/osc_select_observer.cc
++++ b/libs/surfaces/osc/osc_select_observer.cc
+@@ -68,8 +68,7 @@ OSCSelectObserver::OSCSelectObserver (OSC& o, ARDOUR::Session& s, ArdourSurface:
+ 	session = &s;
+ 	addr = lo_address_new_from_url 	(sur->remote_url.c_str());
+ 	gainmode = sur->gainmode;
+-	feedback = sur->feedback;
+-	in_line = feedback[2];
++	set_feedback(sur->feedback);
+ 	send_page_size = sur->send_page_size;
+ 	send_size = send_page_size;
+ 	send_page = sur->send_page;
+@@ -93,6 +92,15 @@ OSCSelectObserver::~OSCSelectObserver ()
+ 	lo_address_free (addr);
+ }
+ 
++void
++OSCSelectObserver::set_feedback (std::bitset<32> fb)
++{
++	feedback = fb;
++	in_line = fb[2];
++	// No explicit refresh, callers should take care of that to
++	// prevent duplicate refreshing
++}
++
+ void
+ OSCSelectObserver::no_strip ()
+ {
+diff --git a/libs/surfaces/osc/osc_select_observer.h b/libs/surfaces/osc/osc_select_observer.h
+index 171a985ddc6..0206bec2c66 100644
+--- a/libs/surfaces/osc/osc_select_observer.h
++++ b/libs/surfaces/osc/osc_select_observer.h
+@@ -54,6 +54,7 @@ class OSCSelectObserver
+ 	void set_plugin_id (int id, uint32_t page);
+ 	void set_plugin_page (uint32_t page);
+ 	void set_plugin_size (uint32_t size);
++	void set_feedback (std::bitset<32> fb);
+ 
+   private:
+ 	std::shared_ptr<ARDOUR::Stripable> _strip;

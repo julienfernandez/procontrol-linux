@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/bin/python3 "$(dirname "$0")/tools/pointer_x11.py" "$@"

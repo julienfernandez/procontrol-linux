@@ -1,0 +1,30 @@
+[
+  {
+    "commit": "4eccfcc3b423db09d2682fc944d76aa25793267b",
+    "patch": "4eccfcc3b423.patch",
+    "sha256": "f1e6067b355609bc7a59f3cf4adfbe3880ac3b14c7c2a439fe8fd41edf8eee64",
+    "applies_to_upstream_8_4": true,
+    "check_output": ""
+  },
+  {
+    "commit": "ed7f7e26af93fb0e0b397b45f565c83880827d6f",
+    "patch": "ed7f7e26af93.patch",
+    "sha256": "40a2747f73e55243b509056fe2e4dfe6cd388de28f6e67be4ad7d46180706adb",
+    "applies_to_upstream_8_4": false,
+    "check_output": "error: patch failed: libs/ardour/session_state.cc:405\nerror: libs/ardour/session_state.cc: patch does not apply\n"
+  },
+  {
+    "commit": "142fa9f55db4c3488edf417feeb94bdc8e7d5809",
+    "patch": "142fa9f55db4.patch",
+    "sha256": "c8475988e41f6e27ee59ff72f51a9ec52fce037ea770d211ae495d976abf17af",
+    "applies_to_upstream_8_4": true,
+    "check_output": ""
+  },
+  {
+    "commit": "a9a5787399327921ff364d6e2d455ea0f94278c7",
+    "patch": "a9a578739932.patch",
+    "sha256": "4186400aeaf0acb3173f0d2db1acb4f267c0e2b549981da20a7245c485983ec8",
+    "applies_to_upstream_8_4": true,
+    "check_output": ""
+  }
+]

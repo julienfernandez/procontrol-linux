@@ -1,0 +1,53 @@
+{
+  "created": "2026-09-15T00:04:12.860228+02:00",
+  "tests": 139,
+  "new_tests": 19,
+  "ardour_version": "9.8.0",
+  "daemon_pid": 67205,
+  "console": "online",
+  "ardour": "responding",
+  "feedback": {
+    "sent": 192,
+    "acked": 192,
+    "timeouts": 0,
+    "recoveries": 0
+  },
+  "physical_validation": "User reported initial display clearing. Corrected and DSP mode persisted through 21+ snapshots on Neverender; visual confirmation of correction requested.",
+  "source_fixture": "tests/fixtures/lsp-live-descriptors.json",
+  "fixture_sha256": "97f5883aa197d2e8546c185aece82886b7d80eec10ac4aaf566cc9436b167ef9",
+  "source_contract": "Ardour 9.8 osc.cc route_plugin_list/descriptor/parameter",
+  "poll_seconds": 0.5,
+  "default_chains": "8 stereo audio tracks with LSP EQ x8 + LSP Compressor; no automatic creation hook",
+  "initial_live_issue": "A selection notification closed DSP mode; corrected to suspend and revalidate the same route identity",
+  "runtime_observation": {
+    "at": "2026-09-14T22:07:46.879885+00:00",
+    "dsp": {
+      "active": true,
+      "ready": true,
+      "mode": "eq",
+      "page": 1,
+      "plugin_page": 1,
+      "track": "Neverender",
+      "sid": 2,
+      "plugin": 1,
+      "filter": 1,
+      "error": null,
+      "edits": 395,
+      "snapshots": 170
+    },
+    "feedback": {
+      "sent": 1720,
+      "acked": 1720,
+      "timeouts": 0,
+      "recoveries": 0
+    }
+  },
+  "confirmed_ardour_values": {
+    "track": "Neverender",
+    "plugin": "LSP Compressor Stereo",
+    "ratio": 1.6,
+    "attack_ms": 21,
+    "release_ms": 103
+  },
+  "capture_analysis": "captures/eq-browser-20260915/analysis.json"
+}

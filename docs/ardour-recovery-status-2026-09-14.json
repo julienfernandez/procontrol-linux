@@ -1,0 +1,21 @@
+{
+  "observed_at": "2026-09-14T21:32:24.471873+02:00",
+  "windows": [
+    "0x00e00003 -1 moi-ThinkPad-X230 xfce4-panel",
+    "0x00c00054 -1 moi-ThinkPad-X230 Bureau",
+    "0x02600004  0 moi-ThinkPad-X230 ChatGPT",
+    "0x04c00003  0 moi-ThinkPad-X230 ProControl — Réglages locaux — Mozilla Firefox",
+    "0x04a0047f  0 moi-ThinkPad-X230 Ardour",
+    "0x04a00493  0 moi-ThinkPad-X230 Crash Recovery"
+  ],
+  "coredumps_since_2119": "TIME                           PID  UID  GID SIG     COREFILE EXE                                SIZE\nMon 2026-09-14 21:20:32 CEST 30783 1000 1000 SIGABRT present  /usr/lib/ardour8/ardour-8.4.0~ds1 30.6M\n",
+  "gateway": {
+    "pid": 33426,
+    "running": true,
+    "console": "online",
+    "ardour": "waiting",
+    "error": null
+  },
+  "installed_eq": "ACE EQ urn:ardour:a-eq; /usr/lib/lv2/a-eq.lv2/a-eq.ttl; one audio input and output; 24 control ports",
+  "analysis": "Latest recorded crash PID30783 at21:20:30 in set_surface, OSCSelectObserver, liblo allocation. Heap corruption origin not established. Current Ardour process32024 is alive with Crash Recovery window. Client uses ephemeral source UDP ports and resets feedback at close; every restart initializes new surface. Candidate contributing factor, not proven root cause."
+}

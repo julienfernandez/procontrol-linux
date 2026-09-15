@@ -1,0 +1,90 @@
+[
+  {
+    "user_confirmed_direction": "right",
+    "pcap": "20260913T173709Z-trackpad-horizontal-only-HPVbyL/traffic.pcap",
+    "sha256": "97517ac44737270af86bd01d280c816e2f7eeb09509a2018efe957eb20ff0a40",
+    "samples": [
+      {
+        "frame": 8,
+        "utc": "2026-09-13T17:37:27.811170000Z",
+        "body_hex": "f0 13 00 60 01 00 01 00 f7"
+      },
+      {
+        "frame": 312,
+        "utc": "2026-09-13T17:37:28.917765000Z",
+        "body_hex": "f0 13 00 60 01 0d 02 3c f7"
+      },
+      {
+        "frame": 636,
+        "utc": "2026-09-13T17:37:29.972185000Z",
+        "body_hex": "f0 13 00 60 01 00 01 00 f7"
+      }
+    ]
+  },
+  {
+    "user_confirmed_direction": "left",
+    "pcap": "20260913T173709Z-trackpad-horizontal-only-HPVbyL/traffic.pcap",
+    "sha256": "97517ac44737270af86bd01d280c816e2f7eeb09509a2018efe957eb20ff0a40",
+    "samples": [
+      {
+        "frame": 640,
+        "utc": "2026-09-13T17:37:32.883731000Z",
+        "body_hex": "f0 13 00 60 01 03 3f 01 f7"
+      },
+      {
+        "frame": 760,
+        "utc": "2026-09-13T17:37:33.163404000Z",
+        "body_hex": "f0 13 00 60 01 02 3e 05 f7"
+      },
+      {
+        "frame": 1256,
+        "utc": "2026-09-13T17:37:35.144413000Z",
+        "body_hex": "f0 13 00 60 01 0f 3f 3f f7"
+      }
+    ]
+  },
+  {
+    "user_confirmed_direction": "up",
+    "pcap": "20260913T173936Z-trackpad-vertical-only-QHmmiK/traffic.pcap",
+    "sha256": "560672c41ad0d80fef7986aefdfe67dfe36d014c6f022dd17de2c2da0d56e73e",
+    "samples": [
+      {
+        "frame": 15,
+        "utc": "2026-09-13T17:39:57.268470000Z",
+        "body_hex": "f0 13 00 60 01 0c 00 3f f7"
+      },
+      {
+        "frame": 119,
+        "utc": "2026-09-13T17:39:57.504082000Z",
+        "body_hex": "f0 13 00 60 01 0c 01 01 f7"
+      },
+      {
+        "frame": 576,
+        "utc": "2026-09-13T17:39:59.972269000Z",
+        "body_hex": "f0 13 00 60 01 0c 00 3f f7"
+      }
+    ]
+  },
+  {
+    "user_confirmed_direction": "down",
+    "pcap": "20260913T173936Z-trackpad-vertical-only-QHmmiK/traffic.pcap",
+    "sha256": "560672c41ad0d80fef7986aefdfe67dfe36d014c6f022dd17de2c2da0d56e73e",
+    "samples": [
+      {
+        "frame": 580,
+        "utc": "2026-09-13T17:40:03.850939000Z",
+        "body_hex": "f0 13 00 60 01 00 00 01 f7"
+      },
+      {
+        "frame": 1147,
+        "utc": "2026-09-13T17:40:06.498753000Z",
+        "body_hex": "f0 13 00 60 01 00 00 24 f7"
+      },
+      {
+        "frame": 1229,
+        "utc": "2026-09-13T17:40:06.702319000Z",
+        "body_hex": "f0 13 00 60 01 03 3e 01 f7"
+      }
+    ]
+  }
+]

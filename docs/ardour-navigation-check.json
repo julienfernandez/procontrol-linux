@@ -1,0 +1,45 @@
+{
+  "utc": "2026-09-13T17:09:58.234354+00:00",
+  "method": "Real local Ardour OSC, reference ProControl button bodies through ArdourTransport; no console gesture in this check.",
+  "steps": [
+    {
+      "source_body": "90 07 5c",
+      "sent": "/goto_end",
+      "frame": 0,
+      "speed": 0.0
+    },
+    {
+      "source_body": "90 06 5c",
+      "sent": "/goto_start",
+      "frame": 0,
+      "speed": 0.0
+    },
+    {
+      "source_body": "90 0d 5c",
+      "sent": "/rewind",
+      "frame": 0,
+      "speed": 0.0
+    },
+    {
+      "source_body": "90 0e 5c",
+      "sent": "/ffwd",
+      "frame": 6144,
+      "speed": 1.0
+    }
+  ],
+  "before": {
+    "frame": 1718272,
+    "speed": 0.0,
+    "record_enabled": 0
+  },
+  "checks": {
+    "end_after_start": false,
+    "rewind_negative_speed": false,
+    "forward_positive_speed": true
+  },
+  "after_restore": {
+    "frame": 1718272,
+    "speed": 0.0
+  },
+  "restored": true
+}

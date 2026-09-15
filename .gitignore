@@ -1,0 +1,29 @@
+__pycache__/
+*.py[cod]
+.venv/
+captures/*
+!captures/README.md
+run/
+
+# Fichiers locaux et sauvegardes de travail
+backups/
+settings.json
+/ProControl.desktop
+/ProControl-Restart.desktop
+.env
+.env.*
+!.env.example
+*.log
+*.core
+core
+
+# Photos tierces consultées localement, droits non redistribués
+docs/reference-photos/*.jpg
+docs/reference-photos/*.jpeg
+docs/reference-photos/*.png
+
+# Artefacts de compilation
+build/
+dist/
+*.o
+*.so

@@ -1,0 +1,581 @@
+[
+  {
+    "utc": "2026-09-13T18:35:18.596236+00:00",
+    "event": "opened"
+  },
+  {
+    "utc": "2026-09-13T18:37:06.084780+00:00",
+    "event": "key_press",
+    "name": "a"
+  },
+  {
+    "utc": "2026-09-13T18:37:06.085608+00:00",
+    "event": "text",
+    "text": "a"
+  },
+  {
+    "utc": "2026-09-13T18:37:06.250529+00:00",
+    "event": "key_release",
+    "name": "a"
+  },
+  {
+    "utc": "2026-09-13T18:37:07.608788+00:00",
+    "event": "key_press",
+    "name": "a"
+  },
+  {
+    "utc": "2026-09-13T18:37:07.609402+00:00",
+    "event": "text",
+    "text": "aa"
+  },
+  {
+    "utc": "2026-09-13T18:37:07.754284+00:00",
+    "event": "key_release",
+    "name": "a"
+  },
+  {
+    "utc": "2026-09-13T18:37:08.431152+00:00",
+    "event": "key_press",
+    "name": "b"
+  },
+  {
+    "utc": "2026-09-13T18:37:08.432630+00:00",
+    "event": "text",
+    "text": "aab"
+  },
+  {
+    "utc": "2026-09-13T18:37:08.554022+00:00",
+    "event": "key_release",
+    "name": "b"
+  },
+  {
+    "utc": "2026-09-13T18:37:09.028193+00:00",
+    "event": "key_press",
+    "name": "c"
+  },
+  {
+    "utc": "2026-09-13T18:37:09.028704+00:00",
+    "event": "text",
+    "text": "aabc"
+  },
+  {
+    "utc": "2026-09-13T18:37:09.196630+00:00",
+    "event": "key_release",
+    "name": "c"
+  },
+  {
+    "utc": "2026-09-13T18:37:10.992340+00:00",
+    "event": "key_press",
+    "name": "y"
+  },
+  {
+    "utc": "2026-09-13T18:37:10.993315+00:00",
+    "event": "text",
+    "text": "aabcy"
+  },
+  {
+    "utc": "2026-09-13T18:37:11.203719+00:00",
+    "event": "key_release",
+    "name": "y"
+  },
+  {
+    "utc": "2026-09-13T18:37:11.390910+00:00",
+    "event": "key_press",
+    "name": "y"
+  },
+  {
+    "utc": "2026-09-13T18:37:11.392270+00:00",
+    "event": "text",
+    "text": "aabcyy"
+  },
+  {
+    "utc": "2026-09-13T18:37:11.503802+00:00",
+    "event": "key_release",
+    "name": "y"
+  },
+  {
+    "utc": "2026-09-13T18:37:11.649054+00:00",
+    "event": "key_press",
+    "name": "y"
+  },
+  {
+    "utc": "2026-09-13T18:37:11.650795+00:00",
+    "event": "text",
+    "text": "aabcyyy"
+  },
+  {
+    "utc": "2026-09-13T18:37:11.772595+00:00",
+    "event": "key_release",
+    "name": "y"
+  },
+  {
+    "utc": "2026-09-13T18:37:12.011144+00:00",
+    "event": "key_press",
+    "name": "z"
+  },
+  {
+    "utc": "2026-09-13T18:37:12.012566+00:00",
+    "event": "text",
+    "text": "aabcyyyz"
+  },
+  {
+    "utc": "2026-09-13T18:37:12.200460+00:00",
+    "event": "key_release",
+    "name": "z"
+  },
+  {
+    "utc": "2026-09-13T18:37:13.377597+00:00",
+    "event": "key_press",
+    "name": "z"
+  },
+  {
+    "utc": "2026-09-13T18:37:13.379309+00:00",
+    "event": "text",
+    "text": "aabcyyyzz"
+  },
+  {
+    "utc": "2026-09-13T18:37:13.522401+00:00",
+    "event": "key_release",
+    "name": "z"
+  },
+  {
+    "utc": "2026-09-13T18:37:13.945851+00:00",
+    "event": "key_press",
+    "name": "s"
+  },
+  {
+    "utc": "2026-09-13T18:37:13.946751+00:00",
+    "event": "text",
+    "text": "aabcyyyzzs"
+  },
+  {
+    "utc": "2026-09-13T18:37:14.131866+00:00",
+    "event": "key_release",
+    "name": "s"
+  },
+  {
+    "utc": "2026-09-13T18:37:14.750427+00:00",
+    "event": "key_press",
+    "name": "t"
+  },
+  {
+    "utc": "2026-09-13T18:37:14.751125+00:00",
+    "event": "text",
+    "text": "aabcyyyzzst"
+  },
+  {
+    "utc": "2026-09-13T18:37:14.965528+00:00",
+    "event": "key_release",
+    "name": "t"
+  },
+  {
+    "utc": "2026-09-13T18:37:18.598471+00:00",
+    "event": "key_press",
+    "name": "j"
+  },
+  {
+    "utc": "2026-09-13T18:37:18.599084+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstj"
+  },
+  {
+    "utc": "2026-09-13T18:37:18.787431+00:00",
+    "event": "key_release",
+    "name": "j"
+  },
+  {
+    "utc": "2026-09-13T18:37:19.416943+00:00",
+    "event": "key_press",
+    "name": "u"
+  },
+  {
+    "utc": "2026-09-13T18:37:19.417594+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstju"
+  },
+  {
+    "utc": "2026-09-13T18:37:19.591772+00:00",
+    "event": "key_release",
+    "name": "u"
+  },
+  {
+    "utc": "2026-09-13T18:37:20.499441+00:00",
+    "event": "key_press",
+    "name": "j"
+  },
+  {
+    "utc": "2026-09-13T18:37:20.500175+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjuj"
+  },
+  {
+    "utc": "2026-09-13T18:37:20.676430+00:00",
+    "event": "key_release",
+    "name": "j"
+  },
+  {
+    "utc": "2026-09-13T18:37:21.037917+00:00",
+    "event": "key_press",
+    "name": "u"
+  },
+  {
+    "utc": "2026-09-13T18:37:21.039156+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjuju"
+  },
+  {
+    "utc": "2026-09-13T18:37:21.213612+00:00",
+    "event": "key_release",
+    "name": "u"
+  },
+  {
+    "utc": "2026-09-13T18:37:28.383314+00:00",
+    "event": "key_press",
+    "name": "Shift_R"
+  },
+  {
+    "utc": "2026-09-13T18:37:28.601005+00:00",
+    "event": "key_release",
+    "name": "Shift_R"
+  },
+  {
+    "utc": "2026-09-13T18:37:30.328794+00:00",
+    "event": "key_press",
+    "name": "Shift_R"
+  },
+  {
+    "utc": "2026-09-13T18:37:31.059357+00:00",
+    "event": "key_press",
+    "name": "A"
+  },
+  {
+    "utc": "2026-09-13T18:37:31.061055+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuA"
+  },
+  {
+    "utc": "2026-09-13T18:37:31.278255+00:00",
+    "event": "key_release",
+    "name": "A"
+  },
+  {
+    "utc": "2026-09-13T18:37:31.684057+00:00",
+    "event": "key_press",
+    "name": "I"
+  },
+  {
+    "utc": "2026-09-13T18:37:31.685866+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAI"
+  },
+  {
+    "utc": "2026-09-13T18:37:31.912514+00:00",
+    "event": "key_release",
+    "name": "I"
+  },
+  {
+    "utc": "2026-09-13T18:37:32.111007+00:00",
+    "event": "key_press",
+    "name": "I"
+  },
+  {
+    "utc": "2026-09-13T18:37:32.112517+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAII"
+  },
+  {
+    "utc": "2026-09-13T18:37:32.235164+00:00",
+    "event": "key_release",
+    "name": "I"
+  },
+  {
+    "utc": "2026-09-13T18:37:32.942703+00:00",
+    "event": "key_press",
+    "name": "J"
+  },
+  {
+    "utc": "2026-09-13T18:37:32.943731+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAIIJ"
+  },
+  {
+    "utc": "2026-09-13T18:37:33.110184+00:00",
+    "event": "key_release",
+    "name": "J"
+  },
+  {
+    "utc": "2026-09-13T18:37:33.610904+00:00",
+    "event": "key_press",
+    "name": "K"
+  },
+  {
+    "utc": "2026-09-13T18:37:33.612668+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAIIJK"
+  },
+  {
+    "utc": "2026-09-13T18:37:33.733874+00:00",
+    "event": "key_release",
+    "name": "K"
+  },
+  {
+    "utc": "2026-09-13T18:37:33.870334+00:00",
+    "event": "key_press",
+    "name": "K"
+  },
+  {
+    "utc": "2026-09-13T18:37:33.872122+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAIIJKK"
+  },
+  {
+    "utc": "2026-09-13T18:37:34.050056+00:00",
+    "event": "key_release",
+    "name": "K"
+  },
+  {
+    "utc": "2026-09-13T18:37:34.350800+00:00",
+    "event": "key_release",
+    "name": "Shift_R"
+  },
+  {
+    "utc": "2026-09-13T18:37:39.874848+00:00",
+    "event": "key_press",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:39.878081+00:00",
+    "event": "key_press",
+    "name": "1"
+  },
+  {
+    "utc": "2026-09-13T18:37:39.880463+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAIIJKK1"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.013209+00:00",
+    "event": "key_release",
+    "name": "1"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.017876+00:00",
+    "event": "key_release",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.147765+00:00",
+    "event": "key_press",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.148897+00:00",
+    "event": "key_press",
+    "name": "1"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.149529+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAIIJKK11"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.262631+00:00",
+    "event": "key_release",
+    "name": "1"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.265566+00:00",
+    "event": "key_release",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.442656+00:00",
+    "event": "key_press",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.444301+00:00",
+    "event": "key_press",
+    "name": "2"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.445103+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAIIJKK112"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.598777+00:00",
+    "event": "key_release",
+    "name": "2"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.601409+00:00",
+    "event": "key_release",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.756907+00:00",
+    "event": "key_press",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.758163+00:00",
+    "event": "key_press",
+    "name": "3"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.759517+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAIIJKK1123"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.932980+00:00",
+    "event": "key_release",
+    "name": "3"
+  },
+  {
+    "utc": "2026-09-13T18:37:40.934803+00:00",
+    "event": "key_release",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.267200+00:00",
+    "event": "key_press",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.271378+00:00",
+    "event": "key_press",
+    "name": "9"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.273268+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAIIJKK11239"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.343865+00:00",
+    "event": "key_release",
+    "name": "9"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.345183+00:00",
+    "event": "key_release",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.509309+00:00",
+    "event": "key_press",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.510845+00:00",
+    "event": "key_press",
+    "name": "9"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.511649+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAIIJKK112399"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.605577+00:00",
+    "event": "key_release",
+    "name": "9"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.606823+00:00",
+    "event": "key_release",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.696769+00:00",
+    "event": "key_press",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.699022+00:00",
+    "event": "key_press",
+    "name": "9"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.700519+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAIIJKK1123999"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.801601+00:00",
+    "event": "key_release",
+    "name": "9"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.804154+00:00",
+    "event": "key_release",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.885219+00:00",
+    "event": "key_press",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.888171+00:00",
+    "event": "key_press",
+    "name": "9"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.889649+00:00",
+    "event": "text",
+    "text": "aabcyyyzzstjujuAIIJKK11239999"
+  },
+  {
+    "utc": "2026-09-13T18:37:42.999844+00:00",
+    "event": "key_release",
+    "name": "9"
+  },
+  {
+    "utc": "2026-09-13T18:37:43.002365+00:00",
+    "event": "key_release",
+    "name": "Shift_L"
+  },
+  {
+    "utc": "2026-09-13T18:38:28.572514+00:00",
+    "event": "mouse",
+    "button": 1,
+    "type": "<enum GDK_BUTTON_PRESS of type Gdk.EventType>"
+  },
+  {
+    "utc": "2026-09-13T18:38:28.820923+00:00",
+    "event": "mouse",
+    "button": 1,
+    "type": "<enum GDK_BUTTON_RELEASE of type Gdk.EventType>"
+  },
+  {
+    "utc": "2026-09-13T18:38:29.848634+00:00",
+    "event": "mouse",
+    "button": 1,
+    "type": "<enum GDK_BUTTON_PRESS of type Gdk.EventType>"
+  },
+  {
+    "utc": "2026-09-13T18:38:30.075435+00:00",
+    "event": "mouse",
+    "button": 1,
+    "type": "<enum GDK_BUTTON_RELEASE of type Gdk.EventType>"
+  },
+  {
+    "utc": "2026-09-13T18:38:30.546078+00:00",
+    "event": "mouse",
+    "button": 3,
+    "type": "<enum GDK_BUTTON_PRESS of type Gdk.EventType>"
+  },
+  {
+    "utc": "2026-09-13T18:38:31.169748+00:00",
+    "event": "mouse",
+    "button": 3,
+    "type": "<enum GDK_BUTTON_RELEASE of type Gdk.EventType>"
+  },
+  {
+    "utc": "2026-09-13T18:38:34.500699+00:00",
+    "event": "closed"
+  }
+]

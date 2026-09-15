@@ -1,0 +1,109 @@
+diff --git a/libs/surfaces/osc/osc.cc b/libs/surfaces/osc/osc.cc
+index 09007b0..fd77e64 100644
+--- a/libs/surfaces/osc/osc.cc
++++ b/libs/surfaces/osc/osc.cc
+@@ -37,6 +37,7 @@
+ #include "pbd/control_math.h"
+ #include "pbd/controllable.h"
+ #include <pbd/convert.h>
++#include <pbd/string_convert.h>
+ #include <pbd/pthread_utils.h>
+ #include <pbd/file_utils.h>
+ #include <pbd/failed_constructor.h>
+@@ -625,6 +626,9 @@ OSC::register_callbacks()
+ 		REGISTER_CALLBACK (serv, X_("/strip/receives"), "i", route_get_receives);
+ 		REGISTER_CALLBACK (serv, X_("/strip/plugin/list"), "i", route_plugin_list);
+ 		REGISTER_CALLBACK (serv, X_("/strip/plugin/descriptor"), "ii", route_plugin_descriptor);
++		REGISTER_CALLBACK (serv, X_("/procontrol/plugin_ui/version"), "", procontrol_plugin_ui_version);
++		REGISTER_CALLBACK (serv, X_("/procontrol/plugin_ui/show"), "ssis", procontrol_plugin_ui_show);
++		REGISTER_CALLBACK (serv, X_("/procontrol/plugin_ui/clear"), "", procontrol_plugin_ui_clear);
+ 		REGISTER_CALLBACK (serv, X_("/strip/plugin/reset"), "ii", route_plugin_reset);
+ 
+ 		/* this is a special catchall handler,
+@@ -5370,6 +5374,63 @@ OSC::sel_plugin_activate (float state, lo_message msg)
+ 	return 0;
+ }
+ 
++int
++OSC::procontrol_plugin_ui_version (lo_message msg)
++{
++	return int_message (X_("/procontrol/plugin_ui/version"), 1, get_address (msg));
++}
++
++int
++OSC::procontrol_plugin_ui_clear (lo_message msg)
++{
++	char* url = lo_address_get_url (get_address (msg));
++	const std::string owner (url ? url : "");
++	free (url);
++	if (owner == _procontrol_plugin_owner) {
++		if (std::shared_ptr<Processor> old = _procontrol_plugin_window.lock ()) {
++			old->HideUI (); // delivered to ProcessorWindowProxy on the GUI thread
++		}
++		_procontrol_plugin_window.reset ();
++		_procontrol_plugin_owner.clear ();
++	}
++	return int_message (X_("/procontrol/plugin_ui/cleared"), 1, get_address (msg));
++}
++
++int
++OSC::procontrol_plugin_ui_show (lo_arg** argv, lo_message msg)
++{
++	const std::string expected_session (&argv[0]->s);
++	const std::string route_id (&argv[1]->s);
++	const int plugin_index = argv[2]->i;
++	const std::string expected_name (&argv[3]->s);
++	int result = -1;
++	uint64_t numeric_id = 0;
++	if (session && session->path () == expected_session && plugin_index > 0 &&
++	    !route_id.empty () && route_id.size () <= 20 &&
++	    route_id.find_first_not_of ("0123456789") == std::string::npos &&
++	    PBD::string_to_uint64 (route_id, numeric_id)) {
++		std::shared_ptr<Route> route = session->route_by_id (PBD::ID (numeric_id));
++		if (route) {
++			std::shared_ptr<Processor> processor = route->nth_plugin (plugin_index - 1);
++			std::shared_ptr<PluginInsert> insert = std::dynamic_pointer_cast<PluginInsert> (processor);
++			if (insert && insert->plugin ()->name () == expected_name) {
++				if (std::shared_ptr<Processor> old = _procontrol_plugin_window.lock ()) {
++					if (old != processor) { old->HideUI (); }
++				}
++				processor->ShowUI ();
++				_procontrol_plugin_window = processor;
++				char* url = lo_address_get_url (get_address (msg));
++				_procontrol_plugin_owner = url ? url : "";
++				free (url);
++				result = 1;
++			}
++		}
++	}
++	lo_send (get_address (msg), X_("/procontrol/plugin_ui/result"), "ssisi",
++	         expected_session.c_str (), route_id.c_str (), plugin_index, expected_name.c_str (), result);
++	return 0;
++}
++
+ int
+ OSC::route_plugin_list (int ssid, lo_message msg) {
+ 	if (!session) {
+diff --git a/libs/surfaces/osc/osc.h b/libs/surfaces/osc/osc.h
+index 9d400a3..65d5cbe 100644
+--- a/libs/surfaces/osc/osc.h
++++ b/libs/surfaces/osc/osc.h
+@@ -696,6 +696,18 @@ class OSC : public ARDOUR::ControlProtocol, public AbstractUI<OSCUIRequest>
+ 	int route_plugin_deactivate (int rid, int piid, lo_message msg);
+ 	int route_plugin_list(int ssid, lo_message msg);
+ 	int route_plugin_descriptor(int ssid, int piid, lo_message msg);
++
++	// ProControl extension: native GUI signals, guarded by session/route/name.
++	std::weak_ptr<ARDOUR::Processor> _procontrol_plugin_window;
++	std::string _procontrol_plugin_owner;
++	int procontrol_plugin_ui_show (lo_arg**, lo_message);
++	int procontrol_plugin_ui_version (lo_message);
++	int procontrol_plugin_ui_clear (lo_message);
++	static int _procontrol_plugin_ui_show (const char*, const char*, lo_arg** argv, int, lo_message msg, void* data) {
++		return static_cast<OSC*>(data)->procontrol_plugin_ui_show (argv, msg);
++	}
++	PATH_CALLBACK_MSG(procontrol_plugin_ui_version);
++	PATH_CALLBACK_MSG(procontrol_plugin_ui_clear);
+ 	int route_plugin_reset(int ssid, int piid, lo_message msg);
+ 
+ 	int trigger_bang(int rid, int stop_now, lo_message msg);

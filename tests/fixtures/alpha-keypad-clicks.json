@@ -1,0 +1,322 @@
+[
+  {
+    "frame": 12,
+    "body": "90 21 57",
+    "actions": [
+      [
+        "release_all",
+        "",
+        []
+      ],
+      [
+        "led",
+        "23:33",
+        [
+          1
+        ]
+      ],
+      [
+        "mode",
+        "alpha",
+        [
+          true
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 14,
+    "body": "90 21 17",
+    "actions": []
+  },
+  {
+    "frame": 16,
+    "body": "90 01 57",
+    "actions": [
+      [
+        "key",
+        "a",
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 18,
+    "body": "90 01 17",
+    "actions": [
+      [
+        "key",
+        "a",
+        [
+          0
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 21,
+    "body": "90 02 57",
+    "actions": [
+      [
+        "key",
+        "b",
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 23,
+    "body": "90 02 17",
+    "actions": [
+      [
+        "key",
+        "b",
+        [
+          0
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 25,
+    "body": "90 1a 57",
+    "actions": [
+      [
+        "key",
+        "z",
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 27,
+    "body": "90 1a 17",
+    "actions": [
+      [
+        "key",
+        "z",
+        [
+          0
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 33,
+    "body": "90 1b 57",
+    "actions": [
+      [
+        "key",
+        "Shift_R",
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 35,
+    "body": "90 03 57",
+    "actions": [
+      [
+        "key",
+        "c",
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 37,
+    "body": "90 03 17",
+    "actions": [
+      [
+        "key",
+        "c",
+        [
+          0
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 39,
+    "body": "90 1b 17",
+    "actions": [
+      [
+        "key",
+        "Shift_R",
+        [
+          0
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 44,
+    "body": "90 21 57",
+    "actions": [
+      [
+        "release_all",
+        "",
+        []
+      ],
+      [
+        "led",
+        "23:33",
+        [
+          0
+        ]
+      ],
+      [
+        "mode",
+        "alpha",
+        [
+          false
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 46,
+    "body": "90 21 17",
+    "actions": []
+  },
+  {
+    "frame": 49,
+    "body": "90 01 5a",
+    "actions": [
+      [
+        "key",
+        "1",
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 51,
+    "body": "90 01 1a",
+    "actions": [
+      [
+        "key",
+        "1",
+        [
+          0
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 54,
+    "body": "90 02 5a",
+    "actions": [
+      [
+        "key",
+        "2",
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 56,
+    "body": "90 02 1a",
+    "actions": [
+      [
+        "key",
+        "2",
+        [
+          0
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 58,
+    "body": "90 11 5a",
+    "actions": [
+      [
+        "key",
+        "Return",
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 60,
+    "body": "90 11 1a",
+    "actions": [
+      [
+        "key",
+        "Return",
+        [
+          0
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 64,
+    "body": "f0 13 00 60 01 20 00 00 f7",
+    "actions": [
+      [
+        "button",
+        "1",
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 66,
+    "body": "f0 13 00 60 01 00 00 00 f7",
+    "actions": [
+      [
+        "button",
+        "1",
+        [
+          0
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 69,
+    "body": "f0 13 00 60 01 10 00 00 f7",
+    "actions": [
+      [
+        "button",
+        "3",
+        [
+          1
+        ]
+      ]
+    ]
+  },
+  {
+    "frame": 71,
+    "body": "f0 13 00 60 01 00 00 00 f7",
+    "actions": [
+      [
+        "button",
+        "3",
+        [
+          0
+        ]
+      ]
+    ]
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "session": "/home/moi/Musique/tttt/tttt.ardour",
+  "tracks": [
+    {
+      "track": "Audio 1",
+      "plugins": [
+        "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_stereo",
+        "http://lsp-plug.in/plugins/lv2/compressor_stereo"
+      ]
+    },
+    {
+      "track": "Neverender",
+      "plugins": [
+        "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_stereo",
+        "http://lsp-plug.in/plugins/lv2/compressor_stereo"
+      ]
+    },
+    {
+      "track": "Audio 2",
+      "plugins": [
+        "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_stereo",
+        "http://lsp-plug.in/plugins/lv2/compressor_stereo"
+      ]
+    },
+    {
+      "track": "Audio 3",
+      "plugins": [
+        "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_stereo",
+        "http://lsp-plug.in/plugins/lv2/compressor_stereo"
+      ]
+    },
+    {
+      "track": "Audio 4",
+      "plugins": [
+        "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_stereo",
+        "http://lsp-plug.in/plugins/lv2/compressor_stereo"
+      ]
+    },
+    {
+      "track": "Audio 5",
+      "plugins": [
+        "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_stereo",
+        "http://lsp-plug.in/plugins/lv2/compressor_stereo"
+      ]
+    },
+    {
+      "track": "Audio 6",
+      "plugins": [
+        "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_stereo",
+        "http://lsp-plug.in/plugins/lv2/compressor_stereo"
+      ]
+    },
+    {
+      "track": "Audio 7",
+      "plugins": [
+        "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_stereo",
+        "http://lsp-plug.in/plugins/lv2/compressor_stereo"
+      ]
+    }
+  ],
+  "plugins_added": 16,
+  "second_run_added": 0,
+  "neutral_parameters_verified": true
+}

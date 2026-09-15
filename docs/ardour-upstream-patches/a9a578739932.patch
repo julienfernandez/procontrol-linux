@@ -1,0 +1,38 @@
+From a9a5787399327921ff364d6e2d455ea0f94278c7 Mon Sep 17 00:00:00 2001
+From: Matthijs Kooijman <matthijs@stdin.nl>
+Date: Sun, 30 Jun 2024 18:04:41 +0200
+Subject: [PATCH] osc: Fix send and plugin page size in /set_surface
+
+When handling the `/set_surface` command, the code would set
+plug_page_size to the new value first, and call `sel_plug_pagesize()`
+later. The latter then sees the page size is already the same, so it
+leaves it unchanged and also does not send the page size to the
+OSCSelectObserver object. In practice, this means that only the default
+plugin page size from the preferences or set with
+`/set_surface/plugin_page_size` take effect and values set with
+`/set_surface` are ignored.
+
+Exactly the same thing happens for the send page size.
+
+This code has been like this since it was first introduced in comit
+9c0f6ea948 (OSC: Allow set_surface to set send and plugin page sizes.,
+2017-06-13)
+
+This commit fixes this by omitting the first assignment.
+---
+ libs/surfaces/osc/osc.cc | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/libs/surfaces/osc/osc.cc b/libs/surfaces/osc/osc.cc
+index a81a7bef4a2..f1b6a8f9d61 100644
+--- a/libs/surfaces/osc/osc.cc
++++ b/libs/surfaces/osc/osc.cc
+@@ -1882,8 +1882,6 @@ OSC::set_surface (uint32_t b_size, uint32_t strips, uint32_t fb, uint32_t gm, ui
+ 	} else {
+ 		s->usegroup = PBD::Controllable::NoGroup;
+ 	}
+-	s->send_page_size = se_size;
+-	s->plug_page_size = pi_size;
+ 	if (s->temp_mode) {
+ 		s->temp_mode = TempOff;
+ 	}

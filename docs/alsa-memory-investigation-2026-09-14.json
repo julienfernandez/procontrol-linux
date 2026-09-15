@@ -1,0 +1,85 @@
+{
+  "observed_at": "2026-09-14T21:33:40.124847+02:00",
+  "ardour_pid": 32024,
+  "effective_limits": "Limit                     Soft Limit           Hard Limit           Units     \nMax cpu time              unlimited            unlimited            seconds   \nMax file size             unlimited            unlimited            bytes     \nMax data size             unlimited            unlimited            bytes     \nMax stack size            8388608              unlimited            bytes     \nMax core file size        0                    unlimited            bytes     \nMax resident set          unlimited            unlimited            bytes     \nMax processes             55314                55314                processes \nMax open files            1048576              1048576              files     \nMax locked memory         unlimited            unlimited            bytes     \nMax address space         unlimited            unlimited            bytes     \nMax file locks            unlimited            unlimited            locks     \nMax pending signals       55314                55314                signals   \nMax msgqueue size         819200               819200               bytes     \nMax nice priority         39                   39                   \nMax realtime priority     95                   95                   \nMax realtime timeout      unlimited            unlimited            us        \n",
+  "memory_status": [
+    "VmSize:\t 1969676 kB",
+    "VmLck:\t    3420 kB",
+    "VmRSS:\t  188756 kB"
+  ],
+  "memory_available": "               total        used        free      shared  buff/cache   available\nMem:            15Gi       3.1Gi       9.2Gi       305Mi       3.6Gi        12Gi\nSwap:          2.0Gi          0B       2.0Gi\n",
+  "transport_transition_errors": 825,
+  "pool_stack_excerpt": [
+    {
+      "line": 1008,
+      "text": "bad transition, current state = Rolling/WaitingForButler/Forwards event = LocateDone"
+    },
+    {
+      "line": 1009,
+      "text": "bad transition, current state = Rolling/WaitingForButler/Forwards event = LocateDone"
+    },
+    {
+      "line": 1010,
+      "text": "-- Stacktrace Thread: AudioEngine 1"
+    },
+    {
+      "line": 1011,
+      "text": "  PBD::stacktrace(std::ostream&, int, unsigned long)"
+    },
+    {
+      "line": 1012,
+      "text": "  PBD::Pool::alloc()"
+    },
+    {
+      "line": 1013,
+      "text": "  ARDOUR::SessionEvent::operator new(unsigned long)"
+    },
+    {
+      "line": 1014,
+      "text": "  ARDOUR::Session::start_transport(bool)"
+    },
+    {
+      "line": 1015,
+      "text": "  ARDOUR::TransportFSM::process_event(ARDOUR::TransportFSM::Event&, bool, bool&)"
+    },
+    {
+      "line": 1016,
+      "text": "  ARDOUR::TransportFSM::process_events()"
+    },
+    {
+      "line": 1017,
+      "text": "  ARDOUR::Session::process(unsigned int)"
+    },
+    {
+      "line": 1018,
+      "text": "  ARDOUR::AudioEngine::process_callback(unsigned int)"
+    },
+    {
+      "line": 1019,
+      "text": "  ARDOUR::AlsaAudioBackend::main_process_thread()"
+    },
+    {
+      "line": 1020,
+      "text": "  /usr/lib/ardour8/backends/libalsa_audiobackend.so(+0x213bf) [0x746ec1a853bf]"
+    },
+    {
+      "line": 1021,
+      "text": "  /lib/x86_64-linux-gnu/libc.so.6(+0x9cb84) [0x746ecf09cb84]"
+    },
+    {
+      "line": 1022,
+      "text": "  /lib/x86_64-linux-gnu/libc.so.6(+0x129ecc) [0x746ecf129ecc]"
+    },
+    {
+      "line": 1023,
+      "text": "Got SIGTERM, quitting."
+    },
+    {
+      "line": 1024,
+      "text": "ardour-request-device: watched PID no longer exists - releasing device."
+    }
+  ],
+  "message_found_in_installed_libpbd": "POOL OUT OF MEMORY - RECOMPILE WITH LARGER SIZE!!",
+  "source": "https://github.com/Ardour/ardour/blob/8.4/libs/pbd/pool.cc",
+  "conclusion": "SessionEvent pool exhaustion in audio transport path evidenced by Pool::alloc stack; exact fatal text recovered from installed binary and matching upstream source, not persisted in xsession log. No proof this and OSC heap corruption share a root cause. No limits modified."
+}

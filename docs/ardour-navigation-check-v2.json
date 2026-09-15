@@ -1,0 +1,59 @@
+{
+  "utc": "2026-09-13T17:12:16.984903+00:00",
+  "method": "Real local Ardour OSC via reference button mapping. Restore a nonzero cursor before each navigation command. No physical button in this check.",
+  "steps": [
+    {
+      "source_body": "90 07 5c",
+      "sent": "/goto_end",
+      "before_frame": 1718272,
+      "speed": 0.0,
+      "frame": 0
+    },
+    {
+      "source_body": "90 06 5c",
+      "sent": "/goto_start",
+      "before_frame": 1718272,
+      "speed": 0.0,
+      "frame": 0
+    },
+    {
+      "source_body": "90 0d 5c",
+      "sent": "/rewind",
+      "before_frame": 1718272,
+      "speed": -1.0,
+      "frame": 1704960
+    },
+    {
+      "source_body": "90 0e 5c",
+      "sent": "/ffwd",
+      "before_frame": 1695744,
+      "speed": 1.0,
+      "frame": 1710080
+    }
+  ],
+  "before": {
+    "frame": 1718272,
+    "speed": 0.0,
+    "record_enabled": 0
+  },
+  "checks": {
+    "goto_end_moved_cursor": true,
+    "goto_start_moved_cursor": true,
+    "rewind_negative_speed": true,
+    "forward_positive_speed": true
+  },
+  "boundary_observation": "Start and end both returned frame 0 in this session; distinct start/end markers have not been validated.",
+  "after_restore": {
+    "frame": 1719296,
+    "speed": 0.0
+  },
+  "restored": false,
+  "restore_followup": {
+    "utc": "2026-09-13T17:13:32.077046+00:00",
+    "method": "Await stopped speed feedback before sending locate; then await exact frame feedback.",
+    "target_frame": 1718272,
+    "actual_frame": 1718272,
+    "speed": 0.0,
+    "restored": true
+  }
+}

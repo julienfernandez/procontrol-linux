@@ -1,0 +1,24 @@
+From 4eccfcc3b423db09d2682fc944d76aa25793267b Mon Sep 17 00:00:00 2001
+From: Robin Gareus <robin@gareus.org>
+Date: Sun, 22 Feb 2026 04:02:21 +0100
+Subject: [PATCH] TFSM: don't process redundant locates
+
+This fixes another path leading to bad TFSM transition caused
+by Session::locate emitting TransportFSM::LocateDone
+see also ed7f7e26af93
+---
+ libs/ardour/transport_fsm.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/libs/ardour/transport_fsm.cc b/libs/ardour/transport_fsm.cc
+index 1f99d9d130b..9dc1897f6c0 100644
+--- a/libs/ardour/transport_fsm.cc
++++ b/libs/ardour/transport_fsm.cc
+@@ -589,6 +589,7 @@ TransportFSM::start_locate_while_stopped (Event const & l) const
+ 	assert (l.type == Locate);
+ 	DEBUG_TRACE (DEBUG::TFSMEvents, "start_locate_while_stopped\n");
+ 
++	_last_locate = l;
+ 	set_roll_after (compute_should_roll (l.ltd));
+ 	api->locate (l.target, l.for_loop_end, l.force);
+ }

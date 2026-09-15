@@ -1,0 +1,345 @@
+           PID: 30783 (ArdourGUI)
+           UID: 1000 (moi)
+           GID: 1000 (moi)
+        Signal: 6 (ABRT)
+     Timestamp: Mon 2026-09-14 21:20:30 CEST (34s ago)
+  Command Line: /usr/lib/ardour8/ardour-8.4.0~ds1
+    Executable: /usr/lib/ardour8/ardour-8.4.0~ds1
+ Control Group: /user.slice/user-1000.slice/session-c1.scope
+          Unit: session-c1.scope
+         Slice: user-1000.slice
+       Session: c1
+     Owner UID: 1000 (moi)
+       Boot ID: 4f50c3406f064421be4bcd8947b100fb
+    Machine ID: 3d4ec59a72bd4865acb75aebe0b7bd40
+      Hostname: moi-ThinkPad-X230
+       Storage: /var/lib/systemd/coredump/core.ArdourGUI.1000.4f50c3406f064421be4bcd8947b100fb.30783.1789413630000000.zst (present)
+  Size on Disk: 30.6M
+       Message: Process 30783 (ArdourGUI) of user 1000 dumped core.
+                
+                Module libsystemd.so.0 from deb systemd-255.4-1ubuntu8.17.amd64
+                Module libgomp.so.1 from deb gcc-14-14.2.0-4ubuntu2~24.04.1.amd64
+                Module libudev.so.1 from deb systemd-255.4-1ubuntu8.17.amd64
+                Module libzstd.so.1 from deb libzstd-1.5.5+dfsg2-2build1.1.amd64
+                Module libarchive.so.13 from deb libarchive-3.7.2-2ubuntu0.8.amd64
+                Module libgcc_s.so.1 from deb gcc-14-14.2.0-4ubuntu2~24.04.1.amd64
+                Module libstdc++.so.6 from deb gcc-14-14.2.0-4ubuntu2~24.04.1.amd64
+                Stack trace of thread 30870:
+                #0  0x000074ef2389ec0c __pthread_kill_implementation (libc.so.6 + 0x9ec0c)
+                #1  0x000074ef2384527e __GI_raise (libc.so.6 + 0x4527e)
+                #2  0x000074ef238288ff __GI_abort (libc.so.6 + 0x288ff)
+                #3  0x000074ef238297b6 __libc_message_impl (libc.so.6 + 0x297b6)
+                #4  0x000074ef238a90d5 malloc_printerr (libc.so.6 + 0xa90d5)
+                #5  0x000074ef238abf4c _int_malloc (libc.so.6 + 0xabf4c)
+                #6  0x000074ef238ae97e __libc_calloc (libc.so.6 + 0xae97e)
+                #7  0x000074ef25529a2e lo_message_new (liblo.so.7 + 0x5a2e)
+                #8  0x000074ef1c4fcf15 _ZN13ArdourSurface3OSC21float_message_with_idENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEjfbPv (libardour_osc.so + 0x93f15)
+                #9  0x000074ef1c514dd2 _ZN17OSCSelectObserver9send_gainEjSt10shared_ptrIN3PBD12ControllableEE (libardour_osc.so + 0xabdd2)
+                #10 0x000074ef1c51ad81 _ZN17OSCSelectObserver9send_initEv (libardour_osc.so + 0xb1d81)
+                #11 0x000074ef1c514045 _ZN17OSCSelectObserver13refresh_stripESt10shared_ptrIN6ARDOUR9StripableEEjjb (libardour_osc.so + 0xab045)
+                #12 0x000074ef1c514b1a _ZN17OSCSelectObserverC1ERN13ArdourSurface3OSCERN6ARDOUR7SessionEPNS1_10OSCSurfaceE (libardour_osc.so + 0xabb1a)
+                #13 0x000074ef1c4e9692 _ZN13ArdourSurface3OSC14_strip_select2ESt10shared_ptrIN6ARDOUR9StripableEEPNS0_10OSCSurfaceEPv (libardour_osc.so + 0x80692)
+                #14 0x000074ef1c4e9957 _ZN13ArdourSurface3OSC13_strip_selectESt10shared_ptrIN6ARDOUR9StripableEEPv (libardour_osc.so + 0x80957)
+                #15 0x000074ef1c4ddf54 _ZN13ArdourSurface3OSC9_set_bankEjPv (libardour_osc.so + 0x74f54)
+                #16 0x000074ef1c4d10e0 _ZN13ArdourSurface3OSC11set_surfaceEjjjjjjPv (libardour_osc.so + 0x680e0)
+                #17 0x000074ef1c4d417b _ZN13ArdourSurface3OSC13surface_parseEPKcS2_PP6lo_argiPv (libardour_osc.so + 0x6b17b)
+                #18 0x000074ef1c4d4e76 _ZN13ArdourSurface3OSC8catchallEPKcS2_PP6lo_argiPv (libardour_osc.so + 0x6be76)
+                #19 0x000074ef2552fce8 n/a (liblo.so.7 + 0xbce8)
+                #20 0x000074ef255304bd n/a (liblo.so.7 + 0xc4bd)
+                #21 0x000074ef25530958 lo_server_recv (liblo.so.7 + 0xc958)
+                #22 0x000074ef1c4ca9b0 _ZN13ArdourSurface3OSC17osc_input_handlerEN4Glib11IOConditionEPv (libardour_osc.so + 0x619b0)
+                #23 0x000074ef249646b1 _ZN4Glib8IOSource8dispatchEPN4sigc9slot_baseE (libglibmm-2.4.so.1 + 0x5c6b1)
+                #24 0x000074ef24965827 _ZN4Glib6Source14dispatch_vfuncEP8_GSourcePFiPvES3_ (libglibmm-2.4.so.1 + 0x5d827)
+                #25 0x000074ef249f145e n/a (libglib-2.0.so.0 + 0x5d45e)
+                #26 0x000074ef24a50977 n/a (libglib-2.0.so.0 + 0xbc977)
+                #27 0x000074ef249f1f47 g_main_loop_run (libglib-2.0.so.0 + 0x5df47)
+                #28 0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #29 0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #30 0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30862:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef255cf2ea _ZN3PBD9Semaphore4waitEv (libpbd.so.4 + 0x462ea)
+                #2  0x000074ef25c9cad5 _ZN6ARDOUR5Graph7run_oneEv (libardour.so.3 + 0x49cad5)
+                #3  0x000074ef25ca4670 _ZN6ARDOUR5Graph11main_threadEv (libardour.so.3 + 0x4a4670)
+                #4  0x000074ef0e28c9a1 _ZN6ARDOUR16AlsaAudioBackend19alsa_process_threadEPv (libalsa_audiobackend.so + 0x1b9a1)
+                #5  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #6  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30867:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef24a508ce n/a (libglib-2.0.so.0 + 0xbc8ce)
+                #2  0x000074ef249f1f47 g_main_loop_run (libglib-2.0.so.0 + 0x5df47)
+                #3  0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #4  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #5  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30863:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef255cf2ea _ZN3PBD9Semaphore4waitEv (libpbd.so.4 + 0x462ea)
+                #2  0x000074ef25ca0f37 _ZN6ARDOUR5Graph21reached_terminal_nodeEv (libardour.so.3 + 0x4a0f37)
+                #3  0x000074ef25ca47c8 _ZN6ARDOUR5Graph13helper_threadEv (libardour.so.3 + 0x4a47c8)
+                #4  0x000074ef0e28c9a1 _ZN6ARDOUR16AlsaAudioBackend19alsa_process_threadEPv (libalsa_audiobackend.so + 0x1b9a1)
+                #5  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #6  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30864:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef255cf2ea _ZN3PBD9Semaphore4waitEv (libpbd.so.4 + 0x462ea)
+                #2  0x000074ef25c9cad5 _ZN6ARDOUR5Graph7run_oneEv (libardour.so.3 + 0x49cad5)
+                #3  0x000074ef25ca47c8 _ZN6ARDOUR5Graph13helper_threadEv (libardour.so.3 + 0x4a47c8)
+                #4  0x000074ef0e28c9a1 _ZN6ARDOUR16AlsaAudioBackend19alsa_process_threadEPv (libalsa_audiobackend.so + 0x1b9a1)
+                #5  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #6  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30866:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef24a508ce n/a (libglib-2.0.so.0 + 0xbc8ce)
+                #2  0x000074ef249f1f47 g_main_loop_run (libglib-2.0.so.0 + 0x5df47)
+                #3  0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #4  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #5  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30845:
+                #0  0x000074ef2391bcd0 __GI_ppoll (libc.so.6 + 0x11bcd0)
+                #1  0x000074ef0e2a83f6 _ZN9Alsa_pcmi8pcm_waitEv (libalsa_audiobackend.so + 0x373f6)
+                #2  0x000074ef0e29efee _ZN6ARDOUR16AlsaAudioBackend19main_process_threadEv (libalsa_audiobackend.so + 0x2dfee)
+                #3  0x000074ef0e2923bf n/a (libalsa_audiobackend.so + 0x213bf)
+                #4  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #5  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30875:
+                #0  0x000074ef238ecbdf __GI___clock_nanosleep (libc.so.6 + 0xecbdf)
+                #1  0x000074ef238f9b27 __GI___nanosleep (libc.so.6 + 0xf9b27)
+                #2  0x000074ef24a2170e g_usleep (libglib-2.0.so.0 + 0x8d70e)
+                #3  0x000074ef25bec735 _ZN6ARDOUR15AutomationWatch6threadEv (libardour.so.3 + 0x3ec735)
+                #4  0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #5  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #6  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30874:
+                #0  0x000074ef23898e51 __futex_abstimed_wait_common64 (libc.so.6 + 0x98e51)
+                #1  0x000074ef2389b8cd __pthread_cond_wait_common (libc.so.6 + 0x9b8cd)
+                #2  0x000074ef25eb3187 _ZN6ARDOUR7Session23auto_connect_thread_runEv (libardour.so.3 + 0x6b3187)
+                #3  0x000074ef25eb325c _ZN6ARDOUR7Session19auto_connect_threadEPv (libardour.so.3 + 0x6b325c)
+                #4  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #5  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30816:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef249bb58b n/a (libglib-2.0.so.0 + 0x2758b)
+                #3  0x000074ef249bb5ec g_async_queue_pop (libglib-2.0.so.0 + 0x275ec)
+                #4  0x000074ef246000fb n/a (libpangoft2-1.0.so.0 + 0xc0fb)
+                #5  0x000074ef24a1fe62 n/a (libglib-2.0.so.0 + 0x8be62)
+                #6  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #7  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30881:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef26615f95 _ZN14ArdourWaveView15WaveViewThreads21_dequeue_draw_requestEv (libwaveview.so.0 + 0x12f95)
+                #3  0x000074ef266161a9 _ZN14ArdourWaveView15WaveViewThreads20dequeue_draw_requestEv (libwaveview.so.0 + 0x131a9)
+                #4  0x000074ef26618187 _ZN14ArdourWaveView15WaveViewThreads12_thread_procEv (libwaveview.so.0 + 0x15187)
+                #5  0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #6  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #7  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30865:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef255b9aec _ZN18CrossThreadChannel16poll_for_requestEv (libpbd.so.4 + 0x30aec)
+                #2  0x000074ef255b9b72 _ZN18CrossThreadChannel7receiveERcb (libpbd.so.4 + 0x30b72)
+                #3  0x000074ef25bfa639 _ZN6ARDOUR6Butler11thread_workEv (libardour.so.3 + 0x3fa639)
+                #4  0x000074ef255cd2a7 n/a (libpbd.so.4 + 0x442a7)
+                #5  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #6  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30811:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef25baf16f _ZN6ARDOUR11AudioEngine20do_devicelist_updateEv (libardour.so.3 + 0x3af16f)
+                #3  0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #4  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #5  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30869:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef255da4e4 _ZN3PBD10SystemExec17output_interposerEv (libpbd.so.4 + 0x514e4)
+                #2  0x000074ef255dcf9c n/a (libpbd.so.4 + 0x53f9c)
+                #3  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #4  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30817:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef249bb58b n/a (libglib-2.0.so.0 + 0x2758b)
+                #3  0x000074ef249bb5ec g_async_queue_pop (libglib-2.0.so.0 + 0x275ec)
+                #4  0x000074ef246000fb n/a (libpangoft2-1.0.so.0 + 0xc0fb)
+                #5  0x000074ef24a1fe62 n/a (libglib-2.0.so.0 + 0x8be62)
+                #6  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #7  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30860:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef249bb58b n/a (libglib-2.0.so.0 + 0x2758b)
+                #3  0x000074ef249bb5ec g_async_queue_pop (libglib-2.0.so.0 + 0x275ec)
+                #4  0x000074ef246000fb n/a (libpangoft2-1.0.so.0 + 0xc0fb)
+                #5  0x000074ef24a1fe62 n/a (libglib-2.0.so.0 + 0x8be62)
+                #6  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #7  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30871:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef2447cdd3 n/a (libusb-1.0.so.0 + 0x11dd3)
+                #2  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #3  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30807:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef25b8e6b3 _ZN6ARDOUR8Analyser4workEv (libardour.so.3 + 0x38e6b3)
+                #3  0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #4  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #5  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30882:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef26615f95 _ZN14ArdourWaveView15WaveViewThreads21_dequeue_draw_requestEv (libwaveview.so.0 + 0x12f95)
+                #3  0x000074ef266161a9 _ZN14ArdourWaveView15WaveViewThreads20dequeue_draw_requestEv (libwaveview.so.0 + 0x131a9)
+                #4  0x000074ef26618187 _ZN14ArdourWaveView15WaveViewThreads12_thread_procEv (libwaveview.so.0 + 0x15187)
+                #5  0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #6  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #7  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30804:
+                #0  0x000074ef238ecbdf __GI___clock_nanosleep (libc.so.6 + 0xecbdf)
+                #1  0x000074ef238f9b27 __GI___nanosleep (libc.so.6 + 0xf9b27)
+                #2  0x000074ef24a2170e g_usleep (libglib-2.0.so.0 + 0x8d70e)
+                #3  0x00005aec14f3feb4 n/a (ardour-8.4.0~ds1 + 0xce8eb4)
+                #4  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #5  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30827:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef24a508ce n/a (libglib-2.0.so.0 + 0xbc8ce)
+                #2  0x000074ef249f0a23 g_main_context_iteration (libglib-2.0.so.0 + 0x5ca23)
+                #3  0x000074ef249f0a79 n/a (libglib-2.0.so.0 + 0x5ca79)
+                #4  0x000074ef24a1fe62 n/a (libglib-2.0.so.0 + 0x8be62)
+                #5  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #6  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30844:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef255da4e4 _ZN3PBD10SystemExec17output_interposerEv (libpbd.so.4 + 0x514e4)
+                #2  0x000074ef255dcf9c n/a (libpbd.so.4 + 0x53f9c)
+                #3  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #4  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30828:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef24a508ce n/a (libglib-2.0.so.0 + 0xbc8ce)
+                #2  0x000074ef249f1f47 g_main_loop_run (libglib-2.0.so.0 + 0x5df47)
+                #3  0x000074ef2319a582 n/a (libgio-2.0.so.0 + 0x11a582)
+                #4  0x000074ef24a1fe62 n/a (libglib-2.0.so.0 + 0x8be62)
+                #5  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #6  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30846:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef0e29220b _ZN6ARDOUR16AlsaAudioBackend18midi_device_threadEv (libalsa_audiobackend.so + 0x2120b)
+                #2  0x000074ef0e2922ec _ZN6ARDOUR16AlsaAudioBackend19_midi_device_threadEPv (libalsa_audiobackend.so + 0x212ec)
+                #3  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #4  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30872:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef24478535 n/a (libusb-1.0.so.0 + 0xd535)
+                #2  0x000074ef2447b780 libusb_handle_events_timeout_completed (libusb-1.0.so.0 + 0x10780)
+                #3  0x000074ef2447b7e2 libusb_handle_events (libusb-1.0.so.0 + 0x107e2)
+                #4  0x000074ef25bfff5d n/a (libardour.so.3 + 0x3fff5d)
+                #5  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #6  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30880:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef26615f95 _ZN14ArdourWaveView15WaveViewThreads21_dequeue_draw_requestEv (libwaveview.so.0 + 0x12f95)
+                #3  0x000074ef266161a9 _ZN14ArdourWaveView15WaveViewThreads20dequeue_draw_requestEv (libwaveview.so.0 + 0x131a9)
+                #4  0x000074ef26618187 _ZN14ArdourWaveView15WaveViewThreads12_thread_procEv (libwaveview.so.0 + 0x15187)
+                #5  0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #6  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #7  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30783:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef24a508ce n/a (libglib-2.0.so.0 + 0xbc8ce)
+                #2  0x000074ef249f1f47 g_main_loop_run (libglib-2.0.so.0 + 0x5df47)
+                #3  0x000074ef24d833df gtk_main (libytk.so.2 + 0x1833df)
+                #4  0x000074ef2565ec9b _ZN9Gtkmm2ext2UI3runER8Receiver (libgtkmm2ext.so.0 + 0x5dc9b)
+                #5  0x00005aec14713616 main (ardour-8.4.0~ds1 + 0x4bc616)
+                #6  0x000074ef2382a1ca __libc_start_call_main (libc.so.6 + 0x2a1ca)
+                #7  0x000074ef2382a28b __libc_start_main_impl (libc.so.6 + 0x2a28b)
+                #8  0x00005aec14718465 n/a (ardour-8.4.0~ds1 + 0x4c1465)
+                
+                Stack trace of thread 30805:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef25f434ca n/a (libardour.so.3 + 0x7434ca)
+                #3  0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #4  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #5  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30806:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef25f434ca n/a (libardour.so.3 + 0x7434ca)
+                #3  0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #4  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #5  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30810:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef25bb02e7 _ZN6ARDOUR11AudioEngine16do_reset_backendEv (libardour.so.3 + 0x3b02e7)
+                #3  0x000074ef255cd34a _ZN3PBD6Thread4_runEPv (libpbd.so.4 + 0x4434a)
+                #4  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #5  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30826:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef249bb58b n/a (libglib-2.0.so.0 + 0x2758b)
+                #3  0x000074ef24a20c43 n/a (libglib-2.0.so.0 + 0x8cc43)
+                #4  0x000074ef24a1fe62 n/a (libglib-2.0.so.0 + 0x8be62)
+                #5  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #6  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30851:
+                #0  0x000074ef2392752d syscall (libc.so.6 + 0x12752d)
+                #1  0x000074ef24a4a52d g_cond_wait (libglib-2.0.so.0 + 0xb652d)
+                #2  0x000074ef249bb58b n/a (libglib-2.0.so.0 + 0x2758b)
+                #3  0x000074ef249bb5ec g_async_queue_pop (libglib-2.0.so.0 + 0x275ec)
+                #4  0x000074ef246000fb n/a (libpangoft2-1.0.so.0 + 0xc0fb)
+                #5  0x000074ef24a1fe62 n/a (libglib-2.0.so.0 + 0x8be62)
+                #6  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #7  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30873:
+                #0  0x000074ef23898e51 __futex_abstimed_wait_common64 (libc.so.6 + 0x98e51)
+                #1  0x000074ef2389b8cd __pthread_cond_wait_common (libc.so.6 + 0x9b8cd)
+                #2  0x000074ef25ef2d93 _ZN6ARDOUR7Session15emit_thread_runEv (libardour.so.3 + 0x6f2d93)
+                #3  0x000074ef25ef2dcc _ZN6ARDOUR7Session11emit_threadEPv (libardour.so.3 + 0x6f2dcc)
+                #4  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #5  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                
+                Stack trace of thread 30803:
+                #0  0x000074ef2391b79d __GI___poll (libc.so.6 + 0x11b79d)
+                #1  0x000074ef255b9aec _ZN18CrossThreadChannel16poll_for_requestEv (libpbd.so.4 + 0x30aec)
+                #2  0x000074ef255b9b72 _ZN18CrossThreadChannel7receiveERcb (libpbd.so.4 + 0x30b72)
+                #3  0x000074ef25f8b863 _ZN6ARDOUR16TriggerBoxThread11thread_workEv (libardour.so.3 + 0x78b863)
+                #4  0x000074ef255cd2a7 n/a (libpbd.so.4 + 0x442a7)
+                #5  0x000074ef2389cb84 start_thread (libc.so.6 + 0x9cb84)
+                #6  0x000074ef23929ecc __clone3 (libc.so.6 + 0x129ecc)
+                ELF object binary architecture: AMD x86-64

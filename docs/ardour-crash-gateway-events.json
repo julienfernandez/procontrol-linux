@@ -1,0 +1,37 @@
+[
+  {
+    "utc": "2026-09-14T18:22:35.384968+00:00",
+    "event": "feedback_recovery",
+    "counts": {
+      "sent": 3749,
+      "acked": 3748,
+      "timeouts": 1,
+      "recoveries": 0
+    }
+  },
+  {
+    "utc": "2026-09-14T18:22:37.450871+00:00",
+    "event": "ardour_waiting",
+    "detail": "[Errno 111] Connection refused"
+  },
+  {
+    "utc": "2026-09-14T18:22:42.503950+00:00",
+    "event": "ardour_waiting",
+    "detail": "[Errno 111] Connection refused"
+  },
+  {
+    "utc": "2026-09-14T18:22:47.518234+00:00",
+    "event": "ardour_waiting",
+    "detail": "[Errno 111] Connection refused"
+  },
+  {
+    "utc": "2026-09-14T18:22:52.538286+00:00",
+    "event": "ardour_waiting",
+    "detail": "[Errno 111] Connection refused"
+  },
+  {
+    "utc": "2026-09-14T18:22:57.558424+00:00",
+    "event": "ardour_waiting",
+    "detail": "[Errno 111] Connection refused"
+  }
+]

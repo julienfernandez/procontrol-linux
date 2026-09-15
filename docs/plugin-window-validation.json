@@ -1,0 +1,158 @@
+{
+  "installed_at": "2026-09-15T00:16:32.603349+02:00",
+  "backup": "/home/moi/Documents/Codex/2026-09-13/oui-si-par-reprendre-a-tu/outputs/procontrol-linux/backups/before-plugin-window-20260915T001632",
+  "module": "/home/moi/.local/opt/ardour-9.8/lib/ardour9/surfaces/libardour_osc.so",
+  "sha256": "65a557f7bcefc26f48f9b55b4a436c7dfb539dbe969b02f0986915ebacb4fa9b",
+  "source_commit": "22ed8656c2533e325322ff11831448e5123e0d4b",
+  "patch": "native/ardour-9.8-plugin-ui.patch",
+  "live_native_tests": [
+    {
+      "test": "eq-audio1",
+      "reply": [
+        "/home/moi/Musique/tttt",
+        "174",
+        1,
+        "LSP Parametric Equalizer x8 Stereo",
+        1
+      ],
+      "windows": "0x00e00003 -1 1291   moi-ThinkPad-X230 xfce4-panel\n0x00c00054 -1 1302   moi-ThinkPad-X230 Bureau\n0x02600004  0 10765  moi-ThinkPad-X230 ChatGPT\n0x04a00483  0 69132  moi-ThinkPad-X230 tttt - Ardour\n"
+    },
+    {
+      "test": "comp-audio1",
+      "reply": [
+        "/home/moi/Musique/tttt",
+        "174",
+        2,
+        "LSP Compressor Stereo",
+        1
+      ],
+      "windows": "0x00e00003 -1 1291   moi-ThinkPad-X230 xfce4-panel\n0x00c00054 -1 1302   moi-ThinkPad-X230 Bureau\n0x02600004  0 10765  moi-ThinkPad-X230 ChatGPT\n0x04a00483  0 69132  moi-ThinkPad-X230 tttt - Ardour\n0x04a01cba  0 69132  moi-ThinkPad-X230 Audio 1: LSP Compressor Stereo (by LSP LV2) [LV2]\n"
+    },
+    {
+      "test": "comp-neverender",
+      "reply": [
+        "/home/moi/Musique/tttt",
+        "265",
+        2,
+        "LSP Compressor Stereo",
+        1
+      ],
+      "windows": "0x00e00003 -1 1291   moi-ThinkPad-X230 xfce4-panel\n0x00c00054 -1 1302   moi-ThinkPad-X230 Bureau\n0x02600004  0 10765  moi-ThinkPad-X230 ChatGPT\n0x04a00483  0 69132  moi-ThinkPad-X230 tttt - Ardour\n0x04a01d59  0 69132  moi-ThinkPad-X230 Neverender: LSP Compressor Stereo (by LSP LV2) [LV2]\n"
+    },
+    {
+      "test": "eq-neverender",
+      "reply": [
+        "/home/moi/Musique/tttt",
+        "265",
+        1,
+        "LSP Parametric Equalizer x8 Stereo",
+        1
+      ],
+      "windows": "0x00e00003 -1 1291   moi-ThinkPad-X230 xfce4-panel\n0x00c00054 -1 1302   moi-ThinkPad-X230 Bureau\n0x02600004  0 10765  moi-ThinkPad-X230 ChatGPT\n0x04a00483  0 69132  moi-ThinkPad-X230 tttt - Ardour\n0x04a01e00  0 69132  moi-ThinkPad-X230 Neverender: LSP Parametric Equalizer x8 Stereo (by LSP LV2) [LV2]\n"
+    },
+    {
+      "test": "wrong-session",
+      "reply": [
+        "/wrong/session",
+        "174",
+        1,
+        "LSP Parametric Equalizer x8 Stereo",
+        -1
+      ]
+    },
+    {
+      "test": "overflow-id",
+      "reply": [
+        "/home/moi/Musique/tttt",
+        "99999999999999999999",
+        1,
+        "LSP Parametric Equalizer x8 Stereo",
+        -1
+      ]
+    },
+    {
+      "test": "wrong-name",
+      "reply": [
+        "/home/moi/Musique/tttt",
+        "174",
+        1,
+        "Wrong plugin",
+        -1
+      ]
+    },
+    {
+      "test": "foreign-clear",
+      "unchanged": true
+    },
+    {
+      "test": "owner-clear",
+      "windows": "0x00e00003 -1 1291   moi-ThinkPad-X230 xfce4-panel\n0x00c00054 -1 1302   moi-ThinkPad-X230 Bureau\n0x02600004  0 10765  moi-ThinkPad-X230 ChatGPT\n0x04a00483  0 69132  moi-ThinkPad-X230 tttt - Ardour\n"
+    }
+  ],
+  "tests": {
+    "total": 150,
+    "passed": 150
+  },
+  "user_validation": {
+    "received_at": "2026-09-15T00:18:47.351193+02:00",
+    "question": "EQ IN/EDIT, DYN IN/EDIT, puis SELECT autre voie",
+    "answer": "Oui, les fenêtres suivent correctement"
+  },
+  "last_runtime": {
+    "pid": 69124,
+    "updated_utc": "2026-09-14T22:18:47.117991+00:00",
+    "console": "online",
+    "ardour": "responding",
+    "plugin_window": {
+      "supported": true,
+      "target": [
+        "/home/moi/Musique/tttt",
+        "360",
+        1,
+        "LSP Parametric Equalizer x8 Stereo"
+      ],
+      "confirmed": [
+        "/home/moi/Musique/tttt",
+        "360",
+        1,
+        "LSP Parametric Equalizer x8 Stereo"
+      ],
+      "waiting": false,
+      "error": null
+    },
+    "dsp": {
+      "active": true,
+      "ready": true,
+      "mode": "eq",
+      "page": 1,
+      "plugin_page": 1,
+      "track": "Audio 2",
+      "sid": 3,
+      "plugin": 1,
+      "filter": 1,
+      "error": null,
+      "edits": 121,
+      "snapshots": 102
+    },
+    "surface": {
+      "alpha": false,
+      "encoder_mode": "eq",
+      "jog_mode": 0,
+      "bank_start": 1,
+      "feedback": {
+        "sent": 1364,
+        "acked": 1364,
+        "timeouts": 0,
+        "recoveries": 0
+      },
+      "output_error": null,
+      "queued_outputs": 0
+    }
+  },
+  "live_console_window_observed": "Audio 2: LSP Parametric Equalizer x8 Stereo (by LSP LV2) [LV2]",
+  "initial_eq_observation": "La réponse à la première ouverture EQ Audio1 est positive ; son snapshot à0.8s ne contient pas encore la fenêtre. Les fenêtres EQ/compresseur suivantes sont visibles, puis utilisateur confirme les changements depuis la console.",
+  "sources_changed": [
+    "libs/surfaces/osc/osc.cc",
+    "libs/surfaces/osc/osc.h"
+  ]
+}

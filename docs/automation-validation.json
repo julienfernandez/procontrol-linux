@@ -1,0 +1,453 @@
+{
+  "updated_at": "2026-09-15T19:50:16.245415+02:00",
+  "tests_passed": 165,
+  "dedicated_tests": 15,
+  "status": "deployed_user_validated",
+  "runtime": {
+    "pid": 89191,
+    "updated_utc": "2026-09-15T17:50:14.912962+00:00",
+    "console": "online",
+    "ardour": "responding",
+    "routing": {
+      "ready": true,
+      "stereo_routes_ready": true,
+      "bank_start": 1,
+      "automation": [
+        {
+          "slot": 1,
+          "sid": 1,
+          "mode": 0,
+          "name": "Manual"
+        },
+        {
+          "slot": 2,
+          "sid": 2,
+          "mode": 1,
+          "name": "Play"
+        },
+        {
+          "slot": 3,
+          "sid": 3,
+          "mode": 2,
+          "name": "Write"
+        },
+        {
+          "slot": 4,
+          "sid": 4,
+          "mode": 2,
+          "name": "Write"
+        },
+        {
+          "slot": 5,
+          "sid": 5,
+          "mode": 2,
+          "name": "Write"
+        },
+        {
+          "slot": 6,
+          "sid": 6,
+          "mode": 2,
+          "name": "Write"
+        },
+        {
+          "slot": 7,
+          "sid": 7,
+          "mode": 2,
+          "name": "Write"
+        },
+        {
+          "slot": 8,
+          "sid": 8,
+          "mode": 2,
+          "name": "Write"
+        }
+      ],
+      "master_mode": false,
+      "revision": 1,
+      "error": null,
+      "slots": [
+        {
+          "sid": 1,
+          "kind": "AT",
+          "name": "Audio 1",
+          "channels": 2,
+          "route_id": "174"
+        },
+        {
+          "sid": 2,
+          "kind": "AT",
+          "name": "Neverender",
+          "channels": 2,
+          "route_id": "265"
+        },
+        {
+          "sid": 3,
+          "kind": "AT",
+          "name": "Audio 2",
+          "channels": 2,
+          "route_id": "360"
+        },
+        {
+          "sid": 4,
+          "kind": "AT",
+          "name": "Audio 3",
+          "channels": 2,
+          "route_id": "435"
+        },
+        {
+          "sid": 5,
+          "kind": "AT",
+          "name": "Audio 4",
+          "channels": 2,
+          "route_id": "505"
+        },
+        {
+          "sid": 6,
+          "kind": "AT",
+          "name": "Audio 5",
+          "channels": 2,
+          "route_id": "575"
+        },
+        {
+          "sid": 7,
+          "kind": "AT",
+          "name": "Audio 6",
+          "channels": 2,
+          "route_id": "645"
+        },
+        {
+          "sid": 8,
+          "kind": "AT",
+          "name": "Audio 7",
+          "channels": 2,
+          "route_id": "715"
+        }
+      ]
+    },
+    "surface": {
+      "alpha": false,
+      "encoder_mode": "pan",
+      "jog_mode": 0,
+      "bank_start": 1,
+      "feedback": {
+        "sent": 4234,
+        "acked": 4234,
+        "timeouts": 0,
+        "recoveries": 0
+      },
+      "output_error": null,
+      "queued_outputs": 0
+    }
+  },
+  "source_commit": "22ed8656c2533e325322ff11831448e5123e0d4b",
+  "default_scope": "gain/fader per strip",
+  "cycle": [
+    "Manual",
+    "Play",
+    "Write",
+    "Touch",
+    "Latch"
+  ],
+  "tm": "unused, not equivalent to Manual",
+  "user_validation": {
+    "at": "2026-09-15T19:48:17.857067+02:00",
+    "answer": "Oui, les cinq états correspondent",
+    "sequence": "Confirmation utilisateur du cycle complet RD WR TC LT éteint. Consigne voie1 ; capture observe effectivement des appuis sur les voies2 et3."
+  },
+  "observed_auto_presses": [
+    {
+      "utc": "2026-09-15T17:47:39.703269+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:41.371146+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:42.349519+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:42.708982+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:43.542515+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:44.255672+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:44.660776+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:44.900733+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:45.289741+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:46.483207+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:46.907119+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:47.312741+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:48.221048+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:48.704698+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:54.291772+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            3,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:54.559968+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            3,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:54.750499+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            3,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:47:55.049994+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            3,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:48:03.581707+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "utc": "2026-09-15T17:48:04.409990+00:00",
+      "actions": [
+        [
+          "automation",
+          "cycle",
+          [
+            2,
+            1
+          ]
+        ]
+      ]
+    }
+  ],
+  "capture_summary": {
+    "frames": 19028,
+    "auto_presses": 20,
+    "mode_commands": 20,
+    "mode_feedback": 21,
+    "lamp_updates": 21,
+    "lamp_outputs_acked": 21,
+    "matched_presses": 20,
+    "slots_observed": [
+      2,
+      3
+    ],
+    "command_ms": {
+      "n": 20,
+      "median": 2.6295,
+      "max": 3.748
+    },
+    "feedback_ms": {
+      "n": 20,
+      "median": 3.2664999999999997,
+      "max": 4.357
+    },
+    "lamp_ms": {
+      "n": 20,
+      "median": 3.8834999999999997,
+      "max": 5.112
+    }
+  },
+  "capture_files_sha256": {
+    "live.pcapng": "4506fa923c2681f8b2d2f3dadaae3b597ead6a3a2c8fe2f462ddb4efdc987b61",
+    "live-derived.pcap": "34bb8704211e1b8c49c02710480ea8292ed0c9860959c9e302f8f71858463b6b"
+  },
+  "capture_limit": "dumpcap rapporte 1 paquet flushed par interface à la fermeture ; tous les20 appuis AUTO observés sont associés à une commande et un retour LED.",
+  "latency_scope": "Temps capture appui Ethernet → émission Ethernet des lampes, pas une mesure optique de la LED."
+}

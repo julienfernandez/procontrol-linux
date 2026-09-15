@@ -1,0 +1,43 @@
+From ed7f7e26af93fb0e0b397b45f565c83880827d6f Mon Sep 17 00:00:00 2001
+From: Robin Gareus <robin@gareus.org>
+Date: Sun, 22 Feb 2026 00:10:37 +0100
+Subject: [PATCH] Clean-up locates when loading session
+
+There were 3 locates **queued** when loading a session.
+1. Session::post_engine_init
+2. Session::session_loaded (force-locate)
+3. Editor::set_session
+
+Depending on how fast the butler processes these events the
+following TFSM could happen due to the first two locates being
+queued immediately after each other:
+
+  Stopped --[Locate]-->
+  WaitingForLocate --[Locate, interrupt active locate]-->
+  WaitingForLocate --[Locate Done]->
+  Stopped --[Locate Done]-> INVALID STATE
+---
+ libs/ardour/session_state.cc | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/libs/ardour/session_state.cc b/libs/ardour/session_state.cc
+index 32c51146208..b3d0c512f8e 100644
+--- a/libs/ardour/session_state.cc
++++ b/libs/ardour/session_state.cc
+@@ -405,10 +405,12 @@ Session::post_engine_init ()
+ 	/* Can't do this until the trigger input MIDI port is set up */
+ 	TriggerBox::static_init (*this);
+ 
+-	/* Now, finally, we can [ask the butler to] fill the playback buffers */
+-
+-	BootMessage (_("Filling playback buffers"));
+-	request_locate (transport_sample(), true);
++	/* When loading, Session::session_loaded () will do this */
++	if (!loading ()) {
++		/* Now, finally, we can [ask the butler to] fill the playback buffers */
++		BootMessage (_("Filling playback buffers"));
++		request_locate (transport_sample(), true);
++	}
+ 
+ 	reset_xrun_count ();
+ 	return 0;

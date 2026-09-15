@@ -1,0 +1,49 @@
+{
+  "status": "visually_confirmed_series_B",
+  "photo": "/tmp/codex-remote-attachments/01a09b3f-25f6-74c3-bb8f-b50c9f7e8395/4E56F1E7-F6CB-4EB5-BBCD-0FC1B4D66A88/1-Photo-1.jpg",
+  "photo_sha256": "3e0b0335fa8f706d89066e1644700e068bb667effeba5f880933469f1a922fbc",
+  "observation": "DSP1-B through DSP8-B visible top to bottom, one displayed label on each DSP screen.",
+  "limitations": "Series A destination or aliasing is not established by this image. No plugin feedback is validated.",
+  "displays": [
+    {
+      "row": 1,
+      "address": 45,
+      "label": "DSP1-B"
+    },
+    {
+      "row": 2,
+      "address": 46,
+      "label": "DSP2-B"
+    },
+    {
+      "row": 3,
+      "address": 47,
+      "label": "DSP3-B"
+    },
+    {
+      "row": 4,
+      "address": 48,
+      "label": "DSP4-B"
+    },
+    {
+      "row": 5,
+      "address": 49,
+      "label": "DSP5-B"
+    },
+    {
+      "row": 6,
+      "address": 50,
+      "label": "DSP6-B"
+    },
+    {
+      "row": 7,
+      "address": 51,
+      "label": "DSP7-B"
+    },
+    {
+      "row": 8,
+      "address": 52,
+      "label": "DSP8-B"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-13",
+  "pcap": "captures/20260913T183358Z-extended-surface-online-p2Vy6E/traffic.pcap",
+  "sha256": "c3bcb08b7959feb276906b6ede87f66ea6eabe9ab63983ce7701d9f6281bd76c",
+  "frames": 509,
+  "drop_count": 0,
+  "diginet_frames": 418,
+  "sum_matches": 418,
+  "online_frame": 23,
+  "e0_before_online": [
+    1,
+    14,
+    18,
+    22
+  ],
+  "e0_after_online": 0,
+  "e1_after_online": 31,
+  "feedback_frames": 80,
+  "feedback_all_acked": true,
+  "keepalives": 21,
+  "keepalive_max_interval_seconds": 10.048248,
+  "journal_snapshot": "captures/20260913T183358Z-extended-surface-online-p2Vy6E/daemon-journal-snapshot.jsonl",
+  "journal_sha256": "c9a05ddc41fe3064c9e537ed486a1170ce51f2185bbaf7a4acc4f079f6f47fb0",
+  "journal_last_utc": "2026-09-13T18:42:43.438136+00:00",
+  "osc_actions_from_journal": {
+    "/strip/select": 5,
+    "/strip/gain/touch": 50,
+    "/strip/fader": 703,
+    "/jog": 1254,
+    "/strip/pan_stereo_position": 57,
+    "/strip/mute": 2,
+    "/strip/solo": 1,
+    "/cancel_all_solos": 1,
+    "/transport_stop": 1
+  },
+  "user_report": "Afficheurs et jog fonctionnent tous",
+  "user_report_time_note": "Confirmation reçue après les gestes ; heure exacte des gestes non déclarée.",
+  "tests_passed": 58,
+  "journal_first_utc": "2026-09-13T18:34:19.631335+00:00",
+  "journal_includes_start": true
+}

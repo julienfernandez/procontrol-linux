@@ -1,0 +1,18 @@
+{
+  "observed_state": {
+    "sent": 836,
+    "acked": 835,
+    "output_error": "Retour console non acquitt\u00e9 en 2 s ; sorties suspendues"
+  },
+  "nearby_acks": [
+    {
+      "utc": "2026-09-13T20:26:47.094626+00:00",
+      "ack_candidate": 858
+    },
+    {
+      "utc": "2026-09-13T20:26:53.232577+00:00",
+      "ack_candidate": 860
+    }
+  ],
+  "source": "rolling daemon event logs; not PCAP"
+}

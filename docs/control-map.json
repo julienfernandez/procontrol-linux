@@ -1,0 +1,5771 @@
+[
+  {
+    "zone": 0,
+    "key": 0,
+    "pressed": true,
+    "label": "RecArm",
+    "group": "Channel 1",
+    "press_hex": "90 00 40",
+    "release_hex": "90 00 00",
+    "actions": [
+      [
+        "osc",
+        "/strip/recenable",
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 0,
+    "key": 1,
+    "pressed": true,
+    "label": "Pan_Send",
+    "group": "Channel 1",
+    "press_hex": "90 01 40",
+    "release_hex": "90 01 00",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          1,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 0,
+    "key": 2,
+    "pressed": true,
+    "label": "EQ",
+    "group": "Channel 1",
+    "press_hex": "90 02 40",
+    "release_hex": "90 02 00",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          1,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 0,
+    "key": 3,
+    "pressed": true,
+    "label": "Dynamics",
+    "group": "Channel 1",
+    "press_hex": "90 03 40",
+    "release_hex": "90 03 00",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          1,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 0,
+    "key": 4,
+    "pressed": true,
+    "label": "pre_post_assign_mute",
+    "group": "Channel 1",
+    "press_hex": "90 04 40",
+    "release_hex": "90 04 00",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 0,
+    "key": 5,
+    "pressed": true,
+    "label": "reaautomode",
+    "group": "Channel 1",
+    "press_hex": "90 05 40",
+    "release_hex": "90 05 00",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/automation",
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 0,
+    "key": 6,
+    "pressed": true,
+    "label": "ChannelSelect",
+    "group": "Channel 1",
+    "press_hex": "90 06 40",
+    "release_hex": "90 06 00",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 0,
+    "key": 7,
+    "pressed": true,
+    "label": "Solo",
+    "group": "Channel 1",
+    "press_hex": "90 07 40",
+    "release_hex": "90 07 00",
+    "actions": [
+      [
+        "osc",
+        "/strip/solo",
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 0,
+    "key": 8,
+    "pressed": true,
+    "label": "Mute",
+    "group": "Channel 1",
+    "press_hex": "90 08 40",
+    "release_hex": "90 08 00",
+    "actions": [
+      [
+        "osc",
+        "/strip/mute",
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 0,
+    "key": 9,
+    "pressed": true,
+    "label": "Touch",
+    "group": "Channel 1",
+    "press_hex": "90 09 40",
+    "release_hex": "90 09 00",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/touch",
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 0,
+    "key": 10,
+    "pressed": true,
+    "label": "Inserts",
+    "group": "Channel 1",
+    "press_hex": "90 0a 40",
+    "release_hex": "90 0a 00",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          1,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 0,
+    "key": 11,
+    "pressed": true,
+    "label": "Peak",
+    "group": "Channel 1",
+    "press_hex": "90 0b 40",
+    "release_hex": "90 0b 00",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 0,
+    "key": 12,
+    "pressed": true,
+    "label": "Source Toggle",
+    "group": "Channel 1",
+    "press_hex": "90 0c 40",
+    "release_hex": "90 0c 00",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 0,
+    "key": 13,
+    "pressed": true,
+    "label": "Roll Off",
+    "group": "Channel 1",
+    "press_hex": "90 0d 40",
+    "release_hex": "90 0d 00",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 1,
+    "key": 0,
+    "pressed": true,
+    "label": "RecArm",
+    "group": "Channel 2",
+    "press_hex": "90 00 41",
+    "release_hex": "90 00 01",
+    "actions": [
+      [
+        "osc",
+        "/strip/recenable",
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 1,
+    "key": 1,
+    "pressed": true,
+    "label": "Pan_Send",
+    "group": "Channel 2",
+    "press_hex": "90 01 41",
+    "release_hex": "90 01 01",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          2,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 1,
+    "key": 2,
+    "pressed": true,
+    "label": "EQ",
+    "group": "Channel 2",
+    "press_hex": "90 02 41",
+    "release_hex": "90 02 01",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          2,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 1,
+    "key": 3,
+    "pressed": true,
+    "label": "Dynamics",
+    "group": "Channel 2",
+    "press_hex": "90 03 41",
+    "release_hex": "90 03 01",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          2,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 1,
+    "key": 4,
+    "pressed": true,
+    "label": "pre_post_assign_mute",
+    "group": "Channel 2",
+    "press_hex": "90 04 41",
+    "release_hex": "90 04 01",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 1,
+    "key": 5,
+    "pressed": true,
+    "label": "reaautomode",
+    "group": "Channel 2",
+    "press_hex": "90 05 41",
+    "release_hex": "90 05 01",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/automation",
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 1,
+    "key": 6,
+    "pressed": true,
+    "label": "ChannelSelect",
+    "group": "Channel 2",
+    "press_hex": "90 06 41",
+    "release_hex": "90 06 01",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 1,
+    "key": 7,
+    "pressed": true,
+    "label": "Solo",
+    "group": "Channel 2",
+    "press_hex": "90 07 41",
+    "release_hex": "90 07 01",
+    "actions": [
+      [
+        "osc",
+        "/strip/solo",
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 1,
+    "key": 8,
+    "pressed": true,
+    "label": "Mute",
+    "group": "Channel 2",
+    "press_hex": "90 08 41",
+    "release_hex": "90 08 01",
+    "actions": [
+      [
+        "osc",
+        "/strip/mute",
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 1,
+    "key": 9,
+    "pressed": true,
+    "label": "Touch",
+    "group": "Channel 2",
+    "press_hex": "90 09 41",
+    "release_hex": "90 09 01",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/touch",
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 1,
+    "key": 10,
+    "pressed": true,
+    "label": "Inserts",
+    "group": "Channel 2",
+    "press_hex": "90 0a 41",
+    "release_hex": "90 0a 01",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          2,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 1,
+    "key": 11,
+    "pressed": true,
+    "label": "Peak",
+    "group": "Channel 2",
+    "press_hex": "90 0b 41",
+    "release_hex": "90 0b 01",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 1,
+    "key": 12,
+    "pressed": true,
+    "label": "Source Toggle",
+    "group": "Channel 2",
+    "press_hex": "90 0c 41",
+    "release_hex": "90 0c 01",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 1,
+    "key": 13,
+    "pressed": true,
+    "label": "Roll Off",
+    "group": "Channel 2",
+    "press_hex": "90 0d 41",
+    "release_hex": "90 0d 01",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 2,
+    "key": 0,
+    "pressed": true,
+    "label": "RecArm",
+    "group": "Channel 3",
+    "press_hex": "90 00 42",
+    "release_hex": "90 00 02",
+    "actions": [
+      [
+        "osc",
+        "/strip/recenable",
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 2,
+    "key": 1,
+    "pressed": true,
+    "label": "Pan_Send",
+    "group": "Channel 3",
+    "press_hex": "90 01 42",
+    "release_hex": "90 01 02",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          3,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 2,
+    "key": 2,
+    "pressed": true,
+    "label": "EQ",
+    "group": "Channel 3",
+    "press_hex": "90 02 42",
+    "release_hex": "90 02 02",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          3,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 2,
+    "key": 3,
+    "pressed": true,
+    "label": "Dynamics",
+    "group": "Channel 3",
+    "press_hex": "90 03 42",
+    "release_hex": "90 03 02",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          3,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 2,
+    "key": 4,
+    "pressed": true,
+    "label": "pre_post_assign_mute",
+    "group": "Channel 3",
+    "press_hex": "90 04 42",
+    "release_hex": "90 04 02",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 2,
+    "key": 5,
+    "pressed": true,
+    "label": "reaautomode",
+    "group": "Channel 3",
+    "press_hex": "90 05 42",
+    "release_hex": "90 05 02",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/automation",
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 2,
+    "key": 6,
+    "pressed": true,
+    "label": "ChannelSelect",
+    "group": "Channel 3",
+    "press_hex": "90 06 42",
+    "release_hex": "90 06 02",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 2,
+    "key": 7,
+    "pressed": true,
+    "label": "Solo",
+    "group": "Channel 3",
+    "press_hex": "90 07 42",
+    "release_hex": "90 07 02",
+    "actions": [
+      [
+        "osc",
+        "/strip/solo",
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 2,
+    "key": 8,
+    "pressed": true,
+    "label": "Mute",
+    "group": "Channel 3",
+    "press_hex": "90 08 42",
+    "release_hex": "90 08 02",
+    "actions": [
+      [
+        "osc",
+        "/strip/mute",
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 2,
+    "key": 9,
+    "pressed": true,
+    "label": "Touch",
+    "group": "Channel 3",
+    "press_hex": "90 09 42",
+    "release_hex": "90 09 02",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/touch",
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 2,
+    "key": 10,
+    "pressed": true,
+    "label": "Inserts",
+    "group": "Channel 3",
+    "press_hex": "90 0a 42",
+    "release_hex": "90 0a 02",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          3,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 2,
+    "key": 11,
+    "pressed": true,
+    "label": "Peak",
+    "group": "Channel 3",
+    "press_hex": "90 0b 42",
+    "release_hex": "90 0b 02",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 2,
+    "key": 12,
+    "pressed": true,
+    "label": "Source Toggle",
+    "group": "Channel 3",
+    "press_hex": "90 0c 42",
+    "release_hex": "90 0c 02",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 2,
+    "key": 13,
+    "pressed": true,
+    "label": "Roll Off",
+    "group": "Channel 3",
+    "press_hex": "90 0d 42",
+    "release_hex": "90 0d 02",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 3,
+    "key": 0,
+    "pressed": true,
+    "label": "RecArm",
+    "group": "Channel 4",
+    "press_hex": "90 00 43",
+    "release_hex": "90 00 03",
+    "actions": [
+      [
+        "osc",
+        "/strip/recenable",
+        [
+          4,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 3,
+    "key": 1,
+    "pressed": true,
+    "label": "Pan_Send",
+    "group": "Channel 4",
+    "press_hex": "90 01 43",
+    "release_hex": "90 01 03",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          4,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 3,
+    "key": 2,
+    "pressed": true,
+    "label": "EQ",
+    "group": "Channel 4",
+    "press_hex": "90 02 43",
+    "release_hex": "90 02 03",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          4,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 3,
+    "key": 3,
+    "pressed": true,
+    "label": "Dynamics",
+    "group": "Channel 4",
+    "press_hex": "90 03 43",
+    "release_hex": "90 03 03",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          4,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 3,
+    "key": 4,
+    "pressed": true,
+    "label": "pre_post_assign_mute",
+    "group": "Channel 4",
+    "press_hex": "90 04 43",
+    "release_hex": "90 04 03",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 3,
+    "key": 5,
+    "pressed": true,
+    "label": "reaautomode",
+    "group": "Channel 4",
+    "press_hex": "90 05 43",
+    "release_hex": "90 05 03",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/automation",
+        [
+          4,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 3,
+    "key": 6,
+    "pressed": true,
+    "label": "ChannelSelect",
+    "group": "Channel 4",
+    "press_hex": "90 06 43",
+    "release_hex": "90 06 03",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          4,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 3,
+    "key": 7,
+    "pressed": true,
+    "label": "Solo",
+    "group": "Channel 4",
+    "press_hex": "90 07 43",
+    "release_hex": "90 07 03",
+    "actions": [
+      [
+        "osc",
+        "/strip/solo",
+        [
+          4,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 3,
+    "key": 8,
+    "pressed": true,
+    "label": "Mute",
+    "group": "Channel 4",
+    "press_hex": "90 08 43",
+    "release_hex": "90 08 03",
+    "actions": [
+      [
+        "osc",
+        "/strip/mute",
+        [
+          4,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 3,
+    "key": 9,
+    "pressed": true,
+    "label": "Touch",
+    "group": "Channel 4",
+    "press_hex": "90 09 43",
+    "release_hex": "90 09 03",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/touch",
+        [
+          4,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 3,
+    "key": 10,
+    "pressed": true,
+    "label": "Inserts",
+    "group": "Channel 4",
+    "press_hex": "90 0a 43",
+    "release_hex": "90 0a 03",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          4,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 3,
+    "key": 11,
+    "pressed": true,
+    "label": "Peak",
+    "group": "Channel 4",
+    "press_hex": "90 0b 43",
+    "release_hex": "90 0b 03",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 3,
+    "key": 12,
+    "pressed": true,
+    "label": "Source Toggle",
+    "group": "Channel 4",
+    "press_hex": "90 0c 43",
+    "release_hex": "90 0c 03",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 3,
+    "key": 13,
+    "pressed": true,
+    "label": "Roll Off",
+    "group": "Channel 4",
+    "press_hex": "90 0d 43",
+    "release_hex": "90 0d 03",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 4,
+    "key": 0,
+    "pressed": true,
+    "label": "RecArm",
+    "group": "Channel 5",
+    "press_hex": "90 00 44",
+    "release_hex": "90 00 04",
+    "actions": [
+      [
+        "osc",
+        "/strip/recenable",
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 4,
+    "key": 1,
+    "pressed": true,
+    "label": "Pan_Send",
+    "group": "Channel 5",
+    "press_hex": "90 01 44",
+    "release_hex": "90 01 04",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          5,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 4,
+    "key": 2,
+    "pressed": true,
+    "label": "EQ",
+    "group": "Channel 5",
+    "press_hex": "90 02 44",
+    "release_hex": "90 02 04",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          5,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 4,
+    "key": 3,
+    "pressed": true,
+    "label": "Dynamics",
+    "group": "Channel 5",
+    "press_hex": "90 03 44",
+    "release_hex": "90 03 04",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          5,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 4,
+    "key": 4,
+    "pressed": true,
+    "label": "pre_post_assign_mute",
+    "group": "Channel 5",
+    "press_hex": "90 04 44",
+    "release_hex": "90 04 04",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 4,
+    "key": 5,
+    "pressed": true,
+    "label": "reaautomode",
+    "group": "Channel 5",
+    "press_hex": "90 05 44",
+    "release_hex": "90 05 04",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/automation",
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 4,
+    "key": 6,
+    "pressed": true,
+    "label": "ChannelSelect",
+    "group": "Channel 5",
+    "press_hex": "90 06 44",
+    "release_hex": "90 06 04",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 4,
+    "key": 7,
+    "pressed": true,
+    "label": "Solo",
+    "group": "Channel 5",
+    "press_hex": "90 07 44",
+    "release_hex": "90 07 04",
+    "actions": [
+      [
+        "osc",
+        "/strip/solo",
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 4,
+    "key": 8,
+    "pressed": true,
+    "label": "Mute",
+    "group": "Channel 5",
+    "press_hex": "90 08 44",
+    "release_hex": "90 08 04",
+    "actions": [
+      [
+        "osc",
+        "/strip/mute",
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 4,
+    "key": 9,
+    "pressed": true,
+    "label": "Touch",
+    "group": "Channel 5",
+    "press_hex": "90 09 44",
+    "release_hex": "90 09 04",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/touch",
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 4,
+    "key": 10,
+    "pressed": true,
+    "label": "Inserts",
+    "group": "Channel 5",
+    "press_hex": "90 0a 44",
+    "release_hex": "90 0a 04",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          5,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 4,
+    "key": 11,
+    "pressed": true,
+    "label": "Peak",
+    "group": "Channel 5",
+    "press_hex": "90 0b 44",
+    "release_hex": "90 0b 04",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 4,
+    "key": 12,
+    "pressed": true,
+    "label": "Source Toggle",
+    "group": "Channel 5",
+    "press_hex": "90 0c 44",
+    "release_hex": "90 0c 04",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 4,
+    "key": 13,
+    "pressed": true,
+    "label": "Roll Off",
+    "group": "Channel 5",
+    "press_hex": "90 0d 44",
+    "release_hex": "90 0d 04",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 5,
+    "key": 0,
+    "pressed": true,
+    "label": "RecArm",
+    "group": "Channel 6",
+    "press_hex": "90 00 45",
+    "release_hex": "90 00 05",
+    "actions": [
+      [
+        "osc",
+        "/strip/recenable",
+        [
+          6,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 5,
+    "key": 1,
+    "pressed": true,
+    "label": "Pan_Send",
+    "group": "Channel 6",
+    "press_hex": "90 01 45",
+    "release_hex": "90 01 05",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          6,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 5,
+    "key": 2,
+    "pressed": true,
+    "label": "EQ",
+    "group": "Channel 6",
+    "press_hex": "90 02 45",
+    "release_hex": "90 02 05",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          6,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 5,
+    "key": 3,
+    "pressed": true,
+    "label": "Dynamics",
+    "group": "Channel 6",
+    "press_hex": "90 03 45",
+    "release_hex": "90 03 05",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          6,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 5,
+    "key": 4,
+    "pressed": true,
+    "label": "pre_post_assign_mute",
+    "group": "Channel 6",
+    "press_hex": "90 04 45",
+    "release_hex": "90 04 05",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 5,
+    "key": 5,
+    "pressed": true,
+    "label": "reaautomode",
+    "group": "Channel 6",
+    "press_hex": "90 05 45",
+    "release_hex": "90 05 05",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/automation",
+        [
+          6,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 5,
+    "key": 6,
+    "pressed": true,
+    "label": "ChannelSelect",
+    "group": "Channel 6",
+    "press_hex": "90 06 45",
+    "release_hex": "90 06 05",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          6,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 5,
+    "key": 7,
+    "pressed": true,
+    "label": "Solo",
+    "group": "Channel 6",
+    "press_hex": "90 07 45",
+    "release_hex": "90 07 05",
+    "actions": [
+      [
+        "osc",
+        "/strip/solo",
+        [
+          6,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 5,
+    "key": 8,
+    "pressed": true,
+    "label": "Mute",
+    "group": "Channel 6",
+    "press_hex": "90 08 45",
+    "release_hex": "90 08 05",
+    "actions": [
+      [
+        "osc",
+        "/strip/mute",
+        [
+          6,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 5,
+    "key": 9,
+    "pressed": true,
+    "label": "Touch",
+    "group": "Channel 6",
+    "press_hex": "90 09 45",
+    "release_hex": "90 09 05",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/touch",
+        [
+          6,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 5,
+    "key": 10,
+    "pressed": true,
+    "label": "Inserts",
+    "group": "Channel 6",
+    "press_hex": "90 0a 45",
+    "release_hex": "90 0a 05",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          6,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 5,
+    "key": 11,
+    "pressed": true,
+    "label": "Peak",
+    "group": "Channel 6",
+    "press_hex": "90 0b 45",
+    "release_hex": "90 0b 05",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 5,
+    "key": 12,
+    "pressed": true,
+    "label": "Source Toggle",
+    "group": "Channel 6",
+    "press_hex": "90 0c 45",
+    "release_hex": "90 0c 05",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 5,
+    "key": 13,
+    "pressed": true,
+    "label": "Roll Off",
+    "group": "Channel 6",
+    "press_hex": "90 0d 45",
+    "release_hex": "90 0d 05",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 6,
+    "key": 0,
+    "pressed": true,
+    "label": "RecArm",
+    "group": "Channel 7",
+    "press_hex": "90 00 46",
+    "release_hex": "90 00 06",
+    "actions": [
+      [
+        "osc",
+        "/strip/recenable",
+        [
+          7,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 6,
+    "key": 1,
+    "pressed": true,
+    "label": "Pan_Send",
+    "group": "Channel 7",
+    "press_hex": "90 01 46",
+    "release_hex": "90 01 06",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          7,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 6,
+    "key": 2,
+    "pressed": true,
+    "label": "EQ",
+    "group": "Channel 7",
+    "press_hex": "90 02 46",
+    "release_hex": "90 02 06",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          7,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 6,
+    "key": 3,
+    "pressed": true,
+    "label": "Dynamics",
+    "group": "Channel 7",
+    "press_hex": "90 03 46",
+    "release_hex": "90 03 06",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          7,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 6,
+    "key": 4,
+    "pressed": true,
+    "label": "pre_post_assign_mute",
+    "group": "Channel 7",
+    "press_hex": "90 04 46",
+    "release_hex": "90 04 06",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 6,
+    "key": 5,
+    "pressed": true,
+    "label": "reaautomode",
+    "group": "Channel 7",
+    "press_hex": "90 05 46",
+    "release_hex": "90 05 06",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/automation",
+        [
+          7,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 6,
+    "key": 6,
+    "pressed": true,
+    "label": "ChannelSelect",
+    "group": "Channel 7",
+    "press_hex": "90 06 46",
+    "release_hex": "90 06 06",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          7,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 6,
+    "key": 7,
+    "pressed": true,
+    "label": "Solo",
+    "group": "Channel 7",
+    "press_hex": "90 07 46",
+    "release_hex": "90 07 06",
+    "actions": [
+      [
+        "osc",
+        "/strip/solo",
+        [
+          7,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 6,
+    "key": 8,
+    "pressed": true,
+    "label": "Mute",
+    "group": "Channel 7",
+    "press_hex": "90 08 46",
+    "release_hex": "90 08 06",
+    "actions": [
+      [
+        "osc",
+        "/strip/mute",
+        [
+          7,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 6,
+    "key": 9,
+    "pressed": true,
+    "label": "Touch",
+    "group": "Channel 7",
+    "press_hex": "90 09 46",
+    "release_hex": "90 09 06",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/touch",
+        [
+          7,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 6,
+    "key": 10,
+    "pressed": true,
+    "label": "Inserts",
+    "group": "Channel 7",
+    "press_hex": "90 0a 46",
+    "release_hex": "90 0a 06",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          7,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 6,
+    "key": 11,
+    "pressed": true,
+    "label": "Peak",
+    "group": "Channel 7",
+    "press_hex": "90 0b 46",
+    "release_hex": "90 0b 06",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 6,
+    "key": 12,
+    "pressed": true,
+    "label": "Source Toggle",
+    "group": "Channel 7",
+    "press_hex": "90 0c 46",
+    "release_hex": "90 0c 06",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 6,
+    "key": 13,
+    "pressed": true,
+    "label": "Roll Off",
+    "group": "Channel 7",
+    "press_hex": "90 0d 46",
+    "release_hex": "90 0d 06",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 7,
+    "key": 0,
+    "pressed": true,
+    "label": "RecArm",
+    "group": "Channel 8",
+    "press_hex": "90 00 47",
+    "release_hex": "90 00 07",
+    "actions": [
+      [
+        "osc",
+        "/strip/recenable",
+        [
+          8,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 7,
+    "key": 1,
+    "pressed": true,
+    "label": "Pan_Send",
+    "group": "Channel 8",
+    "press_hex": "90 01 47",
+    "release_hex": "90 01 07",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          8,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 7,
+    "key": 2,
+    "pressed": true,
+    "label": "EQ",
+    "group": "Channel 8",
+    "press_hex": "90 02 47",
+    "release_hex": "90 02 07",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          8,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 7,
+    "key": 3,
+    "pressed": true,
+    "label": "Dynamics",
+    "group": "Channel 8",
+    "press_hex": "90 03 47",
+    "release_hex": "90 03 07",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          8,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 7,
+    "key": 4,
+    "pressed": true,
+    "label": "pre_post_assign_mute",
+    "group": "Channel 8",
+    "press_hex": "90 04 47",
+    "release_hex": "90 04 07",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 7,
+    "key": 5,
+    "pressed": true,
+    "label": "reaautomode",
+    "group": "Channel 8",
+    "press_hex": "90 05 47",
+    "release_hex": "90 05 07",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/automation",
+        [
+          8,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 7,
+    "key": 6,
+    "pressed": true,
+    "label": "ChannelSelect",
+    "group": "Channel 8",
+    "press_hex": "90 06 47",
+    "release_hex": "90 06 07",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          8,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 7,
+    "key": 7,
+    "pressed": true,
+    "label": "Solo",
+    "group": "Channel 8",
+    "press_hex": "90 07 47",
+    "release_hex": "90 07 07",
+    "actions": [
+      [
+        "osc",
+        "/strip/solo",
+        [
+          8,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 7,
+    "key": 8,
+    "pressed": true,
+    "label": "Mute",
+    "group": "Channel 8",
+    "press_hex": "90 08 47",
+    "release_hex": "90 08 07",
+    "actions": [
+      [
+        "osc",
+        "/strip/mute",
+        [
+          8,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 7,
+    "key": 9,
+    "pressed": true,
+    "label": "Touch",
+    "group": "Channel 8",
+    "press_hex": "90 09 47",
+    "release_hex": "90 09 07",
+    "actions": [
+      [
+        "osc",
+        "/strip/gain/touch",
+        [
+          8,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 7,
+    "key": 10,
+    "pressed": true,
+    "label": "Inserts",
+    "group": "Channel 8",
+    "press_hex": "90 0a 47",
+    "release_hex": "90 0a 07",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          8,
+          1
+        ]
+      ],
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 7,
+    "key": 11,
+    "pressed": true,
+    "label": "Peak",
+    "group": "Channel 8",
+    "press_hex": "90 0b 47",
+    "release_hex": "90 0b 07",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 7,
+    "key": 12,
+    "pressed": true,
+    "label": "Source Toggle",
+    "group": "Channel 8",
+    "press_hex": "90 0c 47",
+    "release_hex": "90 0c 07",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 7,
+    "key": 13,
+    "pressed": true,
+    "label": "Roll Off",
+    "group": "Channel 8",
+    "press_hex": "90 0d 47",
+    "release_hex": "90 0d 07",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 0,
+    "pressed": true,
+    "label": "CLR_F1",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 00 48",
+    "release_hex": "90 00 08",
+    "actions": [
+      [
+        "osc",
+        "/refresh",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 1,
+    "pressed": true,
+    "label": "master_rec",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 01 48",
+    "release_hex": "90 01 08",
+    "actions": [
+      [
+        "osc",
+        "/rec_enable_toggle",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 2,
+    "pressed": true,
+    "label": "F2",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 02 48",
+    "release_hex": "90 02 08",
+    "actions": [
+      [
+        "osc",
+        "/add_marker",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 3,
+    "pressed": true,
+    "label": "ins_bypass",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 03 48",
+    "release_hex": "90 03 08",
+    "actions": [
+      [
+        "osc",
+        "/select/plugin/activate",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 4,
+    "pressed": true,
+    "label": "F3",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 04 48",
+    "release_hex": "90 04 08",
+    "actions": [
+      [
+        "osc",
+        "/prev_marker",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 5,
+    "pressed": true,
+    "label": "in_edit",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 05 48",
+    "release_hex": "90 05 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 6,
+    "pressed": true,
+    "label": "F4",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 06 48",
+    "release_hex": "90 06 08",
+    "actions": [
+      [
+        "osc",
+        "/next_marker",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 7,
+    "pressed": true,
+    "label": "default",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 07 48",
+    "release_hex": "90 07 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 8,
+    "pressed": true,
+    "label": "pan",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 08 48",
+    "release_hex": "90 08 08",
+    "actions": [
+      [
+        "mode",
+        "encoders",
+        [
+          "pan",
+          1
+        ]
+      ],
+      [
+        "led",
+        "8:8",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 9,
+    "pressed": true,
+    "label": "mon_phase",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 09 48",
+    "release_hex": "90 09 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 10,
+    "pressed": true,
+    "label": "Input",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 0a 48",
+    "release_hex": "90 0a 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 11,
+    "pressed": true,
+    "label": "Output",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 0b 48",
+    "release_hex": "90 0b 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 12,
+    "pressed": true,
+    "label": "Assign",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 0c 48",
+    "release_hex": "90 0c 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 13,
+    "pressed": true,
+    "label": "SendMute",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 0d 48",
+    "release_hex": "90 0d 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 14,
+    "pressed": true,
+    "label": "send_AF",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 0e 48",
+    "release_hex": "90 0e 08",
+    "actions": [
+      [
+        "mode",
+        "encoders",
+        [
+          "send",
+          1
+        ]
+      ],
+      [
+        "led",
+        "8:14",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 15,
+    "pressed": true,
+    "label": "send_DI",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 0f 48",
+    "release_hex": "90 0f 08",
+    "actions": [
+      [
+        "mode",
+        "encoders",
+        [
+          "send",
+          4
+        ]
+      ],
+      [
+        "led",
+        "8:15",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 16,
+    "pressed": true,
+    "label": "send_BG",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 10 48",
+    "release_hex": "90 10 08",
+    "actions": [
+      [
+        "mode",
+        "encoders",
+        [
+          "send",
+          2
+        ]
+      ],
+      [
+        "led",
+        "8:16",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 17,
+    "pressed": true,
+    "label": "send_EJ",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 11 48",
+    "release_hex": "90 11 08",
+    "actions": [
+      [
+        "mode",
+        "encoders",
+        [
+          "send",
+          5
+        ]
+      ],
+      [
+        "led",
+        "8:17",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 18,
+    "pressed": true,
+    "label": "send_CH",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 12 48",
+    "release_hex": "90 12 08",
+    "actions": [
+      [
+        "mode",
+        "encoders",
+        [
+          "send",
+          3
+        ]
+      ],
+      [
+        "led",
+        "8:18",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 19,
+    "pressed": true,
+    "label": "Flip",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 13 48",
+    "release_hex": "90 13 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 20,
+    "pressed": true,
+    "label": "SoloClear",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 14 48",
+    "release_hex": "90 14 08",
+    "actions": [
+      [
+        "osc",
+        "/cancel_all_solos",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 21,
+    "pressed": true,
+    "label": "auto_suspend",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 15 48",
+    "release_hex": "90 15 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 22,
+    "pressed": true,
+    "label": "display_mode",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 16 48",
+    "release_hex": "90 16 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 23,
+    "pressed": true,
+    "label": "Write",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 17 48",
+    "release_hex": "90 17 08",
+    "actions": [
+      [
+        "osc",
+        "/select/gain/automation",
+        [
+          2
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 24,
+    "pressed": true,
+    "label": "Vol",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 18 48",
+    "release_hex": "90 18 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 25,
+    "pressed": true,
+    "label": "Touch",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 19 48",
+    "release_hex": "90 19 08",
+    "actions": [
+      [
+        "osc",
+        "/select/gain/automation",
+        [
+          3
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 26,
+    "pressed": true,
+    "label": "Pan",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 1a 48",
+    "release_hex": "90 1a 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 27,
+    "pressed": true,
+    "label": "Latch",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 1b 48",
+    "release_hex": "90 1b 08",
+    "actions": [
+      [
+        "osc",
+        "/select/gain/automation",
+        [
+          4
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 28,
+    "pressed": true,
+    "label": "Mute",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 1c 48",
+    "release_hex": "90 1c 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 29,
+    "pressed": true,
+    "label": "Trim",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 1d 48",
+    "release_hex": "90 1d 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 30,
+    "pressed": true,
+    "label": "send_lvl",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 1e 48",
+    "release_hex": "90 1e 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 31,
+    "pressed": true,
+    "label": "Read",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 1f 48",
+    "release_hex": "90 1f 08",
+    "actions": [
+      [
+        "osc",
+        "/select/gain/automation",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 32,
+    "pressed": true,
+    "label": "send_mute",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 20 48",
+    "release_hex": "90 20 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 33,
+    "pressed": true,
+    "label": "Off",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 21 48",
+    "release_hex": "90 21 08",
+    "actions": [
+      [
+        "osc",
+        "/select/gain/automation",
+        [
+          0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 34,
+    "pressed": true,
+    "label": "Plugin",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 22 48",
+    "release_hex": "90 22 08",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 8,
+    "key": 35,
+    "pressed": true,
+    "label": "ShiftAdd",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 23 48",
+    "release_hex": "90 23 08",
+    "actions": [
+      [
+        "key",
+        "Shift_L",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 36,
+    "pressed": true,
+    "label": "OptionAltAll",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 24 48",
+    "release_hex": "90 24 08",
+    "actions": [
+      [
+        "key",
+        "Alt_L",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 37,
+    "pressed": true,
+    "label": "ControlClutch",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 25 48",
+    "release_hex": "90 25 08",
+    "actions": [
+      [
+        "key",
+        "Control_L",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 8,
+    "key": 38,
+    "pressed": true,
+    "label": "CommandCtl",
+    "group": "utility_misc_meterselect_automationenable",
+    "press_hex": "90 26 48",
+    "release_hex": "90 26 08",
+    "actions": [
+      [
+        "key",
+        "Control_R",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 13,
+    "key": 0,
+    "pressed": true,
+    "label": "select_auto",
+    "group": "DSPEdit1",
+    "press_hex": "90 00 4d",
+    "release_hex": "90 00 0d",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 13,
+    "key": 1,
+    "pressed": true,
+    "label": "assign_enable",
+    "group": "DSPEdit1",
+    "press_hex": "90 01 4d",
+    "release_hex": "90 01 0d",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 13,
+    "key": 2,
+    "pressed": true,
+    "label": "bypass_in_out",
+    "group": "DSPEdit1",
+    "press_hex": "90 02 4d",
+    "release_hex": "90 02 0d",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 21,
+    "key": 0,
+    "pressed": true,
+    "label": "CounterMode",
+    "group": "DSPEdit+Groups",
+    "press_hex": "90 00 55",
+    "release_hex": "90 00 15",
+    "actions": [
+      [
+        "mode",
+        "clock",
+        [
+          "bbt"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 21,
+    "key": 1,
+    "pressed": true,
+    "label": "Info",
+    "group": "DSPEdit+Groups",
+    "press_hex": "90 01 55",
+    "release_hex": "90 01 15",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 21,
+    "key": 2,
+    "pressed": true,
+    "label": "Inserts_Param",
+    "group": "DSPEdit+Groups",
+    "press_hex": "90 02 55",
+    "release_hex": "90 02 15",
+    "actions": [
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ],
+      [
+        "mode",
+        "encoders",
+        [
+          "plugin"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 21,
+    "key": 3,
+    "pressed": true,
+    "label": "Sends",
+    "group": "DSPEdit+Groups",
+    "press_hex": "90 03 55",
+    "release_hex": "90 03 15",
+    "actions": [
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ],
+      [
+        "mode",
+        "encoders",
+        [
+          "send"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 21,
+    "key": 4,
+    "pressed": true,
+    "label": "Create",
+    "group": "DSPEdit+Groups",
+    "press_hex": "90 04 55",
+    "release_hex": "90 04 15",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 21,
+    "key": 5,
+    "pressed": true,
+    "label": "Enable",
+    "group": "DSPEdit+Groups",
+    "press_hex": "90 05 55",
+    "release_hex": "90 05 15",
+    "actions": [
+      [
+        "osc",
+        "/use_group",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 21,
+    "key": 6,
+    "pressed": true,
+    "label": "Edit/Bypass",
+    "group": "DSPEdit+Groups",
+    "press_hex": "90 06 55",
+    "release_hex": "90 06 15",
+    "actions": [
+      [
+        "osc",
+        "/select/plugin/activate",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 21,
+    "key": 7,
+    "pressed": true,
+    "label": "Select",
+    "group": "DSPEdit+Groups",
+    "press_hex": "90 07 55",
+    "release_hex": "90 07 15",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 21,
+    "key": 8,
+    "pressed": true,
+    "label": "Suspend",
+    "group": "DSPEdit+Groups",
+    "press_hex": "90 08 55",
+    "release_hex": "90 08 15",
+    "actions": [
+      [
+        "osc",
+        "/use_group",
+        [
+          0.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 21,
+    "key": 9,
+    "pressed": true,
+    "label": "Compare",
+    "group": "DSPEdit+Groups",
+    "press_hex": "90 09 55",
+    "release_hex": "90 09 15",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 21,
+    "key": 10,
+    "pressed": true,
+    "label": "MasterBypass",
+    "group": "DSPEdit+Groups",
+    "press_hex": "90 0a 55",
+    "release_hex": "90 0a 15",
+    "actions": [
+      [
+        "osc",
+        "/select/plugin/activate",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 22,
+    "key": 0,
+    "pressed": true,
+    "label": "MixToAux",
+    "group": "ControlRoom",
+    "press_hex": "90 00 56",
+    "release_hex": "90 00 16",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 22,
+    "key": 1,
+    "pressed": true,
+    "label": "StereoMix",
+    "group": "ControlRoom",
+    "press_hex": "90 01 56",
+    "release_hex": "90 01 16",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 22,
+    "key": 2,
+    "pressed": true,
+    "label": "SRC1_3-4",
+    "group": "ControlRoom",
+    "press_hex": "90 02 56",
+    "release_hex": "90 02 16",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 22,
+    "key": 3,
+    "pressed": true,
+    "label": "SRC2_5-6",
+    "group": "ControlRoom",
+    "press_hex": "90 03 56",
+    "release_hex": "90 03 16",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 22,
+    "key": 4,
+    "pressed": true,
+    "label": "SRC3",
+    "group": "ControlRoom",
+    "press_hex": "90 04 56",
+    "release_hex": "90 04 16",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 22,
+    "key": 5,
+    "pressed": true,
+    "label": "Mono",
+    "group": "ControlRoom",
+    "press_hex": "90 05 56",
+    "release_hex": "90 05 16",
+    "actions": [
+      [
+        "osc",
+        "/toggle_monitor_mono",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 22,
+    "key": 6,
+    "pressed": true,
+    "label": "Dim",
+    "group": "ControlRoom",
+    "press_hex": "90 06 56",
+    "release_hex": "90 06 16",
+    "actions": [
+      [
+        "osc",
+        "/toggle_monitor_dim",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 22,
+    "key": 7,
+    "pressed": true,
+    "label": "Mute",
+    "group": "ControlRoom",
+    "press_hex": "90 07 56",
+    "release_hex": "90 07 16",
+    "actions": [
+      [
+        "osc",
+        "/toggle_monitor_mute",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 0,
+    "pressed": true,
+    "label": "GoTo",
+    "group": "CannelMatrix",
+    "press_hex": "90 00 57",
+    "release_hex": "90 00 17",
+    "actions": [
+      [
+        "osc",
+        "/select/expand",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 1,
+    "pressed": true,
+    "label": "1_A",
+    "group": "CannelMatrix",
+    "press_hex": "90 01 57",
+    "release_hex": "90 01 17",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 2,
+    "pressed": true,
+    "label": "2_B",
+    "group": "CannelMatrix",
+    "press_hex": "90 02 57",
+    "release_hex": "90 02 17",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 3,
+    "pressed": true,
+    "label": "3_C",
+    "group": "CannelMatrix",
+    "press_hex": "90 03 57",
+    "release_hex": "90 03 17",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 4,
+    "pressed": true,
+    "label": "4_D",
+    "group": "CannelMatrix",
+    "press_hex": "90 04 57",
+    "release_hex": "90 04 17",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          4,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 5,
+    "pressed": true,
+    "label": "5_E",
+    "group": "CannelMatrix",
+    "press_hex": "90 05 57",
+    "release_hex": "90 05 17",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 6,
+    "pressed": true,
+    "label": "6_F",
+    "group": "CannelMatrix",
+    "press_hex": "90 06 57",
+    "release_hex": "90 06 17",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          6,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 7,
+    "pressed": true,
+    "label": "7_G",
+    "group": "CannelMatrix",
+    "press_hex": "90 07 57",
+    "release_hex": "90 07 17",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          7,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 8,
+    "pressed": true,
+    "label": "8_H",
+    "group": "CannelMatrix",
+    "press_hex": "90 08 57",
+    "release_hex": "90 08 17",
+    "actions": [
+      [
+        "osc",
+        "/strip/select",
+        [
+          8,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 9,
+    "pressed": true,
+    "label": "9_I",
+    "group": "CannelMatrix",
+    "press_hex": "90 09 57",
+    "release_hex": "90 09 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 10,
+    "pressed": true,
+    "label": "10_J",
+    "group": "CannelMatrix",
+    "press_hex": "90 0a 57",
+    "release_hex": "90 0a 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 11,
+    "pressed": true,
+    "label": "11_K",
+    "group": "CannelMatrix",
+    "press_hex": "90 0b 57",
+    "release_hex": "90 0b 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 12,
+    "pressed": true,
+    "label": "12_L",
+    "group": "CannelMatrix",
+    "press_hex": "90 0c 57",
+    "release_hex": "90 0c 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          4,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 13,
+    "pressed": true,
+    "label": "13_M",
+    "group": "CannelMatrix",
+    "press_hex": "90 0d 57",
+    "release_hex": "90 0d 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 14,
+    "pressed": true,
+    "label": "14_N",
+    "group": "CannelMatrix",
+    "press_hex": "90 0e 57",
+    "release_hex": "90 0e 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          6,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 15,
+    "pressed": true,
+    "label": "15_O",
+    "group": "CannelMatrix",
+    "press_hex": "90 0f 57",
+    "release_hex": "90 0f 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          7,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 16,
+    "pressed": true,
+    "label": "16_P",
+    "group": "CannelMatrix",
+    "press_hex": "90 10 57",
+    "release_hex": "90 10 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          8,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 17,
+    "pressed": true,
+    "label": "17_Q",
+    "group": "CannelMatrix",
+    "press_hex": "90 11 57",
+    "release_hex": "90 11 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 18,
+    "pressed": true,
+    "label": "18_R",
+    "group": "CannelMatrix",
+    "press_hex": "90 12 57",
+    "release_hex": "90 12 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 19,
+    "pressed": true,
+    "label": "19_S",
+    "group": "CannelMatrix",
+    "press_hex": "90 13 57",
+    "release_hex": "90 13 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 20,
+    "pressed": true,
+    "label": "20_T",
+    "group": "CannelMatrix",
+    "press_hex": "90 14 57",
+    "release_hex": "90 14 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          4,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 21,
+    "pressed": true,
+    "label": "21_U",
+    "group": "CannelMatrix",
+    "press_hex": "90 15 57",
+    "release_hex": "90 15 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 22,
+    "pressed": true,
+    "label": "22_V",
+    "group": "CannelMatrix",
+    "press_hex": "90 16 57",
+    "release_hex": "90 16 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          6,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 23,
+    "pressed": true,
+    "label": "23_W",
+    "group": "CannelMatrix",
+    "press_hex": "90 17 57",
+    "release_hex": "90 17 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          7,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 24,
+    "pressed": true,
+    "label": "24_X",
+    "group": "CannelMatrix",
+    "press_hex": "90 18 57",
+    "release_hex": "90 18 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          8,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 25,
+    "pressed": true,
+    "label": "25_Y",
+    "group": "CannelMatrix",
+    "press_hex": "90 19 57",
+    "release_hex": "90 19 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 26,
+    "pressed": true,
+    "label": "26_Z",
+    "group": "CannelMatrix",
+    "press_hex": "90 1a 57",
+    "release_hex": "90 1a 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 27,
+    "pressed": true,
+    "label": "27_Shift",
+    "group": "CannelMatrix",
+    "press_hex": "90 1b 57",
+    "release_hex": "90 1b 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 28,
+    "pressed": true,
+    "label": "28_CapLock",
+    "group": "CannelMatrix",
+    "press_hex": "90 1c 57",
+    "release_hex": "90 1c 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          4,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 29,
+    "pressed": true,
+    "label": "29_#",
+    "group": "CannelMatrix",
+    "press_hex": "90 1d 57",
+    "release_hex": "90 1d 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 30,
+    "pressed": true,
+    "label": "30_&",
+    "group": "CannelMatrix",
+    "press_hex": "90 1e 57",
+    "release_hex": "90 1e 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          6,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 31,
+    "pressed": true,
+    "label": "31_Delete",
+    "group": "CannelMatrix",
+    "press_hex": "90 1f 57",
+    "release_hex": "90 1f 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          7,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 32,
+    "pressed": true,
+    "label": "32_Space",
+    "group": "CannelMatrix",
+    "press_hex": "90 20 57",
+    "release_hex": "90 20 17",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ],
+      [
+        "osc",
+        "/strip/select",
+        [
+          8,
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 33,
+    "pressed": true,
+    "label": "Alpha",
+    "group": "CannelMatrix",
+    "press_hex": "90 21 57",
+    "release_hex": "90 21 17",
+    "actions": [
+      [
+        "release_all",
+        "",
+        []
+      ],
+      [
+        "led",
+        "23:33",
+        [
+          1
+        ]
+      ],
+      [
+        "mode",
+        "alpha",
+        [
+          true
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 35,
+    "pressed": true,
+    "label": "MasterFaders",
+    "group": "CannelMatrix",
+    "press_hex": "90 23 57",
+    "release_hex": "90 23 17",
+    "actions": [
+      [
+        "osc",
+        "/set_surface/strip_types",
+        [
+          32
+        ]
+      ],
+      [
+        "led",
+        "23:35",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 36,
+    "pressed": true,
+    "label": "Select",
+    "group": "CannelMatrix",
+    "press_hex": "90 24 57",
+    "release_hex": "90 24 17",
+    "actions": [
+      [
+        "led",
+        "23:36",
+        [
+          1
+        ]
+      ],
+      [
+        "led",
+        "23:37",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:38",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:39",
+        [
+          0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 37,
+    "pressed": true,
+    "label": "Mute",
+    "group": "CannelMatrix",
+    "press_hex": "90 25 57",
+    "release_hex": "90 25 17",
+    "actions": [
+      [
+        "led",
+        "23:36",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:37",
+        [
+          1
+        ]
+      ],
+      [
+        "led",
+        "23:38",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:39",
+        [
+          0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 38,
+    "pressed": true,
+    "label": "Solo",
+    "group": "CannelMatrix",
+    "press_hex": "90 26 57",
+    "release_hex": "90 26 17",
+    "actions": [
+      [
+        "led",
+        "23:36",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:37",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:38",
+        [
+          1
+        ]
+      ],
+      [
+        "led",
+        "23:39",
+        [
+          0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 39,
+    "pressed": true,
+    "label": "RecReady",
+    "group": "CannelMatrix",
+    "press_hex": "90 27 57",
+    "release_hex": "90 27 17",
+    "actions": [
+      [
+        "led",
+        "23:36",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:37",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:38",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:39",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 40,
+    "pressed": true,
+    "label": "Snapshot",
+    "group": "CannelMatrix",
+    "press_hex": "90 28 57",
+    "release_hex": "90 28 17",
+    "actions": [
+      [
+        "osc",
+        "/quick_snapshot_stay",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 41,
+    "pressed": true,
+    "label": "ClearAll",
+    "group": "CannelMatrix",
+    "press_hex": "90 29 57",
+    "release_hex": "90 29 17",
+    "actions": [
+      [
+        "osc",
+        "/cancel_all_solos",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 42,
+    "pressed": true,
+    "label": "Parameter_Pages",
+    "group": "CannelMatrix",
+    "press_hex": "90 2a 57",
+    "release_hex": "90 2a 17",
+    "actions": [
+      [
+        "osc",
+        "/select/plug_page",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 43,
+    "pressed": true,
+    "label": "View",
+    "group": "CannelMatrix",
+    "press_hex": "90 2b 57",
+    "release_hex": "90 2b 17",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Common/show-mixer"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 44,
+    "pressed": true,
+    "label": "BankA_1-32",
+    "group": "CannelMatrix",
+    "press_hex": "90 2c 57",
+    "release_hex": "90 2c 17",
+    "actions": [
+      [
+        "led",
+        "23:44",
+        [
+          1
+        ]
+      ],
+      [
+        "led",
+        "23:45",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:46",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:47",
+        [
+          0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 45,
+    "pressed": true,
+    "label": "BankB_32-64",
+    "group": "CannelMatrix",
+    "press_hex": "90 2d 57",
+    "release_hex": "90 2d 17",
+    "actions": [
+      [
+        "led",
+        "23:44",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:45",
+        [
+          1
+        ]
+      ],
+      [
+        "led",
+        "23:46",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:47",
+        [
+          0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 46,
+    "pressed": true,
+    "label": "BankC_65-96",
+    "group": "CannelMatrix",
+    "press_hex": "90 2e 57",
+    "release_hex": "90 2e 17",
+    "actions": [
+      [
+        "led",
+        "23:44",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:45",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:46",
+        [
+          1
+        ]
+      ],
+      [
+        "led",
+        "23:47",
+        [
+          0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 47,
+    "pressed": true,
+    "label": "BankD_97-128",
+    "group": "CannelMatrix",
+    "press_hex": "90 2f 57",
+    "release_hex": "90 2f 17",
+    "actions": [
+      [
+        "led",
+        "23:44",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:45",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:46",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "23:47",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 23,
+    "key": 48,
+    "pressed": true,
+    "label": "Esc/Cancel",
+    "group": "CannelMatrix",
+    "press_hex": "90 30 57",
+    "release_hex": "90 30 17",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Main/Escape"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 25,
+    "key": 0,
+    "pressed": true,
+    "label": "Mix",
+    "group": "Window+ZoomPresets+Navigation",
+    "press_hex": "90 00 59",
+    "release_hex": "90 00 19",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Common/show-mixer"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 25,
+    "key": 1,
+    "pressed": true,
+    "label": "Edit-Bypass",
+    "group": "Window+ZoomPresets+Navigation",
+    "press_hex": "90 01 59",
+    "release_hex": "90 01 19",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Common/show-editor"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 25,
+    "key": 2,
+    "pressed": true,
+    "label": "Status",
+    "group": "Window+ZoomPresets+Navigation",
+    "press_hex": "90 02 59",
+    "release_hex": "90 02 19",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Common/toggle-meterbridge"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 25,
+    "key": 3,
+    "pressed": true,
+    "label": "Trans",
+    "group": "Window+ZoomPresets+Navigation",
+    "press_hex": "90 03 59",
+    "release_hex": "90 03 19",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 25,
+    "key": 4,
+    "pressed": true,
+    "label": "PlugIn",
+    "group": "Window+ZoomPresets+Navigation",
+    "press_hex": "90 04 59",
+    "release_hex": "90 04 19",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 25,
+    "key": 5,
+    "pressed": true,
+    "label": "Mem-Loc",
+    "group": "Window+ZoomPresets+Navigation",
+    "press_hex": "90 05 59",
+    "release_hex": "90 05 19",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Window/toggle-locations"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 25,
+    "key": 6,
+    "pressed": true,
+    "label": "Undo",
+    "group": "Window+ZoomPresets+Navigation",
+    "press_hex": "90 06 59",
+    "release_hex": "90 06 19",
+    "actions": [
+      [
+        "osc",
+        "/undo",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 25,
+    "key": 7,
+    "pressed": true,
+    "label": "Save",
+    "group": "Window+ZoomPresets+Navigation",
+    "press_hex": "90 07 59",
+    "release_hex": "90 07 19",
+    "actions": [
+      [
+        "osc",
+        "/save_state",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 0,
+    "pressed": true,
+    "label": "0",
+    "group": "Numeric keypad",
+    "press_hex": "90 00 5a",
+    "release_hex": "90 00 1a",
+    "actions": [
+      [
+        "key",
+        "0",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 1,
+    "pressed": true,
+    "label": "1",
+    "group": "Numeric keypad",
+    "press_hex": "90 01 5a",
+    "release_hex": "90 01 1a",
+    "actions": [
+      [
+        "key",
+        "1",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 2,
+    "pressed": true,
+    "label": "2",
+    "group": "Numeric keypad",
+    "press_hex": "90 02 5a",
+    "release_hex": "90 02 1a",
+    "actions": [
+      [
+        "key",
+        "2",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 3,
+    "pressed": true,
+    "label": "3",
+    "group": "Numeric keypad",
+    "press_hex": "90 03 5a",
+    "release_hex": "90 03 1a",
+    "actions": [
+      [
+        "key",
+        "3",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 4,
+    "pressed": true,
+    "label": "4",
+    "group": "Numeric keypad",
+    "press_hex": "90 04 5a",
+    "release_hex": "90 04 1a",
+    "actions": [
+      [
+        "key",
+        "4",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 5,
+    "pressed": true,
+    "label": "5",
+    "group": "Numeric keypad",
+    "press_hex": "90 05 5a",
+    "release_hex": "90 05 1a",
+    "actions": [
+      [
+        "key",
+        "5",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 6,
+    "pressed": true,
+    "label": "6",
+    "group": "Numeric keypad",
+    "press_hex": "90 06 5a",
+    "release_hex": "90 06 1a",
+    "actions": [
+      [
+        "key",
+        "6",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 7,
+    "pressed": true,
+    "label": "7",
+    "group": "Numeric keypad",
+    "press_hex": "90 07 5a",
+    "release_hex": "90 07 1a",
+    "actions": [
+      [
+        "key",
+        "7",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 8,
+    "pressed": true,
+    "label": "8",
+    "group": "Numeric keypad",
+    "press_hex": "90 08 5a",
+    "release_hex": "90 08 1a",
+    "actions": [
+      [
+        "key",
+        "8",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 9,
+    "pressed": true,
+    "label": "9",
+    "group": "Numeric keypad",
+    "press_hex": "90 09 5a",
+    "release_hex": "90 09 1a",
+    "actions": [
+      [
+        "key",
+        "9",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 10,
+    "pressed": true,
+    "label": "Clear",
+    "group": "Numeric keypad",
+    "press_hex": "90 0a 5a",
+    "release_hex": "90 0a 1a",
+    "actions": [
+      [
+        "key",
+        "BackSpace",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 11,
+    "pressed": true,
+    "label": "=",
+    "group": "Numeric keypad",
+    "press_hex": "90 0b 5a",
+    "release_hex": "90 0b 1a",
+    "actions": [
+      [
+        "key",
+        "equal",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 12,
+    "pressed": true,
+    "label": "/",
+    "group": "Numeric keypad",
+    "press_hex": "90 0c 5a",
+    "release_hex": "90 0c 1a",
+    "actions": [
+      [
+        "key",
+        "slash",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 13,
+    "pressed": true,
+    "label": "*",
+    "group": "Numeric keypad",
+    "press_hex": "90 0d 5a",
+    "release_hex": "90 0d 1a",
+    "actions": [
+      [
+        "key",
+        "asterisk",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 14,
+    "pressed": true,
+    "label": "-",
+    "group": "Numeric keypad",
+    "press_hex": "90 0e 5a",
+    "release_hex": "90 0e 1a",
+    "actions": [
+      [
+        "key",
+        "minus",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 15,
+    "pressed": true,
+    "label": "+",
+    "group": "Numeric keypad",
+    "press_hex": "90 0f 5a",
+    "release_hex": "90 0f 1a",
+    "actions": [
+      [
+        "key",
+        "plus",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 16,
+    "pressed": true,
+    "label": ".",
+    "group": "Numeric keypad",
+    "press_hex": "90 10 5a",
+    "release_hex": "90 10 1a",
+    "actions": [
+      [
+        "key",
+        "period",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 26,
+    "key": 17,
+    "pressed": true,
+    "label": "Enter",
+    "group": "Numeric keypad",
+    "press_hex": "90 11 5a",
+    "release_hex": "90 11 1a",
+    "actions": [
+      [
+        "key",
+        "Return",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 0,
+    "pressed": true,
+    "label": "Shuffle",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 00 5b",
+    "release_hex": "90 00 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Editor/set-edit-ripple"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 1,
+    "pressed": true,
+    "label": "Slip",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 01 5b",
+    "release_hex": "90 01 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Editor/set-edit-slide"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 2,
+    "pressed": true,
+    "label": "Spot",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 02 5b",
+    "release_hex": "90 02 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Editor/set-edit-lock"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 3,
+    "pressed": true,
+    "label": "Grid",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 03 5b",
+    "release_hex": "90 03 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Editor/cycle-snap-mode"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 4,
+    "pressed": true,
+    "label": "Cut",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 04 5b",
+    "release_hex": "90 04 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Editor/editor-cut"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 5,
+    "pressed": true,
+    "label": "Copy",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 05 5b",
+    "release_hex": "90 05 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Editor/editor-copy"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 6,
+    "pressed": true,
+    "label": "Paste",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 06 5b",
+    "release_hex": "90 06 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Editor/editor-paste"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 7,
+    "pressed": true,
+    "label": "Delete",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 07 5b",
+    "release_hex": "90 07 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Editor/editor-delete"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 8,
+    "pressed": true,
+    "label": "Separate",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 08 5b",
+    "release_hex": "90 08 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "Editor/split-region"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 9,
+    "pressed": true,
+    "label": "Capture",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 09 5b",
+    "release_hex": "90 09 1b",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 27,
+    "key": 10,
+    "pressed": true,
+    "label": "Left",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 0a 5b",
+    "release_hex": "90 0a 1b",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          -1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 11,
+    "pressed": true,
+    "label": "Nudge",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 0b 5b",
+    "release_hex": "90 0b 1b",
+    "actions": [
+      [
+        "led",
+        "27:11",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 12,
+    "pressed": true,
+    "label": "Right",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 0c 5b",
+    "release_hex": "90 0c 1b",
+    "actions": [
+      [
+        "osc",
+        "/bank_up",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 13,
+    "pressed": true,
+    "label": "Trim",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 0d 5b",
+    "release_hex": "90 0d 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "MouseMode/set-mouse-mode-timefx"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 14,
+    "pressed": true,
+    "label": "Select",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 0e 5b",
+    "release_hex": "90 0e 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "MouseMode/set-mouse-mode-range"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 15,
+    "pressed": true,
+    "label": "Grab",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 0f 5b",
+    "release_hex": "90 0f 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "MouseMode/set-mouse-mode-object"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 27,
+    "key": 16,
+    "pressed": true,
+    "label": "Pencil",
+    "group": "EditMode+Function+Banks",
+    "press_hex": "90 10 5b",
+    "release_hex": "90 10 1b",
+    "actions": [
+      [
+        "osc",
+        "/access_action",
+        [
+          "MouseMode/set-mouse-mode-draw"
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 0,
+    "pressed": true,
+    "label": "Audition",
+    "group": "Transport",
+    "press_hex": "90 00 5c",
+    "release_hex": "90 00 1c",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 28,
+    "key": 1,
+    "pressed": true,
+    "label": "Pre Roll",
+    "group": "Transport",
+    "press_hex": "90 01 5c",
+    "release_hex": "90 01 1c",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 28,
+    "key": 2,
+    "pressed": true,
+    "label": "In",
+    "group": "Transport",
+    "press_hex": "90 02 5c",
+    "release_hex": "90 02 1c",
+    "actions": [
+      [
+        "osc",
+        "/toggle_punch_in",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 3,
+    "pressed": true,
+    "label": "Out",
+    "group": "Transport",
+    "press_hex": "90 03 5c",
+    "release_hex": "90 03 1c",
+    "actions": [
+      [
+        "osc",
+        "/toggle_punch_out",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 4,
+    "pressed": true,
+    "label": "Post Roll",
+    "group": "Transport",
+    "press_hex": "90 04 5c",
+    "release_hex": "90 04 1c",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 28,
+    "key": 5,
+    "pressed": true,
+    "label": "Online",
+    "group": "Transport",
+    "press_hex": "90 05 5c",
+    "release_hex": "90 05 1c",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 28,
+    "key": 6,
+    "pressed": true,
+    "label": "Go To Start",
+    "group": "Transport",
+    "press_hex": "90 06 5c",
+    "release_hex": "90 06 1c",
+    "actions": [
+      [
+        "osc",
+        "/goto_start",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 7,
+    "pressed": true,
+    "label": "Go To End",
+    "group": "Transport",
+    "press_hex": "90 07 5c",
+    "release_hex": "90 07 1c",
+    "actions": [
+      [
+        "osc",
+        "/goto_end",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 8,
+    "pressed": true,
+    "label": "Ext Trans",
+    "group": "Transport",
+    "press_hex": "90 08 5c",
+    "release_hex": "90 08 1c",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 28,
+    "key": 9,
+    "pressed": true,
+    "label": "LoopPlay",
+    "group": "Transport",
+    "press_hex": "90 09 5c",
+    "release_hex": "90 09 1c",
+    "actions": [
+      [
+        "osc",
+        "/loop_toggle",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 10,
+    "pressed": true,
+    "label": "Loop Record",
+    "group": "Transport",
+    "press_hex": "90 0a 5c",
+    "release_hex": "90 0a 1c",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 28,
+    "key": 11,
+    "pressed": true,
+    "label": "Quick Punch",
+    "group": "Transport",
+    "press_hex": "90 0b 5c",
+    "release_hex": "90 0b 1c",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 28,
+    "key": 12,
+    "pressed": true,
+    "label": "Talkback",
+    "group": "Transport",
+    "press_hex": "90 0c 5c",
+    "release_hex": "90 0c 1c",
+    "actions": null,
+    "status": "reference_only"
+  },
+  {
+    "zone": 28,
+    "key": 13,
+    "pressed": true,
+    "label": "Rewind",
+    "group": "Transport",
+    "press_hex": "90 0d 5c",
+    "release_hex": "90 0d 1c",
+    "actions": [
+      [
+        "osc",
+        "/rewind",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 14,
+    "pressed": true,
+    "label": "Forward",
+    "group": "Transport",
+    "press_hex": "90 0e 5c",
+    "release_hex": "90 0e 1c",
+    "actions": [
+      [
+        "osc",
+        "/ffwd",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 15,
+    "pressed": true,
+    "label": "Stop",
+    "group": "Transport",
+    "press_hex": "90 0f 5c",
+    "release_hex": "90 0f 1c",
+    "actions": [
+      [
+        "osc",
+        "/transport_stop",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 16,
+    "pressed": true,
+    "label": "Play",
+    "group": "Transport",
+    "press_hex": "90 10 5c",
+    "release_hex": "90 10 1c",
+    "actions": [
+      [
+        "osc",
+        "/transport_play",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 17,
+    "pressed": true,
+    "label": "Record",
+    "group": "Transport",
+    "press_hex": "90 11 5c",
+    "release_hex": "90 11 1c",
+    "actions": [
+      [
+        "osc",
+        "/rec_enable_toggle",
+        [
+          1.0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 18,
+    "pressed": true,
+    "label": "Scrub",
+    "group": "Transport",
+    "press_hex": "90 12 5c",
+    "release_hex": "90 12 1c",
+    "actions": [
+      [
+        "osc",
+        "/jog/mode",
+        [
+          2.0
+        ]
+      ],
+      [
+        "led",
+        "28:18",
+        [
+          1
+        ]
+      ],
+      [
+        "led",
+        "28:19",
+        [
+          0
+        ]
+      ]
+    ],
+    "status": "mapped"
+  },
+  {
+    "zone": 28,
+    "key": 19,
+    "pressed": true,
+    "label": "Shuttle",
+    "group": "Transport",
+    "press_hex": "90 13 5c",
+    "release_hex": "90 13 1c",
+    "actions": [
+      [
+        "osc",
+        "/jog/mode",
+        [
+          3.0
+        ]
+      ],
+      [
+        "led",
+        "28:18",
+        [
+          0
+        ]
+      ],
+      [
+        "led",
+        "28:19",
+        [
+          1
+        ]
+      ]
+    ],
+    "status": "mapped"
+  }
+]

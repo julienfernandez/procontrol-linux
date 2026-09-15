@@ -1,0 +1,193 @@
+{
+  "pid": 75543,
+  "uid": 1000,
+  "started_utc": "2026-09-13T20:33:55.974673+00:00",
+  "updated_utc": "2026-09-13T20:35:34.587909+00:00",
+  "running": true,
+  "console": "online",
+  "interface": "enp0s25",
+  "host": "3c:97:0e:1b:3a:00",
+  "peer": "00:a0:7e:a0:ad:9c",
+  "connections": 1,
+  "counts": {
+    "rx": 524,
+    "tx": 511,
+    "online_sent": 1,
+    "ack_received": 201,
+    "feedback_sent": 191,
+    "keepalive_sent": 9,
+    "ack_sent": 310,
+    "control_frames": 310
+  },
+  "last_action": null,
+  "surface": {
+    "alpha": false,
+    "encoder_mode": "pan",
+    "jog_mode": 0,
+    "bank_start": 1,
+    "feedback": {
+      "sent": 191,
+      "acked": 191,
+      "timeouts": 0,
+      "recoveries": 0
+    },
+    "output_error": null,
+    "queued_outputs": 0
+  },
+  "settings_revision": 3,
+  "settings": {
+    "version": 1,
+    "revision": 3,
+    "pointer_gain": 0.58,
+    "jog_gain": 4.65,
+    "meter_assignments": [
+      {
+        "source": "master",
+        "channel": 0
+      },
+      {
+        "source": "master",
+        "channel": 1
+      },
+      {
+        "source": "",
+        "channel": 0
+      },
+      {
+        "source": "",
+        "channel": 0
+      },
+      {
+        "source": "",
+        "channel": 0
+      },
+      {
+        "source": "",
+        "channel": 0
+      }
+    ],
+    "meter_addresses": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "routing": {
+    "ready": true,
+    "stereo_routes_ready": true,
+    "bank_start": 1,
+    "master_mode": false,
+    "revision": 1,
+    "error": null,
+    "slots": [
+      {
+        "sid": 1,
+        "kind": "AT",
+        "name": "Audio 1",
+        "channels": 2,
+        "route_id": "174"
+      },
+      {
+        "sid": 2,
+        "kind": "AT",
+        "name": "Neverender",
+        "channels": 2,
+        "route_id": "265"
+      },
+      {
+        "sid": 3,
+        "kind": "AT",
+        "name": "Audio 2",
+        "channels": 2,
+        "route_id": "360"
+      },
+      {
+        "sid": 4,
+        "kind": "AT",
+        "name": "Audio 3",
+        "channels": 2,
+        "route_id": "435"
+      },
+      {
+        "sid": 5,
+        "kind": "AT",
+        "name": "Audio 4",
+        "channels": 2,
+        "route_id": "505"
+      },
+      {
+        "sid": 6,
+        "kind": "AT",
+        "name": "Audio 5",
+        "channels": 2,
+        "route_id": "575"
+      },
+      {
+        "sid": 7,
+        "kind": "AT",
+        "name": "Audio 6",
+        "channels": 2,
+        "route_id": "645"
+      },
+      {
+        "sid": 8,
+        "kind": "AT",
+        "name": "Audio 7",
+        "channels": 2,
+        "route_id": "715"
+      }
+    ]
+  },
+  "stereo": {
+    "active": true,
+    "routes_ready": true,
+    "session": "/home/moi/Musique/tttt",
+    "invalid": 0,
+    "sources": [
+      {
+        "source": "master",
+        "name": "Master",
+        "channels": 2,
+        "kind": "MA"
+      }
+    ],
+    "large": [
+      {
+        "db": -193.0,
+        "available": true,
+        "calibrated": false
+      },
+      {
+        "db": -193.0,
+        "available": true,
+        "calibrated": false
+      },
+      {
+        "db": -193.0,
+        "available": false,
+        "calibrated": false
+      },
+      {
+        "db": -193.0,
+        "available": false,
+        "calibrated": false
+      },
+      {
+        "db": -193.0,
+        "available": false,
+        "calibrated": false
+      },
+      {
+        "db": -193.0,
+        "available": false,
+        "calibrated": false
+      }
+    ]
+  },
+  "ardour": "responding",
+  "osc_target": "127.0.0.1:3819",
+  "error": null
+}
