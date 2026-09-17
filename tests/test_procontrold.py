@@ -11,7 +11,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from procontrold import ConsoleSession, running, spawn_worker, status
 from session_probe import Session
-from ardour_transport import decode
+from ardour_transport import decode, message
 
 HOST = '02:00:00:00:00:01'
 PEER = '00:a0:7e:a0:ad:9c'
@@ -24,6 +24,47 @@ def announcement(peer, command=0xe0):
 
 
 class DaemonTests(unittest.TestCase):
+    def test_silent_daw_times_out_and_reconnects_on_same_port(self):
+        # A bound UDP server can stop replying without ever causing ECONNREFUSED.
+        # Exercise the real worker through that failure, including invalid OSC.
+        with tempfile.TemporaryDirectory(prefix='procontrol-timeout-') as temp:
+            runtime = Path(temp)
+            rx, console_send = socket.socketpair(socket.AF_UNIX, socket.SOCK_DGRAM)
+            tx, console_recv = socket.socketpair(socket.AF_UNIX, socket.SOCK_DGRAM)
+            fake = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            fake.bind(('127.0.0.1', 0)); fake.settimeout(.2)
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as reservation:
+                reservation.bind(('127.0.0.1', 0)); reply_port = reservation.getsockname()[1]
+            lock = (runtime/'daemon.lock').open('a'); fcntl.flock(lock, fcntl.LOCK_EX)
+            args = argparse.Namespace(runtime=temp, interface='test', host=HOST, mac=PEER,
+                                      osc_port=fake.getsockname()[1], osc_reply_port=reply_port)
+            child = spawn_worker(args, rx, tx, lock)
+            rx.close(); tx.close(); lock.close()
+            try:
+                attempts = []; deadline = time.monotonic() + 29
+                while time.monotonic() < deadline and len(attempts) < 2:
+                    self.assertIsNone(child.poll(), (runtime/'launcher.log').read_text())
+                    try: packet, sender = fake.recvfrom(65535)
+                    except socket.timeout: continue
+                    if decode(packet)[0][0] == '/set_surface' and decode(packet)[0][1]:
+                        attempts.append(sender)
+                    fake.sendto(b'malformed', sender)
+                self.assertEqual(attempts, [('127.0.0.1', reply_port)] * 2)
+                fake.sendto(message('/transport_speed', 0.0), attempts[-1])
+                deadline = time.monotonic() + 3
+                while time.monotonic() < deadline:
+                    state = status(runtime)
+                    if state.get('ardour') == 'responding': break
+                    time.sleep(.05)
+                self.assertEqual(state['ardour'], 'responding')
+                self.assertIsNone(state['osc_error'])
+                self.assertGreater(state['counts']['osc_malformed'], 0)
+                self.assertEqual(state['resources']['threads'], 1)
+            finally:
+                if child.poll() is None: child.terminate()
+                child.wait(timeout=3)
+                console_send.close(); console_recv.close(); fake.close()
+
     def test_no_runtime_limit_and_reconnect_on_offline(self):
         flow = ConsoleSession(HOST, PEER); peer = Session(PEER, HOST)
         self.assertEqual(flow.receive(announcement(peer), 100)[0][0][28], 0xe2)

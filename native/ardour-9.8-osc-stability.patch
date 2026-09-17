@@ -1,0 +1,351 @@
+--- a/libs/surfaces/osc/osc.cc
++++ b/libs/surfaces/osc/osc.cc
+@@ -307,6 +307,10 @@
+ int
+ OSC::stop ()
+ {
++	// Join the OSC thread before destroying any state it can still access.
++	// Disconnecting sources alone does not wait for an in-flight callback.
++	BaseUI::quit ();
++
+ 	tear_down_gui ();
+ 
+ 	periodic_connection.disconnect ();
+@@ -317,8 +321,8 @@
+ 
+ 	// clear surfaces
+ 	observer_busy = true;
+-	for (uint32_t it = 0; it < _surface.size (); ++it) {
+-		OSCSurface* sur = &_surface[it];
++	for (auto& surface : _surface) {
++		OSCSurface* sur = &surface;
+ 		surface_destroy (sur);
+ 	}
+ 	_surface.clear();
+@@ -336,8 +340,6 @@
+ 		remote_server = 0;
+ 	}
+ 
+-	BaseUI::quit ();
+-
+ 	if (_osc_server) {
+ 		lo_server_free (_osc_server);
+ 		_osc_server = 0;
+@@ -362,13 +364,13 @@
+ void
+ OSC::surface_destroy (OSCSurface* sur)
+ {
++	sur->select_connection.disconnect ();
++	sur->proc_connection.disconnect ();
+ 	OSCSelectObserver* so;
+ 	if ((so = dynamic_cast<OSCSelectObserver*>(sur->sel_obs)) != 0) {
+ 		so->clear_observer ();
+ 		delete so;
+ 		sur->sel_obs = 0;
+-		PBD::ScopedConnection pc = sur->proc_connection;
+-		pc.disconnect ();
+ 	}
+ 
+ 	OSCCueObserver* co;
+@@ -1162,10 +1164,11 @@
+ 	 */
+ 
+ 	PBD::info << string_compose ("\nList of known Surfaces (%1):\n", _surface.size());
++	uint32_t surface_index = 0;
+ 
+ 	PBD::Mutex::Lock lm (surfaces_lock);
+-	for (uint32_t it = 0; it < _surface.size(); it++) {
+-		OSCSurface* sur = &_surface[it];
++	for (auto& surface : _surface) {
++		OSCSurface* sur = &surface;
+ 		char *chost = lo_url_get_hostname (sur->remote_url.c_str());
+ 		string host = chost;
+ 		free (chost);
+@@ -1175,7 +1178,7 @@
+ 		} else {
+ 			port = "Auto port";
+ 		}
+-		PBD::info << string_compose ("\n  Surface: %1 - URL: %2  %3\n", it, sur->remote_url, port);
++		PBD::info << string_compose ("\n  Surface: %1 - URL: %2  %3\n", surface_index++, sur->remote_url, port);
+ 		PBD::info << string_compose ("	Number of strips: %1   Bank size: %2   Current Bank %3\n", sur->nstrips, sur->bank_size, sur->bank);
+ 		PBD::info << string_compose ("	Use Custom: %1   Custom Strips: %2\n", sur->custom_mode, sur->custom_strips.size ());
+ 		PBD::info << string_compose ("	Temp Mode: %1   Temp Strips: %2\n", sur->temp_mode, sur->temp_strips.size ());
+@@ -1404,8 +1407,8 @@
+ 	observer_busy = true;
+ 	session_connections.drop_connections ();
+ 	// clear out surfaces
+-	for (uint32_t it = 0; it < _surface.size(); ++it) {
+-		OSCSurface* sur = &_surface[it];
++	for (auto& surface : _surface) {
++		OSCSurface* sur = &surface;
+ 		surface_destroy (sur);
+ 	}
+ 	_surface.clear();
+@@ -2018,17 +2021,19 @@
+ 				rurl = lo_address_get_url (new_addr);
+ 				sur->remote_url = rurl;
+ 				free (rurl);
+-				for (uint32_t it = 0; it < _surface.size();) {
+-					if (&_surface[it] == sur) {
+-						it++;
++				for (auto it = _surface.begin (); it != _surface.end ();) {
++					if (&*it == sur) {
++						++it;
+ 						continue;
+ 					}
+-					char *sur_host = lo_url_get_hostname(_surface[it].remote_url.c_str());
+-					if (strstr (sur_host, host.c_str())) {
+-						surface_destroy (&_surface[it]);
+-						_surface.erase (_surface.begin() + it);
++					char* sur_host = lo_url_get_hostname (it->remote_url.c_str ());
++					const bool same_host = sur_host && host == sur_host;
++					free (sur_host);
++					if (same_host) {
++						surface_destroy (&*it);
++						it = _surface.erase (it);
+ 					} else {
+-						it++;
++						++it;
+ 					}
+ 				}
+ 				if (sur->feedback.to_ulong()) {
+@@ -2060,15 +2065,15 @@
+ 	rurl = lo_address_get_url (addr);
+ 	r_url = rurl;
+ 	free (rurl);
+-	for (uint32_t it = 0; it < _surface.size(); ++it) {
+-		//find setup for this surface
+-		if (!_surface[it].remote_url.find(r_url)){
+-			return &_surface[it];
++	for (auto& surface : _surface) {
++		if (surface.remote_url == r_url) {
++			return &surface;
+ 		}
+ 	}
+ 
+ 	// No surface create one with default values
+-	OSCSurface s;
++	_surface.emplace_back ();
++	OSCSurface& s = _surface.back ();
+ 	s.remote_url = r_url;
+ 	s.no_clear = false;
+ 	s.jogmode = 0;
+@@ -2101,17 +2106,15 @@
+ 	s.linkid = 1;
+ 
+ 	s.nstrips = s.strips.size();
+-	{
+-		_surface.push_back (s);
+-	}
+ 
+ 	if (!quiet) {
+-		strip_feedback (&s, true);
+-		global_feedback (&s);
+-	}
+-	_strip_select2 (std::shared_ptr<ARDOUR::Stripable>(), &_surface[_surface.size() - 1], addr);
+-
+-	return &_surface[_surface.size() - 1];
++		// Observers must belong to the stored surface, not its stack copy.
++		strip_feedback (&_surface.back (), true);
++		global_feedback (&_surface.back ());
++	}
++	_strip_select2 (std::shared_ptr<ARDOUR::Stripable>(), &_surface.back (), addr);
++
++	return &_surface.back ();
+ }
+ 
+ // setup global feedback for a surface
+@@ -2243,8 +2246,8 @@
+ 	 */
+ 
+ 	// refresh each surface we know about.
+-	for (uint32_t it = 0; it < _surface.size(); ++it) {
+-		OSCSurface* sur = &_surface[it];
++	for (auto& surface : _surface) {
++		OSCSurface* sur = &surface;
+ 		// find lo_address
+ 		lo_address addr = lo_address_new_from_url (sur->remote_url.c_str());
+ 		if (sur->cue) {
+@@ -2260,6 +2263,7 @@
+ 			strip_feedback (sur, false);
+ 		}
+ 		_strip_select (std::shared_ptr<ARDOUR::Stripable>(), addr);
++		lo_address_free (addr);
+ 	}
+ }
+ 
+@@ -4894,7 +4898,7 @@
+ 	} while (sends);
+ 	sur->nsends = nsends;
+ 
+-	s->DropReferences.connect (*this, MISSING_INVALIDATOR, std::bind (&OSC::recalcbanks, this), this);
++	s->DropReferences.connect (sur->select_connection, MISSING_INVALIDATOR, std::bind (&OSC::recalcbanks, this), this);
+ 
+ 	OSCSelectObserver* so = dynamic_cast<OSCSelectObserver*>(sur->sel_obs);
+ 	if (sur->feedback[13]) {
+@@ -4924,7 +4928,9 @@
+ 		}
+ 	}
+ 	// need to set monitor for processor changed signal (for paging)
+-	string address = lo_address_get_url (addr);
++	char* url = lo_address_get_url (addr);
++	string address = url;
++	free (url);
+ 	std::shared_ptr<Route> r = std::dynamic_pointer_cast<Route>(s);
+ 	if (r) {
+ 		r->processors_changed.connect  (sur->proc_connection, MISSING_INVALIDATOR, std::bind (&OSC::processor_changed, this, address), this);
+@@ -4944,6 +4950,7 @@
+ 		sur->sel_obs->renew_sends ();
+ 		sur->sel_obs->eq_restart (-1);
+ 	}
++	lo_address_free (addr);
+ }
+ 
+ int
+@@ -6169,8 +6176,8 @@
+ 	if (!tick) {
+ 		Glib::usleep(100); // let flurry of signals subside
+ 		if (global_init) {
+-			for (uint32_t it = 0; it < _surface.size(); it++) {
+-				OSCSurface* sur = &_surface[it];
++			for (auto& surface : _surface) {
++				OSCSurface* sur = &surface;
+ 				global_feedback (sur);
+ 			}
+ 			global_init = false;
+@@ -6194,8 +6201,8 @@
+ 			session->request_locate (scrub_place, false, MustStop);
+ 		}
+ 	}
+-	for (uint32_t it = 0; it < _surface.size(); it++) {
+-		OSCSurface* sur = &_surface[it];
++	for (auto& surface : _surface) {
++		OSCSurface* sur = &surface;
+ 		OSCSelectObserver* so;
+ 		if ((so = dynamic_cast<OSCSelectObserver*>(sur->sel_obs)) != 0) {
+ 			so->tick ();
+--- a/libs/surfaces/osc/osc.h
++++ b/libs/surfaces/osc/osc.h
+@@ -27,6 +27,7 @@
+ 
+ #include <bitset>
+ #include <memory>
++#include <list>
+ #include <string>
+ #include <vector>
+ 
+@@ -160,6 +161,7 @@
+ 		int send_page;				// current send page
+ 		uint32_t send_page_size;	// send page size in channels
+ 		uint32_t nsends;			// number of sends select has
++		PBD::ScopedConnection select_connection; // one selected-route lifetime subscription
+ 		PBD::ScopedConnection proc_connection; // for processor signal monitoring
+ 		// cue
+ 		bool cue;					// is this a cue surface
+@@ -206,7 +208,8 @@
+ 
+ // storage for  each surface's settings
+ 	mutable PBD::Mutex surfaces_lock;
+-	typedef std::vector<OSCSurface> Surface;
++	// Stable addresses and connection ownership when clients are added/removed.
++	typedef std::list<OSCSurface> Surface;
+ 	Surface _surface;
+ 
+ // linked surfaces
+--- a/libs/surfaces/osc/osc_select_observer.cc
++++ b/libs/surfaces/osc/osc_select_observer.cc
+@@ -61,12 +61,15 @@
+ OSCSelectObserver::OSCSelectObserver (OSC& o, ARDOUR::Session& s, ArdourSurface::OSC::OSCSurface* su)
+ 	: _osc (o)
+ 	,sur (su)
++	,gain_timeout (0)
++	,_last_meter (-193.0)
+ 	,nsends (0)
+ 	,_last_gain (-1.0)
+ 	,_last_trim (-1.0)
+ 	,_init (true)
+ 	,eq_bands (0)
+ 	,_expand (2048)
++	,_tick_busy (false)
+ {
+ 	session = &s;
+ 	addr = lo_address_new_from_url 	(sur->remote_url.c_str());
+@@ -378,27 +381,33 @@
+ void
+ OSCSelectObserver::send_init()
+ {
++	if (!_strip) {
++		send_end ();
++		return;
++	}
+ 	send_size = nsends;
+ 	if (send_page_size) {
+ 		send_size = send_page_size;
+ 	}
+ 	if (!send_size) {
++		send_timeout.clear ();
++		_last_send.clear ();
+ 		return;
+ 	}
+ 	uint32_t page_start = ((send_page - 1) * send_size);
+ 	uint32_t last_send = send_page * send_size;
+ 	uint32_t c = 1;
+-	send_timeout.push_back (2);
+-	_last_send.clear();
+-	_last_send.push_back (0.0);
++	// Page slots without a send still call send_gain(). Allocate every slot,
++	// including the unused zero index, before publishing any feedback.
++	send_timeout.assign (send_size + 1, 0);
++	_last_send.assign (send_size + 1, 20.0);
+ 
+ 	for (uint32_t s = page_start; s < last_send; ++s, ++c) {
+ 
+ 		bool send_valid = false;
+ 		if (_strip->send_level_controllable (s)) {
+ 			_strip->send_level_controllable(s)->Changed.connect (send_connections, MISSING_INVALIDATOR, std::bind (&OSCSelectObserver::send_gain, this, c, _strip->send_level_controllable(s)), &_osc);
+-			send_timeout.push_back (2);
+-			_last_send.push_back (20.0);
++			send_timeout[c] = 2;
+ 			send_gain (c, _strip->send_level_controllable(s));
+ 			send_valid = true;
+ 		} else {
+@@ -447,6 +456,7 @@
+ 	// need to delete or clear send_timeout
+ 	send_size = 0;
+ 	send_timeout.clear();
++	_last_send.clear();
+ }
+ 
+ void
+@@ -642,7 +652,7 @@
+ 			_comp_redux = new_value;
+ 		}
+ 	}
+-	for (uint32_t i = 1; i <= send_timeout.size(); i++) {
++	for (uint32_t i = 1; i < send_timeout.size(); i++) {
+ 		if (send_timeout[i]) {
+ 			if (send_timeout[i] == 1) {
+ 				uint32_t pg_offset = (send_page - 1) * send_page_size;
+@@ -1023,6 +1033,9 @@
+ void
+ OSCSelectObserver::send_gain (uint32_t id, std::shared_ptr<PBD::Controllable> controllable)
+ {
++	if (id == 0 || id >= _last_send.size ()) {
++		return;
++	}
+ 	float raw_value = 0.0;
+ 	if (controllable) {
+ 		raw_value = controllable->get_value();
+--- a/libs/ardour/lv2_plugin.cc
++++ b/libs/ardour/lv2_plugin.cc
+@@ -2453,7 +2453,9 @@
+ 	desc.toggled      = lilv_port_has_property(_impl->plugin, port, _world.lv2_toggled);
+ 	desc.logarithmic  = lilv_port_has_property(_impl->plugin, port, _world.ext_logarithmic);
+ 	desc.sr_dependent = lilv_port_has_property(_impl->plugin, port, _world.lv2_sampleRate);
+-	desc.label        = lilv_node_as_string(lilv_port_get_name(_impl->plugin, port)); // XXX leaks
++	LilvNode* label = lilv_port_get_name (_impl->plugin, port);
++	desc.label = label ? lilv_node_as_string (label) : "";
++	lilv_node_free (label);
+ 	desc.normal       = def ? lilv_node_as_float(def) : 0.0f;
+ 	desc.lower        = min ? lilv_node_as_float(min) : 0.0f;
+ 	desc.upper        = max ? lilv_node_as_float(max) : 1.0f;

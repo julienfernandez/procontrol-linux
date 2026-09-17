@@ -10,6 +10,7 @@ import json
 import logging
 from logging.handlers import RotatingFileHandler
 import os
+import resource
 from pathlib import Path
 import select
 import signal
@@ -35,6 +36,24 @@ from session_probe import Session, drop_privileges, mac_bytes
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / 'run'
+OSC_REPLY_PORT = 3821
+OSC_TIMEOUT = 20.0
+
+
+def process_resources():
+    """Small Linux snapshot; no retained sample history in the daemon."""
+    usage = resource.getrusage(resource.RUSAGE_SELF)
+    result = {'peak_rss_kib': usage.ru_maxrss,
+              'cpu_seconds': round(usage.ru_utime + usage.ru_stime, 3)}
+    try:
+        stat = Path('/proc/self/status').read_text().splitlines()
+        fields = dict(line.split(':', 1) for line in stat if ':' in line)
+        result['rss_kib'] = int(fields['VmRSS'].split()[0])
+        result['threads'] = int(fields['Threads'])
+        result['open_fds'] = len(list(Path('/proc/self/fd').iterdir()))
+    except (OSError, KeyError, ValueError):
+        pass
+    return result
 
 
 def utc():
@@ -121,7 +140,9 @@ def spawn_worker(args, rx, tx, lock):
     runtime = Path(args.runtime)
     command = [sys.executable, str(Path(__file__).resolve()), '_run',
                '--interface', args.interface, '--mac', args.mac, '--host', args.host,
-               '--osc-port', str(args.osc_port), '--runtime', str(runtime),
+               '--osc-port', str(args.osc_port),
+               '--osc-reply-port', str(getattr(args, 'osc_reply_port', 0 if args.interface.startswith('test') else OSC_REPLY_PORT)),
+               '--runtime', str(runtime),
                '--rx-fd', str(rx.fileno()), '--tx-fd', str(tx.fileno()), '--lock-fd', str(lock.fileno())]
     with (runtime / 'launcher.log').open('w') as output:
         return subprocess.Popen(command, pass_fds=(rx.fileno(), tx.fileno(), lock.fileno()),
@@ -226,6 +247,7 @@ def worker(args):
     counts = Counter(); alive = True; osc = None
     last_osc = None; next_osc = 0; next_query = 0; next_status = 0; last_action = None
     started = utc(); phase = flow.phase; error = None
+    osc_started = None; osc_error = None; next_wait_log = 0; next_health = 0
     def stop_signal(*_):
         nonlocal alive
         alive = False
@@ -244,6 +266,8 @@ def worker(args):
                  'routing': routing.status(), 'stereo': stereo.status(), 'dsp': eq.status(),
                  'plugin_window': plugin_window.status(),
                  'jog': osc.jog.status() if osc else None,
+                 'resources': process_resources(),
+                 'osc_reply_port': args.osc_reply_port, 'osc_error': osc_error,
                  'ardour': 'responding' if last_osc is not None and time.monotonic()-last_osc < 20 else 'waiting',
                  'osc_target': f'127.0.0.1:{args.osc_port}', 'error': error}
         temp = runtime / 'status.tmp'; temp.write_text(json.dumps(state, ensure_ascii=False, indent=2)+'\n')
@@ -261,9 +285,14 @@ def worker(args):
             else: counts['feedback_sent'] += 1
             event('ethernet_tx', command=frame[28], hex=frame.hex(' '))
     def osc_failed(exc):
-        nonlocal osc, next_osc, last_osc
-        event('ardour_waiting', detail=str(exc))
-        if osc: osc.close()
+        nonlocal osc, next_osc, last_osc, osc_error, next_wait_log
+        stamp = time.monotonic()
+        detail = str(exc)
+        if detail != osc_error or stamp >= next_wait_log:
+            event('ardour_waiting', detail=detail)
+            next_wait_log = stamp + 60
+        osc_error = detail
+        if osc: osc.close(notify=False)
         routing.disconnect()
         plugin_window.reset()
         osc = None; last_osc = None; next_osc = time.monotonic()+5
@@ -275,16 +304,25 @@ def worker(args):
             if osc is None and now >= next_osc:
                 try:
                     routing.begin_catalog()
-                    osc = ArdourSurface(args.osc_port, surface); next_query = now+10; next_catalog = now+2
+                    osc = ArdourSurface(args.osc_port, surface, args.osc_reply_port)
+                    osc_started = now; next_query = now+10; next_catalog = now+2
                 except OSError as exc: osc_failed(exc)
             if osc:
                 try:
                     for address, values in osc.poll():
+                        if address == 'decode_error':
+                            counts['osc_malformed'] += 1
+                            continue
                         last_osc = now
+                        if osc_error is not None:
+                            event('ardour_connected', reply_port=osc.socket.getsockname()[1])
+                            osc_error = None
                         plugin_window.feed(address, values)
                         routing.feed(address, values)
                         if address in ('/transport_play', '/transport_stop', '/transport_speed'):
                             event('osc_feedback', address=address, values=values)
+                    if now - (last_osc if last_osc is not None else osc_started) >= OSC_TIMEOUT:
+                        raise TimeoutError('Aucune réponse OSC depuis 20 secondes')
                     deferred = routing.drain() + eq.tick(now) + plugin_window.update(eq, routing, now)
                     if deferred:
                         addresses = osc.actions(deferred)
@@ -397,6 +435,11 @@ def worker(args):
                     event('input_events', actions=[('release_all','',[])])
             if now >= next_status:
                 publish(); next_status = now+2
+            if now >= next_health:
+                event('health', resources=process_resources(), queued_outputs=len(feedback.queue),
+                      cached_routes=len(routing.rows), cached_feedback=len(routing.cache),
+                      console=flow.phase, ardour=bool(osc and last_osc is not None))
+                next_health = now + 60
     except Exception as exc:
         error = str(exc); event('fatal', detail=error)
         raise
@@ -416,12 +459,16 @@ def main():
     p.add_argument('--interface', default='enp0s25')
     p.add_argument('--mac', default='00:a0:7e:a0:ad:9c', type=mac_address)
     p.add_argument('--osc-port', default=3819, type=int)
+    p.add_argument('--osc-reply-port', default=OSC_REPLY_PORT, type=int,
+                   help='Port local stable de retour OSC (défaut : 3821)')
     p.add_argument('--runtime', default=str(RUNTIME))
     p.add_argument('--host', help=argparse.SUPPRESS)
     for name in ('rx-fd', 'tx-fd', 'lock-fd'):
         p.add_argument('--'+name, type=int, help=argparse.SUPPRESS)
     args = p.parse_args(); runtime = Path(args.runtime).resolve(); args.runtime = str(runtime)
     if not 1024 < args.osc_port < 65536: p.error('Port OSC invalide')
+    if args.osc_reply_port != 0 and not 1024 < args.osc_reply_port < 65536:
+        p.error('Port de retour OSC invalide')
     if args.action == 'status':
         print(json.dumps(status(runtime), ensure_ascii=False, indent=2)); return 0
     if args.action == 'stop':
@@ -438,7 +485,8 @@ def main():
         print('Ouverture Ethernet : authentification Linux si nécessaire.', flush=True)
         return subprocess.call(['pkexec', sys.executable, str(Path(__file__).resolve()), '_start',
                                 '--interface', args.interface, '--mac', args.mac,
-                                '--osc-port', str(args.osc_port), '--runtime', str(runtime)])
+                                '--osc-port', str(args.osc_port), '--osc-reply-port', str(args.osc_reply_port),
+                                '--runtime', str(runtime)])
     if args.action == '_start': return bootstrap(args)
     return worker(args)
 

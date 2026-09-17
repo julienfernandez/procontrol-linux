@@ -1,5 +1,15 @@
 # Historique des versions
 
+## 17 septembre 2026 — stabilité OSC
+
+- Port de retour OSC stable, reconnexion après silence et fermeture silencieuse
+  lors des erreurs ; limitation des journaux répétitifs et télémétrie mémoire/CPU.
+- Patch Ardour9.8 : bornes des tableaux de départs, durée de vie des surfaces
+  et observateurs OSC, ordre d’arrêt du thread et libérations de ressources.
+- Outil de vérification OSC sur une session de test, preuve ASan et rapport
+  de validation ;179tests passent.
+- Reconnexion réelle vers huit pistes vérifiée ; endurance nocturne non validée.
+
 ## v0.1.0 — 15 septembre 2026
 
 Première version du projet suivie dans Git. Elle regroupe le travail initial

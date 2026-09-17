@@ -84,12 +84,14 @@ Les scripts Lua se trouvent dans `ardour/` : retours stéréo et ajout de l'EQ
 et du compresseur sur les pistes de test. Les modules Ardour compilés et les
 sessions audio ne font pas partie du dépôt.
 
-Des crashs d'Ardour ont été documentés pendant le développement. Le runtime de
-test 9.8 utilise actuellement un préchargement d'allocateur ASan ; cela ne
-constitue ni une instrumentation complète ni la preuve d'une correction du
-crash. Voir [l'audit des sources](docs/ardour-source-audit-2026-09-14.md) et les
-rapports datés. La disponibilité des interfaces natives dépend du correctif
-local fourni, pas de toute installation Ardour standard.
+Le 17 septembre, un dépassement mémoire dans les retours OSC des départs a
+été reproduit avec le module OSC instrumenté par AddressSanitizer. Le
+[correctif de stabilité Ardour 9.8](native/ardour-9.8-osc-stability.patch)
+et les corrections de reconnexion de la passerelle sont documentés dans
+[le rapport de stabilité](docs/stability-2026-09-17.md). Le runtime local
+corrigé démarre normalement sans préchargement ASan ; la stabilité sur une
+nuit entière reste à confirmer. La disponibilité des interfaces natives
+dépend des patches fournis, pas de toute installation Ardour standard.
 
 ## Développement et tests
 
@@ -97,7 +99,7 @@ local fourni, pas de toute installation Ardour standard.
 python3 -m unittest discover -s tests -v
 ```
 
-176 tests passent sur la machine de développement. Les tests du helper natif
+179 tests passent sur la machine de développement. Les tests du helper natif
 peuvent être ignorés s'il n'est pas installé ; certaines vérifications de
 capture nécessitent les utilitaires Linux `ip` et `flock`. Les tests de
 capture emploient un faux dumpcap et n'accèdent pas à la console réelle.

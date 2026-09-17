@@ -3,7 +3,7 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from ardour_transport import decode
+from ardour_transport import decode, message
 from surface_osc import ArdourSurface
 from surface_map import SurfaceMap
 from surface_feedback import SurfaceFeedback, scribble, motor
@@ -11,6 +11,33 @@ from surface_routing import SurfaceRouting
 from session_probe import Session
 
 class OscStabilityTests(unittest.TestCase):
+    def test_reconnect_reuses_surface_address_and_failure_close_is_silent(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as server:
+            server.bind(('127.0.0.1', 0)); server.settimeout(.05)
+            port = 0
+            addresses = set()
+            for _ in range(100):
+                client = ArdourSurface(server.getsockname()[1], SurfaceMap(), reply_port=port)
+                port = client.socket.getsockname()[1]
+                for _ in range(4):
+                    packet, sender = server.recvfrom(65535)
+                    decode(packet)
+                    addresses.add(sender)
+                client.close(notify=False)
+            self.assertEqual(len(addresses), 1)
+            with self.assertRaises(socket.timeout): server.recvfrom(65535)
+
+    def test_fixed_reply_port_is_exclusive(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as server:
+            server.bind(('127.0.0.1', 0))
+            client = ArdourSurface(server.getsockname()[1], SurfaceMap())
+            try:
+                with self.assertRaises(OSError):
+                    ArdourSurface(server.getsockname()[1], SurfaceMap(), client.socket.getsockname()[1])
+                # The failed bind did not close the first client's socket.
+                client.refresh()
+            finally: client.close(notify=False)
+
     def test_refresh_paths_do_not_rebuild_ardour_observers(self):
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as server:
             server.bind(('127.0.0.1',0));server.settimeout(.1)

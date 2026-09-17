@@ -1,0 +1,190 @@
+{
+  "verified_at": "2026-09-17T21:24:20.022231+02:00",
+  "python_tests": {
+    "count": 179,
+    "result": "passed",
+    "elapsed_seconds": 29.348
+  },
+  "patches_apply_to_ardour": "22ed8656c2533e325322ff11831448e5123e0d4b",
+  "patches_reproduce_current_sources": true,
+  "installed_libraries_match_build_manifest": {
+    "libardour_osc.so": "f742b0a60e81ebf1e1d7a4a65b5fea195ddafb4eea9ea24a5912d4dad82f3f0d",
+    "libardour.so.3.0.0": "37f68e6d9f7877ee35570719de3927cb2d9ab02eb461ea433d4702bdb69b1ab4"
+  },
+  "prior_session_asan_test": {
+    "description": "Result retained from the earlier session; not rerun during this Git synchronization. OSC module instrumented, not all Ardour libraries.",
+    "result": {
+      "cycles": 200,
+      "received_datagrams": 252151,
+      "elapsed_seconds": 68.215,
+      "samples": [
+        {
+          "cycle": 0,
+          "rss_kib": 742532,
+          "threads": 52
+        },
+        {
+          "cycle": 10,
+          "rss_kib": 753944,
+          "threads": 52
+        },
+        {
+          "cycle": 20,
+          "rss_kib": 755356,
+          "threads": 51
+        },
+        {
+          "cycle": 30,
+          "rss_kib": 757388,
+          "threads": 51
+        },
+        {
+          "cycle": 40,
+          "rss_kib": 759536,
+          "threads": 51
+        },
+        {
+          "cycle": 50,
+          "rss_kib": 760716,
+          "threads": 51
+        },
+        {
+          "cycle": 60,
+          "rss_kib": 762732,
+          "threads": 51
+        },
+        {
+          "cycle": 70,
+          "rss_kib": 764548,
+          "threads": 51
+        },
+        {
+          "cycle": 80,
+          "rss_kib": 766888,
+          "threads": 51
+        },
+        {
+          "cycle": 90,
+          "rss_kib": 768276,
+          "threads": 51
+        },
+        {
+          "cycle": 100,
+          "rss_kib": 768976,
+          "threads": 51
+        },
+        {
+          "cycle": 110,
+          "rss_kib": 771340,
+          "threads": 51
+        },
+        {
+          "cycle": 120,
+          "rss_kib": 771980,
+          "threads": 51
+        },
+        {
+          "cycle": 130,
+          "rss_kib": 773304,
+          "threads": 51
+        },
+        {
+          "cycle": 140,
+          "rss_kib": 774208,
+          "threads": 51
+        },
+        {
+          "cycle": 150,
+          "rss_kib": 774072,
+          "threads": 51
+        },
+        {
+          "cycle": 160,
+          "rss_kib": 776348,
+          "threads": 51
+        },
+        {
+          "cycle": 170,
+          "rss_kib": 777392,
+          "threads": 51
+        },
+        {
+          "cycle": 180,
+          "rss_kib": 778832,
+          "threads": 51
+        },
+        {
+          "cycle": 190,
+          "rss_kib": 780368,
+          "threads": 51
+        }
+      ]
+    },
+    "result_sha256": "1f5db026c9de1cf1e7af2cb82898eb5f58383244f1db93d9f0afafdef9074878",
+    "asan_final_log_sha256": "e9c9c66f7352980b8e58e5ee0f4dccdd5958a8f875e86c32777a593940f9a4ba",
+    "asan_final_log_error_marker": false
+  },
+  "prior_live_validation": {
+    "completed_startups": 1,
+    "play_stop_osc_verified": true,
+    "interrupted_by": "script asserted exit_code == 0 after its own SIGTERM; observed exit_code -15",
+    "all_three_cycles_completed": false
+  },
+  "current_gateway": {
+    "pid": 80167,
+    "started_utc": "2026-09-17T19:11:11.277517+00:00",
+    "updated_utc": "2026-09-17T19:24:18.681168+00:00",
+    "console": "online",
+    "ardour": "responding",
+    "osc_reply_port": 3821,
+    "osc_error": null,
+    "surface": {
+      "alpha": false,
+      "encoder_mode": "pan",
+      "jog_mode": 0,
+      "bank_start": 1,
+      "feedback": {
+        "sent": 254,
+        "acked": 254,
+        "timeouts": 0,
+        "recoveries": 0
+      },
+      "output_error": null,
+      "output_timing": {
+        "pending_sequence": null,
+        "pending_ms": 0,
+        "last_ack_ms": 1.550287997815758,
+        "max_ack_ms": 3.365084994584322,
+        "motor_batches": 1,
+        "motor_targets": 8,
+        "queued_motors": 0,
+        "motor_hz": 50.0,
+        "ack_timeout_ms": 100.0
+      },
+      "queued_outputs": 0
+    },
+    "resources": {
+      "peak_rss_kib": 26688,
+      "cpu_seconds": 24.325,
+      "rss_kib": 24464,
+      "threads": 1,
+      "open_fds": 11
+    },
+    "error": null
+  },
+  "current_ardour": {
+    "pid": 82472,
+    "session": "tttt",
+    "track_count": 8,
+    "stereo_feedback": true,
+    "plugin_window_supported": true,
+    "asan_preload": false
+  },
+  "unchanged_gateway_pid_after_ardour_restart": true,
+  "settings_http": 200,
+  "limitations": [
+    "No new physical console gestures requested.",
+    "No overnight endurance claim.",
+    "The prior 200-cycle ASan run is historical evidence, not a new run."
+  ]
+}

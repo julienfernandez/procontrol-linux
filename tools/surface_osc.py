@@ -8,12 +8,14 @@ FEEDBACK_BITS=1+2+16+32+64+8192
 
 
 class ArdourSurface(ArdourTransport):
-    def __init__(self,port,mapper):
+    def __init__(self,port,mapper,reply_port=0):
         self.mapper=mapper
         self.jog=JogScheduler()
         self.socket=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         try:
-            self.socket.bind(('127.0.0.1',0));self.socket.connect(('127.0.0.1',port));self.socket.setblocking(False)
+            # Ardour identifies clients by their source port. The daemon uses a
+            # fixed port so reconnects do not accumulate abandoned surfaces.
+            self.socket.bind(('127.0.0.1',reply_port));self.socket.connect(('127.0.0.1',port));self.socket.setblocking(False)
             # gainmode=2 : fader normalisé ET dB, sans remplacer les noms par le gain.
             self.socket.send(message('/set_surface',0,63,FEEDBACK_BITS,2,8,8,0))
             self.request_catalog()
@@ -49,9 +51,12 @@ class ArdourSurface(ArdourTransport):
         self.socket.send(message('/transport_speed'))
         return ['/transport_speed']
 
-    def close(self):
-        try:self.socket.send(message('/procontrol/plugin_ui/clear'))
-        except OSError:pass
-        try:self.socket.send(message('/set_surface/feedback',0))
-        except OSError:pass
+    def close(self,notify=True):
+        # A failed connection must not send another configuration packet to a
+        # restarting DAW (which could itself create a new surface).
+        if notify:
+            try:self.socket.send(message('/procontrol/plugin_ui/clear'))
+            except OSError:pass
+            try:self.socket.send(message('/set_surface/feedback',0))
+            except OSError:pass
         self.socket.close()

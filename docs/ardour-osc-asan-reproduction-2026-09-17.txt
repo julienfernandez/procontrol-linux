@@ -1,0 +1,36 @@
+==77766==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x5020003aad94 at pc 0x70699d3e3cee bp 0x706951f5f030 sp 0x706951f5f020
+READ of size 4 at 0x5020003aad94 thread T58
+    #0 0x70699d3e3ced in OSCSelectObserver::send_gain(unsigned int, std::shared_ptr<PBD::Controllable>) ../libs/surfaces/osc/osc_select_observer.cc:1030
+    #1 0x70699d3eace4 in OSCSelectObserver::send_init() ../libs/surfaces/osc/osc_select_observer.cc:405
+    #2 0x70699d2d8c7c in ArdourSurface::OSC::sel_send_pagesize(unsigned int, void*) ../libs/surfaces/osc/osc.cc:2816
+    #3 0x70699d30fb21 in ArdourSurface::OSC::set_surface(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, void*) ../libs/surfaces/osc/osc.cc:1903
+    #4 0x70699d3121f5 in ArdourSurface::OSC::surface_parse(char const*, char const*, lo_arg**, int, void*) ../libs/surfaces/osc/osc.cc:1749
+    #5 0x70699d3287b8 in ArdourSurface::OSC::catchall(char const*, char const*, lo_arg**, int, void*) ../libs/surfaces/osc/osc.cc:877
+    #6 0x7069ab6e5ce7  (/lib/x86_64-linux-gnu/liblo.so.7+0xbce7) (BuildId: 4d0d051ad01ed4811ba07311631820faf6a4bea1)
+    #7 0x7069ab6e64bc  (/lib/x86_64-linux-gnu/liblo.so.7+0xc4bc) (BuildId: 4d0d051ad01ed4811ba07311631820faf6a4bea1)
+    #8 0x7069ab6e6957 in lo_server_recv (/lib/x86_64-linux-gnu/liblo.so.7+0xc957) (BuildId: 4d0d051ad01ed4811ba07311631820faf6a4bea1)
+    #9 0x70699d27fb57 in ArdourSurface::OSC::osc_input_handler(Glib::IOCondition, void*) ../libs/surfaces/osc/osc.cc:645
+    #10 0x7069aba536b0 in Glib::IOSource::dispatch(sigc::slot_base*) (/lib/x86_64-linux-gnu/libglibmm-2.4.so.1+0x5c6b0) (BuildId: 435787fd246a1d69593bebaee5b69dcfc0e5af97)
+    #11 0x7069aba54826 in Glib::Source::dispatch_vfunc(_GSource*, int (*)(void*), void*) (/lib/x86_64-linux-gnu/libglibmm-2.4.so.1+0x5d826) (BuildId: 435787fd246a1d69593bebaee5b69dcfc0e5af97)
+    #12 0x7069abb1445d  (/lib/x86_64-linux-gnu/libglib-2.0.so.0+0x5d45d) (BuildId: 116e142b9b52c8a4dfd403e759e71ab8f95d8bb3)
+    #13 0x7069abb73976  (/lib/x86_64-linux-gnu/libglib-2.0.so.0+0xbc976) (BuildId: 116e142b9b52c8a4dfd403e759e71ab8f95d8bb3)
+    #14 0x7069abb14f46 in g_main_loop_run (/lib/x86_64-linux-gnu/libglib-2.0.so.0+0x5df46) (BuildId: 116e142b9b52c8a4dfd403e759e71ab8f95d8bb3)
+    #15 0x7069ac712cc2 in std::function<void ()>::operator()() const /usr/include/c++/13/bits/std_function.h:591
+    #16 0x7069ac712cc2 in PBD::Thread::_run(void*) ../libs/pbd/pthread_utils.cc:594
+    #17 0x7069ade5ea41 in asan_thread_start ../../../../src/libsanitizer/asan/asan_interceptors.cpp:234
+    #18 0x7069aaa9cb83 in start_thread nptl/pthread_create.c:447
+    #19 0x7069aab29ecb in clone3 ../sysdeps/unix/sysv/linux/x86_64/clone3.S:78
+
+0x5020003aad94 is located 0 bytes after 4-byte region [0x5020003aad90,0x5020003aad94)
+allocated by thread T58 here:
+    #0 0x7069adefe548 in operator new(unsigned long) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:95
+    #1 0x5a95a6e9d445 in std::__new_allocator<float>::allocate(unsigned long, void const*) /usr/include/c++/13/bits/new_allocator.h:151
+    #2 0x5a95a6e9d445 in std::allocator_traits<std::allocator<float> >::allocate(std::allocator<float>&, unsigned long) /usr/include/c++/13/bits/alloc_traits.h:482
+    #3 0x5a95a6e9d445 in std::_Vector_base<float, std::allocator<float> >::_M_allocate(unsigned long) /usr/include/c++/13/bits/stl_vector.h:381
+    #4 0x5a95a6e9d445 in void std::vector<float, std::allocator<float> >::_M_realloc_insert<float>(__gnu_cxx::__normal_iterator<float*, std::vector<float, std::allocator<float> > >, float&&) /usr/include/c++/13/bits/vector.tcc:459
+
+Thread T58 created by T0 here:
+    #0 0x7069adef51f9 in pthread_create ../../../../src/libsanitizer/asan/asan_interceptors.cpp:245
+    #1 0x7069ac7135c8 in PBD::Thread::Thread(std::function<void ()> const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) ../libs/pbd/pthread_utils.cc:573
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow ../libs/surfaces/osc/osc_select_observer.cc:1030 in OSCSelectObserver::send_gain(unsigned int, std::shared_ptr<PBD::Controllable>)

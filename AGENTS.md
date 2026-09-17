@@ -393,3 +393,20 @@ desktop locaux et images de référence tierces. Garder ces exclusions lors
 des prochains commits. Les rapports/fixtures minimales et sources GPL restent
 versionnés. La copie exportée depuis l'index Git passe176tests.
 Les opérations Git et de documentation ne nécessitent pas l'arrêt des services.
+
+## Stabilité OSC reprise — 17 septembre 2026
+
+Lire docs/stability-2026-09-17.md et stability-validation-2026-09-17.json.
+Modifications de l'autre session retrouvées noncommitées sur
+fix/ardour-osc-stability : portOSCsource3821 stable, timeout20s/retry5s, fermeture
+silencieuse après erreur, métriques ressources et logs bornés.179tests passent.
+Native : ardour-9.8-osc-stability.patch s'applique APRÈS ardour-9.8-plugin-ui.patch
+sur22ed8656c2533e325322ff11831448e5123e0d4b ; les quatre sources reproduites
+correspondent au build installé. Runtime normal sans LD_PRELOAD ASan désormais.
+Précédent script live :1démarrage/PLAYSTOP réussis, assertion exit0 échouée après
+son SIGTERM (code-15), pas3cycles achevés. Ne pas déclarer tous les crashs réglés.
+Reprise ici : démon80167 déjà à jour et gardé actif ; Ardour82472 relancé,8pistes,
+stéréo et extension pluginUI récupérés automatiquement ; pointer80170 et
+settings61383 actifs. Vérifier les PID/états courants à la prochaine reprise.
+Pas de nouveau geste physique ni test nocturne. Changements à conserver dans
+main et sur la branche de correction, sans réécrire l'historique v0.1.0.
