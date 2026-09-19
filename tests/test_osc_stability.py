@@ -19,7 +19,7 @@ class OscStabilityTests(unittest.TestCase):
             for _ in range(100):
                 client = ArdourSurface(server.getsockname()[1], SurfaceMap(), reply_port=port)
                 port = client.socket.getsockname()[1]
-                for _ in range(4):
+                for _ in range(5):
                     packet, sender = server.recvfrom(65535)
                     decode(packet)
                     addresses.add(sender)
@@ -43,7 +43,7 @@ class OscStabilityTests(unittest.TestCase):
             server.bind(('127.0.0.1',0));server.settimeout(.1)
             client=ArdourSurface(server.getsockname()[1], SurfaceMap())
             try:
-                for _ in range(4): server.recv(65535)
+                for _ in range(5): server.recv(65535)
                 client.refresh()
                 client.actions([('osc','/refresh',[1.0]),('osc','/transport_play',[1.0])])
                 received=[decode(server.recv(65535))[0] for _ in range(3)]

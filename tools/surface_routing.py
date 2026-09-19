@@ -46,7 +46,8 @@ class SurfaceRouting:
         self.pending = {}; self.list_started = time.monotonic()
 
     def disconnect(self):
-        if getattr(self,'eq',None) is not None:self.eq.exit('Ardour déconnecté')
+        if getattr(self,'eq',None) is not None:
+            self.eq.exit('Ardour déconnecté'); self.eq.creation_supported = False
         self.ready = False; self.identity_ready = False; self.cache.clear(); self.rows.clear()
         self.send_pending.clear(); self.deferred.clear()
         self.automation_pending.clear()

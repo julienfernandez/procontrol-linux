@@ -1,0 +1,157 @@
+--- a/libs/surfaces/osc/osc.cc
++++ b/libs/surfaces/osc/osc.cc
+@@ -60,6 +60,7 @@
+ #include "ardour/pannable.h"
+ #include "ardour/plugin.h"
+ #include "ardour/plugin_insert.h"
++#include "ardour/lua_api.h"
+ #include "ardour/presentation_info.h"
+ #include "ardour/profile.h"
+ #include "ardour/send.h"
+@@ -628,6 +629,8 @@
+ 		REGISTER_CALLBACK (serv, X_("/strip/receives"), "i", route_get_receives);
+ 		REGISTER_CALLBACK (serv, X_("/strip/plugin/list"), "i", route_plugin_list);
+ 		REGISTER_CALLBACK (serv, X_("/strip/plugin/descriptor"), "ii", route_plugin_descriptor);
++		REGISTER_CALLBACK (serv, X_("/procontrol/plugin/version"), "", procontrol_plugin_version);
++		REGISTER_CALLBACK (serv, X_("/procontrol/plugin/ensure"), "ssss", procontrol_plugin_ensure);
+ 		REGISTER_CALLBACK (serv, X_("/procontrol/plugin_ui/version"), "", procontrol_plugin_ui_version);
+ 		REGISTER_CALLBACK (serv, X_("/procontrol/plugin_ui/show"), "ssis", procontrol_plugin_ui_show);
+ 		REGISTER_CALLBACK (serv, X_("/procontrol/plugin_ui/clear"), "", procontrol_plugin_ui_clear);
+@@ -2817,7 +2820,7 @@
+ 	OSCSurface *s = get_surface(get_address (msg));
+ 	if  (size != s->send_page_size) {
+ 		s->send_page_size = size;
+-		s->sel_obs->set_send_size(size);
++		if (s->sel_obs) { s->sel_obs->set_send_size(size); }
+ 	}
+ 	return 0;
+ }
+@@ -2847,7 +2850,7 @@
+ 	OSCSurface *s = get_surface(get_address (msg));
+ 	if (size != s->plug_page_size) {
+ 		s->plug_page_size = size;
+-		s->sel_obs->set_plugin_size(size);
++		if (s->sel_obs) { s->sel_obs->set_plugin_size(size); }
+ 	}
+ 	return 0;
+ }
+@@ -5382,6 +5385,104 @@
+ }
+ 
+ int
++OSC::procontrol_plugin_version (lo_message msg)
++{
++	return int_message (X_("/procontrol/plugin/version"), 1, get_address (msg));
++}
++
++int
++OSC::procontrol_plugin_ensure (lo_arg** argv, lo_message msg)
++{
++	const std::string expected_session (&argv[0]->s), route_id (&argv[1]->s);
++	const std::string key (&argv[2]->s), request (&argv[3]->s);
++	int result = -1, index = 0;
++	std::string name;
++	// The reply echoes the complete immutable target and request token. This
++	// operation is idempotent by URI, including after a lost UDP response.
++	const auto reply = [&] () {
++		lo_send (get_address (msg), X_("/procontrol/plugin/result"), "ssssiis",
++		         expected_session.c_str (), route_id.c_str (), key.c_str (), request.c_str (),
++		         result, index, name.c_str ());
++		return 0;
++	};
++	uint64_t numeric_id = 0;
++	if (!session || session->path () != expected_session || request.empty () || request.size () > 64 ||
++	    route_id.empty () || route_id.size () > 20 || route_id.find_first_not_of ("0123456789") != std::string::npos ||
++	    !PBD::string_to_uint64 (route_id, numeric_id)) { return reply (); }
++	std::shared_ptr<Route> route = session->route_by_id (PBD::ID (numeric_id));
++	if (!route || route->is_master () || route->is_monitor ()) { return reply (); }
++	const unsigned channels = route->n_inputs ().n_audio ();
++	if (channels != 1 && channels != 2) { result = -2; return reply (); }
++	const std::string suffix = channels == 1 ? "mono" : "stereo";
++	std::string uri;
++	if (key == "eq") { uri = "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_" + suffix; }
++	else if (key == "comp") { uri = "http://lsp-plug.in/plugins/lv2/compressor_" + suffix; }
++	else if (key == "reverb") { uri = "urn:dragonfly:room"; }
++	else if (key == "delay") { uri = "urn:zamaudio:ZamDelay"; }
++	else if (key == "phaser") { uri = "http://plugin.org.uk/swh-plugins/lfoPhaser"; }
++	else { result = -2; return reply (); }
++
++	std::shared_ptr<Processor> before;
++	for (unsigned i = 0; ; ++i) {
++		std::shared_ptr<Processor> processor = route->nth_plugin (i);
++		if (!processor) { break; }
++		std::shared_ptr<PluginInsert> pi = std::dynamic_pointer_cast<PluginInsert> (processor);
++		if (!pi) { continue; }
++		const std::string id = pi->plugin ()->unique_id ();
++		// EQ and compressor variants are one family even if route I/O changed.
++		const bool matches = id == uri ||
++		    (key == "eq" && (id == "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_mono" || id == "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_stereo")) ||
++		    (key == "comp" && (id == "http://lsp-plug.in/plugins/lv2/compressor_mono" || id == "http://lsp-plug.in/plugins/lv2/compressor_stereo"));
++		if (matches) {
++			if (index) { result = -3; index = 0; return reply (); }
++			index = i + 1; name = pi->plugin ()->name ();
++		}
++		if (key == "eq" && !before && id.find ("http://lsp-plug.in/plugins/lv2/compressor_") == 0) { before = processor; }
++	}
++	if (index) { result = 1; return reply (); }
++	// Instantiate through the same API as Ardour's Lua actions. Route insertion
++	// owns graph/process locking. No session save and no engine reconfiguration.
++	std::shared_ptr<Processor> processor = ARDOUR::LuaAPI::new_plugin (session, uri, ARDOUR::LV2, "");
++	if (!processor) { result = -4; return reply (); }
++	std::shared_ptr<PluginInsert> pi = std::dynamic_pointer_cast<PluginInsert> (processor);
++	std::map<std::string, float> initial;
++	if (key == "eq") {
++		const float frequencies[] = {60, 120, 250, 500, 1000, 2000, 4000, 8000};
++		for (unsigned b = 0; b < 8; ++b) {
++			const std::string band = std::to_string (b);
++			initial["Filter type " + band] = 1;
++			initial["Frequency " + band] = frequencies[b];
++			initial["Gain " + band] = 1;
++		}
++	} else if (key == "comp") { initial["Ratio"] = 1; }
++	else if (key == "delay") { initial["Time"] = 250; initial["Feedback"] = .25; initial["Dry/Wet"] = .2; }
++	else if (key == "phaser") { initial["LFO rate (Hz)"] = .4; initial["LFO depth"] = .5; initial["Feedback"] = .2; }
++	for (uint32_t n = 0; ; ++n) {
++		bool ok = false;
++		const uint32_t port = pi->plugin ()->nth_parameter (n, ok);
++		if (!ok) { break; }
++		ParameterDescriptor pd;
++		pi->plugin ()->get_parameter_descriptor (port, pd);
++		auto value = initial.find (pd.label);
++		if (value == initial.end ()) { continue; }
++		if (!ARDOUR::LuaAPI::set_plugin_insert_param (pi, n, value->second)) { result = -5; return reply (); }
++		initial.erase (value);
++	}
++	if (!initial.empty ()) { result = -5; return reply (); }
++	const int added = before ? route->add_processor (processor, before) : route->add_processor (processor, ARDOUR::PreFader);
++	if (added != 0) { result = -6; return reply (); }
++	for (unsigned i = 0; ; ++i) {
++		std::shared_ptr<Processor> p = route->nth_plugin (i);
++		if (!p) { break; }
++		if (p == processor) { index = i + 1; break; }
++	}
++	name = pi->plugin ()->name ();
++	result = index ? 2 : -6;
++	return reply ();
++}
++
++
++int
+ OSC::procontrol_plugin_ui_version (lo_message msg)
+ {
+ 	return int_message (X_("/procontrol/plugin_ui/version"), 1, get_address (msg));
+--- a/libs/surfaces/osc/osc.h
++++ b/libs/surfaces/osc/osc.h
+@@ -705,6 +705,12 @@
+ 	std::string _procontrol_plugin_owner;
+ 	int procontrol_plugin_ui_show (lo_arg**, lo_message);
+ 	int procontrol_plugin_ui_version (lo_message);
++	int procontrol_plugin_version (lo_message);
++	int procontrol_plugin_ensure (lo_arg**, lo_message);
++	static int _procontrol_plugin_ensure (const char*, const char*, lo_arg** argv, int, lo_message msg, void* data) {
++		return static_cast<OSC*>(data)->procontrol_plugin_ensure (argv, msg);
++	}
++	PATH_CALLBACK_MSG(procontrol_plugin_version);
+ 	int procontrol_plugin_ui_clear (lo_message);
+ 	static int _procontrol_plugin_ui_show (const char*, const char*, lo_arg** argv, int, lo_message msg, void* data) {
+ 		return static_cast<OSC*>(data)->procontrol_plugin_ui_show (argv, msg);

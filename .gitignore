@@ -27,3 +27,6 @@ build/
 dist/
 *.o
 *.so
+
+# Préparation locale et sessions de validation non publiées
+/work/

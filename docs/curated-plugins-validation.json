@@ -1,0 +1,668 @@
+{
+  "utc": "2026-09-19T17:49:16.572273+00:00",
+  "python_tests": 195,
+  "native_build": "pass",
+  "native_patch_check": "pass",
+  "native_shutdown_exit_code": 0,
+  "creation_count": 10,
+  "reuse_count": 10,
+  "parameter_readbacks": 72,
+  "native_sha256": "db8e0747c5a7593e460db1bffd5be9a71d59658f53819fe263cccfd34c30a992",
+  "phaser_package": "swh-lv2 1.0.16+git20160519~repack0-4build1",
+  "phaser_package_sha256": "36dd0663464dbaed3955ac0276b6c9b3f8b117cd00ff492b257762540fac42ec",
+  "native_activation": "active after normal Ardour restart; capability version 1 confirmed",
+  "physical_validation": "not performed",
+  "audio_listening": "not performed",
+  "engine": "None (Dummy)",
+  "osc_port": 39319,
+  "profiles": [
+    {
+      "track": "Test1",
+      "key": "comp",
+      "name": "LSP Compressor Mono",
+      "created": true,
+      "reused": true,
+      "readbacks": [
+        {
+          "knob": 1,
+          "label": "Attack threshold",
+          "control_id": 17,
+          "requested": 0.25852488735551454,
+          "actual": 0.25852489471435547
+        },
+        {
+          "knob": 2,
+          "label": "Ratio",
+          "control_id": 21,
+          "requested": 1.1,
+          "actual": 1.100000023841858
+        },
+        {
+          "knob": 3,
+          "label": "Attack time",
+          "control_id": 18,
+          "requested": 21.0,
+          "actual": 21.0
+        },
+        {
+          "knob": 4,
+          "label": "Release time",
+          "control_id": 20,
+          "requested": 101.0,
+          "actual": 101.0
+        },
+        {
+          "knob": 5,
+          "label": "Knee",
+          "control_id": 22,
+          "requested": 0.5158147131719748,
+          "actual": 0.5158147215843201
+        },
+        {
+          "knob": 6,
+          "label": "Makeup gain",
+          "control_id": 25,
+          "requested": 1.0292005271944282,
+          "actual": 1.029200553894043
+        },
+        {
+          "knob": 7,
+          "label": "Wet gain",
+          "control_id": 27,
+          "requested": 1.0292005271944282,
+          "actual": 1.029200553894043
+        },
+        {
+          "knob": 8,
+          "label": "Output gain",
+          "control_id": 3,
+          "requested": 1.0292005271944282,
+          "actual": 1.029200553894043
+        }
+      ]
+    },
+    {
+      "track": "Test1",
+      "key": "eq",
+      "name": "LSP Parametric Equalizer x8 Mono",
+      "created": true,
+      "reused": true,
+      "readbacks": [
+        {
+          "knob": 1,
+          "label": "Frequency 0",
+          "control_id": 22,
+          "requested": 61.758134198609525,
+          "actual": 61.75813293457031
+        },
+        {
+          "knob": 2,
+          "label": "Gain 0",
+          "control_id": 24,
+          "requested": 1.0292005271944282,
+          "actual": 1.029200553894043
+        },
+        {
+          "knob": 3,
+          "label": "Quality factor 0",
+          "control_id": 25,
+          "requested": 0.05,
+          "actual": 0.05000000074505806
+        },
+        {
+          "knob": 4,
+          "label": "Filter type 0",
+          "control_id": 17,
+          "requested": 2.0,
+          "actual": 2.0
+        },
+        {
+          "knob": 5,
+          "label": "Filter slope 0",
+          "control_id": 19,
+          "requested": 1.0,
+          "actual": 1.0
+        },
+        {
+          "knob": 6,
+          "label": "Filter mode 0",
+          "control_id": 18,
+          "requested": 1.0,
+          "actual": 1.0
+        },
+        {
+          "knob": 7,
+          "label": "Filter Width 0",
+          "control_id": 23,
+          "requested": 4.1,
+          "actual": 4.099999904632568
+        },
+        {
+          "knob": 8,
+          "label": "Output gain",
+          "control_id": 3,
+          "requested": 1.0292005271944282,
+          "actual": 1.029200553894043
+        }
+      ]
+    },
+    {
+      "track": "Test1",
+      "key": "reverb",
+      "name": "Dragonfly Room Reverb",
+      "created": true,
+      "reused": true,
+      "readbacks": [
+        {
+          "knob": 1,
+          "label": "Decay",
+          "control_id": 8,
+          "requested": 0.45000000596046447,
+          "actual": 0.45000001788139343
+        },
+        {
+          "knob": 2,
+          "label": "Predelay",
+          "control_id": 7,
+          "requested": 9.0,
+          "actual": 9.0
+        },
+        {
+          "knob": 3,
+          "label": "Size",
+          "control_id": 5,
+          "requested": 12.5,
+          "actual": 12.5
+        },
+        {
+          "knob": 4,
+          "label": "Late Level",
+          "control_id": 4,
+          "requested": 21.0,
+          "actual": 21.0
+        },
+        {
+          "knob": 5,
+          "label": "Early Level",
+          "control_id": 2,
+          "requested": 11.0,
+          "actual": 11.0
+        },
+        {
+          "knob": 6,
+          "label": "Dry Level",
+          "control_id": 1,
+          "requested": 81.0,
+          "actual": 81.0
+        },
+        {
+          "knob": 7,
+          "label": "High Cut",
+          "control_id": 12,
+          "requested": 15900.0,
+          "actual": 15900.0
+        },
+        {
+          "knob": 8,
+          "label": "Width",
+          "control_id": 6,
+          "requested": 101.0,
+          "actual": 101.0
+        }
+      ]
+    },
+    {
+      "track": "Test1",
+      "key": "delay",
+      "name": "ZamDelay",
+      "created": true,
+      "reused": true,
+      "readbacks": [
+        {
+          "knob": 1,
+          "label": "Time",
+          "control_id": 2,
+          "requested": 255.0,
+          "actual": 255.0
+        },
+        {
+          "knob": 2,
+          "label": "Feedback",
+          "control_id": 8,
+          "requested": 0.26,
+          "actual": 0.25999999046325684
+        },
+        {
+          "knob": 3,
+          "label": "Dry/Wet",
+          "control_id": 7,
+          "requested": 0.21000000298023225,
+          "actual": 0.21000000834465027
+        },
+        {
+          "knob": 4,
+          "label": "LPF",
+          "control_id": 4,
+          "requested": 6100.0,
+          "actual": 6100.0
+        },
+        {
+          "knob": 5,
+          "label": "Sync BPM",
+          "control_id": 3,
+          "requested": 1.0,
+          "actual": 1.0
+        },
+        {
+          "knob": 6,
+          "label": "Divisor",
+          "control_id": 5,
+          "requested": 4.0,
+          "actual": 4.0
+        },
+        {
+          "knob": 7,
+          "label": "Output Gain",
+          "control_id": 6,
+          "requested": -0.25,
+          "actual": -0.25
+        },
+        {
+          "knob": 8,
+          "label": "Invert",
+          "control_id": 1,
+          "requested": 1.0,
+          "actual": 1.0
+        }
+      ]
+    },
+    {
+      "track": "Test1",
+      "key": "phaser",
+      "name": "LFO Phaser",
+      "created": true,
+      "reused": true,
+      "readbacks": [
+        {
+          "knob": 1,
+          "label": "LFO rate (Hz)",
+          "control_id": 1,
+          "requested": 0.45000000596046447,
+          "actual": 0.45000001788139343
+        },
+        {
+          "knob": 2,
+          "label": "LFO depth",
+          "control_id": 2,
+          "requested": 0.51,
+          "actual": 0.5099999904632568
+        },
+        {
+          "knob": 3,
+          "label": "Feedback",
+          "control_id": 3,
+          "requested": 0.21000000298023225,
+          "actual": 0.21000000834465027
+        },
+        {
+          "knob": 4,
+          "label": "Spread (octaves)",
+          "control_id": 4,
+          "requested": 1.05,
+          "actual": 1.0499999523162842
+        }
+      ]
+    },
+    {
+      "track": "Test2",
+      "key": "comp",
+      "name": "LSP Compressor Stereo",
+      "created": true,
+      "reused": true,
+      "readbacks": [
+        {
+          "knob": 1,
+          "label": "Attack threshold",
+          "control_id": 20,
+          "requested": 0.25852488735551454,
+          "actual": 0.25852489471435547
+        },
+        {
+          "knob": 2,
+          "label": "Ratio",
+          "control_id": 24,
+          "requested": 1.1,
+          "actual": 1.100000023841858
+        },
+        {
+          "knob": 3,
+          "label": "Attack time",
+          "control_id": 21,
+          "requested": 21.0,
+          "actual": 21.0
+        },
+        {
+          "knob": 4,
+          "label": "Release time",
+          "control_id": 23,
+          "requested": 101.0,
+          "actual": 101.0
+        },
+        {
+          "knob": 5,
+          "label": "Knee",
+          "control_id": 25,
+          "requested": 0.5158147131719748,
+          "actual": 0.5158147215843201
+        },
+        {
+          "knob": 6,
+          "label": "Makeup gain",
+          "control_id": 28,
+          "requested": 1.0292005271944282,
+          "actual": 1.029200553894043
+        },
+        {
+          "knob": 7,
+          "label": "Wet gain",
+          "control_id": 30,
+          "requested": 1.0292005271944282,
+          "actual": 1.029200553894043
+        },
+        {
+          "knob": 8,
+          "label": "Output gain",
+          "control_id": 3,
+          "requested": 1.0292005271944282,
+          "actual": 1.029200553894043
+        }
+      ]
+    },
+    {
+      "track": "Test2",
+      "key": "eq",
+      "name": "LSP Parametric Equalizer x8 Stereo",
+      "created": true,
+      "reused": true,
+      "readbacks": [
+        {
+          "knob": 1,
+          "label": "Frequency 0",
+          "control_id": 27,
+          "requested": 61.758134198609525,
+          "actual": 61.75813293457031
+        },
+        {
+          "knob": 2,
+          "label": "Gain 0",
+          "control_id": 29,
+          "requested": 1.0292005271944282,
+          "actual": 1.029200553894043
+        },
+        {
+          "knob": 3,
+          "label": "Quality factor 0",
+          "control_id": 30,
+          "requested": 0.05,
+          "actual": 0.05000000074505806
+        },
+        {
+          "knob": 4,
+          "label": "Filter type 0",
+          "control_id": 22,
+          "requested": 2.0,
+          "actual": 2.0
+        },
+        {
+          "knob": 5,
+          "label": "Filter slope 0",
+          "control_id": 24,
+          "requested": 1.0,
+          "actual": 1.0
+        },
+        {
+          "knob": 6,
+          "label": "Filter mode 0",
+          "control_id": 23,
+          "requested": 1.0,
+          "actual": 1.0
+        },
+        {
+          "knob": 7,
+          "label": "Filter Width 0",
+          "control_id": 28,
+          "requested": 4.1,
+          "actual": 4.099999904632568
+        },
+        {
+          "knob": 8,
+          "label": "Output gain",
+          "control_id": 3,
+          "requested": 1.0292005271944282,
+          "actual": 1.029200553894043
+        }
+      ]
+    },
+    {
+      "track": "Test2",
+      "key": "reverb",
+      "name": "Dragonfly Room Reverb",
+      "created": true,
+      "reused": true,
+      "readbacks": [
+        {
+          "knob": 1,
+          "label": "Decay",
+          "control_id": 8,
+          "requested": 0.45000000596046447,
+          "actual": 0.45000001788139343
+        },
+        {
+          "knob": 2,
+          "label": "Predelay",
+          "control_id": 7,
+          "requested": 9.0,
+          "actual": 9.0
+        },
+        {
+          "knob": 3,
+          "label": "Size",
+          "control_id": 5,
+          "requested": 12.5,
+          "actual": 12.5
+        },
+        {
+          "knob": 4,
+          "label": "Late Level",
+          "control_id": 4,
+          "requested": 21.0,
+          "actual": 21.0
+        },
+        {
+          "knob": 5,
+          "label": "Early Level",
+          "control_id": 2,
+          "requested": 11.0,
+          "actual": 11.0
+        },
+        {
+          "knob": 6,
+          "label": "Dry Level",
+          "control_id": 1,
+          "requested": 81.0,
+          "actual": 81.0
+        },
+        {
+          "knob": 7,
+          "label": "High Cut",
+          "control_id": 12,
+          "requested": 15900.0,
+          "actual": 15900.0
+        },
+        {
+          "knob": 8,
+          "label": "Width",
+          "control_id": 6,
+          "requested": 101.0,
+          "actual": 101.0
+        }
+      ]
+    },
+    {
+      "track": "Test2",
+      "key": "delay",
+      "name": "ZamDelay",
+      "created": true,
+      "reused": true,
+      "readbacks": [
+        {
+          "knob": 1,
+          "label": "Time",
+          "control_id": 2,
+          "requested": 255.0,
+          "actual": 255.0
+        },
+        {
+          "knob": 2,
+          "label": "Feedback",
+          "control_id": 8,
+          "requested": 0.26,
+          "actual": 0.25999999046325684
+        },
+        {
+          "knob": 3,
+          "label": "Dry/Wet",
+          "control_id": 7,
+          "requested": 0.21000000298023225,
+          "actual": 0.21000000834465027
+        },
+        {
+          "knob": 4,
+          "label": "LPF",
+          "control_id": 4,
+          "requested": 6100.0,
+          "actual": 6100.0
+        },
+        {
+          "knob": 5,
+          "label": "Sync BPM",
+          "control_id": 3,
+          "requested": 1.0,
+          "actual": 1.0
+        },
+        {
+          "knob": 6,
+          "label": "Divisor",
+          "control_id": 5,
+          "requested": 4.0,
+          "actual": 4.0
+        },
+        {
+          "knob": 7,
+          "label": "Output Gain",
+          "control_id": 6,
+          "requested": -0.25,
+          "actual": -0.25
+        },
+        {
+          "knob": 8,
+          "label": "Invert",
+          "control_id": 1,
+          "requested": 1.0,
+          "actual": 1.0
+        }
+      ]
+    },
+    {
+      "track": "Test2",
+      "key": "phaser",
+      "name": "LFO Phaser",
+      "created": true,
+      "reused": true,
+      "readbacks": [
+        {
+          "knob": 1,
+          "label": "LFO rate (Hz)",
+          "control_id": 1,
+          "requested": 0.45000000596046447,
+          "actual": 0.45000001788139343
+        },
+        {
+          "knob": 2,
+          "label": "LFO depth",
+          "control_id": 2,
+          "requested": 0.51,
+          "actual": 0.5099999904632568
+        },
+        {
+          "knob": 3,
+          "label": "Feedback",
+          "control_id": 3,
+          "requested": 0.21000000298023225,
+          "actual": 0.21000000834465027
+        },
+        {
+          "knob": 4,
+          "label": "Spread (octaves)",
+          "control_id": 4,
+          "requested": 1.05,
+          "actual": 1.0499999523162842
+        }
+      ]
+    }
+  ],
+  "rejections": [
+    {
+      "key": "eq",
+      "code": -1
+    },
+    {
+      "key": "eq",
+      "code": -1
+    },
+    {
+      "key": "eq",
+      "code": -1
+    },
+    {
+      "key": "eq",
+      "code": -2
+    },
+    {
+      "key": "arbitrary-vst",
+      "code": -2
+    }
+  ],
+  "feedback_zero_handshake": "pass after guarding absent select observer",
+  "deployment": {
+    "gateway": "installed and restarted",
+    "native": "atomically installed and now loaded by restarted Ardour",
+    "backup": "backups/before-curated-plugins-20260919T194937",
+    "previous_inode": 23340501,
+    "runtime_check": {
+      "console": "online",
+      "ardour": "responding",
+      "session": "/home/moi/Musique/studio-mpc-usb",
+      "routing_ready": true,
+      "gateway_pid": 324577,
+      "ardour_pid": 324443,
+      "pointer_pid": 324580,
+      "pointer_running": true,
+      "creation_supported": true,
+      "feedback": {
+        "sent": 203,
+        "acked": 203,
+        "timeouts": 0,
+        "recoveries": 0
+      },
+      "queued": 0,
+      "errors": [
+        null,
+        null,
+        null
+      ]
+    },
+    "loaded_inode": 23349425
+  },
+  "activation_report": "plugin-activation-2026-09-19.json"
+}

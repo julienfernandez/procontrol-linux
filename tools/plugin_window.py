@@ -41,7 +41,7 @@ class PluginWindowFollower:
             self.clear_pending = False
             self.confirmed = None
             return [('osc', PREFIX+'clear', [])]
-        if not editor.active or editor.mode == 'browse' or editor.error:
+        if not editor.active or editor.mode in ('browse', 'library') or editor.error:
             if self.target is None:
                 return []
             self.target = self.confirmed = None

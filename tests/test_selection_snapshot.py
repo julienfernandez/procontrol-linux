@@ -19,8 +19,8 @@ class SnapshotTests(unittest.TestCase):
    server.bind(('127.0.0.1',0));server.settimeout(.1)
    c=ArdourSurface(server.getsockname()[1],self.m)
    try:
-    rows=[decode(server.recv(65535))[0] for _ in range(4)]
-    self.assertEqual(rows[1:],[('/strip',[]),('/set_surface',[]),('/procontrol/plugin_ui/version',[])])
+    rows=[decode(server.recv(65535))[0] for _ in range(5)]
+    self.assertEqual(rows[1:],[('/strip',[]),('/set_surface',[]),('/procontrol/plugin_ui/version',[]),('/procontrol/plugin/version',[])])
     c.request_catalog()
     self.assertEqual([decode(server.recv(65535))[0] for _ in range(2)],[('/strip',[]),('/set_surface',[])])
    finally:c.close()

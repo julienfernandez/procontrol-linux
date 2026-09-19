@@ -6,9 +6,11 @@ Snapshots are bounded read-only requests; no /refresh or observer rebuild.
 # SPDX-License-Identifier: GPL-3.0-or-later
 import math
 import time
+import uuid
 from surface_map import osc, select_strip
 from surface_feedback import scribble, button_led
 from dsp_controls import dsp_text
+from plugin_catalog import CATALOG, entry_for_name, profile_for_name
 
 NAMES = {'LSP Parametric Equalizer x8 Mono', 'LSP Parametric Equalizer x8 Stereo'}
 COMPRESSORS = {'LSP Compressor Mono', 'LSP Compressor Stereo'}
@@ -36,6 +38,12 @@ class EQEditor:
         self.family = 'eq'
         self.processor_enabled = False
         self.catalog_wait = False
+        self.creation_supported = False
+        self.create_pending = None
+        self.create_reply = None
+        self.create_error = None
+        self.create_armed = False
+        self.cursor = 0
         routing.eq = self; routing.mapper.eq = self; feedback.eq = self
         self.exit(force=True)
 
@@ -47,9 +55,13 @@ class EQEditor:
                 return [('eq', 'enter', [zone + 1])] if down else []
             if zone < 8 and key == 3:
                 return [('eq', 'compressor', [zone + 1])] if down else []
+            if zone < 8 and key == 10:
+                return [('eq', 'browse_track', [zone + 1])] if down else []
             if (zone, key) in ((0x15, 2), (0x19, 4)):
                 return [('eq', 'browse', [])] if down else []
             if self.active:
+                if (zone, key) == (0x1a, 0x11) and self.mode in ('browse', 'library'):
+                    return [('eq', 'open', [self.cursor % 8])] if down else []
                 if zone < 8 and key == 6:
                     return [('eq', 'track', [zone + 1])] if down else []
                 if zone == 0x17 and 1 <= key <= 32 and not self.routing.mapper.alpha and self.routing.mapper.matrix_mode == 'select':
@@ -61,7 +73,7 @@ class EQEditor:
                 if (zone, key) == (0x17, 0x30):
                     return [('eq', 'exit', [])] if down else []
                 if 0x0d <= zone <= 0x14 and key in (0, 1, 2):
-                    if self.mode == 'browse':
+                    if self.mode in ('browse', 'library'):
                         return [('eq', 'open' if key == 0 else 'plugin_enable', [zone - 0x0d])] if down else []
                     if self.mode == 'params':
                         return [('eq', 'focus', [zone - 0x0d])] if down and key == 0 else []
@@ -76,12 +88,23 @@ class EQEditor:
         if self.active and len(c) == 3 and c[0] == 0xb0 and c[2] < 128:
             delta = c[2] - 64
             if 0x40 <= c[1] <= 0x47:
-                return [('eq', 'turn', [c[1] - 0x40, delta])]
+                return [('eq', 'browse_turn', [delta])] if self.mode in ('browse', 'library') else [('eq', 'turn', [c[1] - 0x40, delta])]
             if 0x4d <= c[1] <= 0x54:
-                return [('eq', 'type', [c[1] - 0x4d, delta])] if self.mode == 'eq' else []
+                if self.mode in ('browse', 'library'): return [('eq', 'browse_turn', [delta])]
+                return [('eq', 'type' if self.mode == 'eq' else 'turn', [c[1] - 0x4d, delta])]
         return None
 
     def handle(self, path, values):
+        if path == 'browse_track':
+            ids = self.routing.slots()
+            if not values or not 1 <= values[0] <= len(ids): return []
+            if self.active and self.sid == ids[values[0]-1]:
+                return self.handle('browse', [])
+            self.exit()
+            result = self.handle('enter', values)
+            self.create_armed = False; self.mode = 'browse'; self.family = None
+            self.cursor = 0; self.render()
+            return result
         if path in ('matrix_track','bank'):
             ids = self.routing.view_ids()
             if not self.routing.ready or not ids or self.routing.mapper.touched: return []
@@ -93,22 +116,26 @@ class EQEditor:
             return self.handle('track',[index%8+1])
         if path == 'browse':
             if self.active:
-                self.mode = 'browse'; self.plugin_page = 0; self.stage = None; self.next_poll = 0
+                if self.create_pending: return []
+                self.mode = 'library' if self.mode == 'browse' else 'browse'
+                self.create_armed = False; self.family = None; self.cursor = 0
+                self.plugin_page = 0; self.stage = None; self.next_poll = 0
                 self.pending.clear(); self.outgoing.clear(); self.ready = False; self.render()
                 return []
             slots = self.routing.slots()
             selected = [s for s in slots if self.routing.cache.get(('/strip/select',s),[s,0])[1]]
             if not slots: return []
             slot = slots.index(selected[0])+1 if selected else 1
-            result = self.handle('enter',[slot]); self.mode = 'browse'; self.render()
+            result = self.handle('enter',[slot]); self.mode = 'browse'; self.create_armed = False; self.family = None; self.render()
             return result
         if path == 'track':
             if self.active and self.sid in self.routing.slots() and self.routing.slots().index(self.sid)+1 == values[0]:
                 return []
             # Continue the same EQ/compressor family on the next track. A
             # generic plugin or the browser returns to the new track's list.
-            family = self.family if self.mode != 'browse' else None
+            family = self.family if self.mode not in ('browse', 'library') else None
             result = self.handle('compressor' if family == 'comp' else 'enter',values)
+            self.create_armed = False  # Following SELECT/BANK never inserts audio effects.
             if family not in ('eq', 'comp'): self.mode = 'browse'
             self.render()
             return result
@@ -129,6 +156,7 @@ class EQEditor:
             self.explicit_plugin = False
             self.catalog_wait = False
             self.family = family
+            self.create_armed = True; self.cursor = 0
             if family == 'comp': self.mode = 'params'
             self.previous_mode = self.routing.mapper.encoder_mode
             self.routing.mapper.encoder_mode = 'eq'
@@ -138,19 +166,28 @@ class EQEditor:
         elif path == 'exit': self.exit()
         elif self.active:
             if path == 'page':
-                if self.mode == 'browse': self.plugin_page = max(0,min((len(self.plugins)-1)//8,self.plugin_page+values[0]))
+                if self.mode in ('browse', 'library'):
+                    self.plugin_page = max(0,min((len(self.browser_rows())-1)//8,self.plugin_page+values[0]))
+                    self.cursor = min(len(self.browser_rows())-1, self.plugin_page*8+self.cursor%8)
                 elif self.mode == 'params': self.page = max(0,min((len(self.parameter_list())-1)//8,self.page+values[0]))
                 elif self.mode == 'eq': self.filter = (self.filter+values[0])%8
-            elif path == 'open' and self.mode == 'browse' and self.usable():
+            elif path == 'browse_turn' and self.mode in ('browse', 'library') and self.usable() and values[0]:
+                self.cursor = (self.cursor + (1 if values[0] > 0 else -1)) % len(self.browser_rows())
+                self.plugin_page = self.cursor // 8
+            elif path == 'open' and self.mode in ('browse', 'library') and self.usable() and self.valid_target():
                 row = self.plugin_page*8+values[0]
-                if row < len(self.plugins):
+                if self.mode == 'library' and row < len(CATALOG):
+                    self.ensure_plugin(CATALOG[row][0])
+                elif self.mode == 'browse' and row == len(self.plugins):
+                    self.mode = 'library'; self.cursor = 0; self.plugin_page = 0
+                elif self.mode == 'browse' and row < len(self.plugins):
                     self.plugin,self.plugin_name,self.processor_enabled = self.plugins[row]
                     self.explicit_plugin = True
                     self.mode = 'eq' if self.plugin_name in NAMES else 'params'
                     self.family = 'eq' if self.plugin_name in NAMES else 'comp' if self.plugin_name in COMPRESSORS else None
                     self.ready = False; self.params = {}; self.pending = {}; self.page = 0
                     self.stage = None; self.next_poll = 0
-            elif path == 'plugin_enable' and self.mode == 'browse' and self.usable():
+            elif path == 'plugin_enable' and self.mode == 'browse' and self.usable() and self.valid_target():
                 row = self.plugin_page*8+values[0]
                 if row < len(self.plugins):
                     pid,name,on = self.plugins[row]
@@ -158,7 +195,7 @@ class EQEditor:
                     self.plugins[row] = (pid,name,not on)
             elif path == 'focus' and self.mode == 'params': self.filter = values[0]
             elif path == 'filter': self.filter = values[0]
-            elif self.usable():
+            elif self.usable() and self.valid_target():
                 if path == 'enable':
                     band = values[0]; self.filter = band
                     if self.value('type', band) == 0:
@@ -186,10 +223,13 @@ class EQEditor:
         if not self.active and not force: return
         self.active = False; self.ready = False; self.stage = None; self.params = {}
         self.outgoing = []; self.pending = {}; self.error = reason
+        self.create_pending = None; self.create_armed = False
+        self.create_reply = None; self.create_error = None
         self.routing.mapper.encoder_mode = getattr(self, 'previous_mode', 'pan')
         for ch in range(1, 9):
             self.feedback.put(('led', ch-1, 2), button_led(ch-1, 2, False))
             self.feedback.put(('led', ch-1, 3), button_led(ch-1, 3, False))
+            self.feedback.put(('led', ch-1, 10), button_led(ch-1, 10, False))
             self.feedback.put(('dsp', ch), dsp_text(ch, ''))
             for key in (0, 1, 2):
                 self.feedback.put(('led', 0x0c+ch, key), button_led(0x0c+ch, key, False))
@@ -199,7 +239,22 @@ class EQEditor:
         self.routing.render()
 
     def usable(self):
-        return self.active and self.ready and self.clock() - self.last_valid < self.SNAPSHOT_TIMEOUT
+        return self.active and self.ready and not self.create_pending and self.clock() - self.last_valid < self.SNAPSHOT_TIMEOUT
+
+    def browser_rows(self):
+        return list(CATALOG) if self.mode == 'library' else self.plugins + [(None, '+ Effet', False)]
+
+    def ensure_plugin(self, key):
+        self.create_armed = False
+        if self.create_pending or not self.valid_target(): return
+        if not self.creation_supported:
+            self.error = self.create_error = 'MAJ Ardour'; return
+        if not self.routing.identity_ready or not self.identity or not self.session:
+            self.error = self.create_error = 'Identite'; return
+        self.create_pending = (self.session, str(self.identity), key, uuid.uuid4().hex)
+        self.create_at = self.clock(); self.ready = False; self.error = None; self.stage = None
+        self.create_error = None; self.create_reply = None
+        self.outgoing.append(osc('/procontrol/plugin/ensure', *self.create_pending))
 
     def valid_target(self):
         r = self.routing
@@ -215,6 +270,16 @@ class EQEditor:
             # unchanged. Keep the current display while the snapshot resolves.
             return []
         if not self.valid_target(): self.exit('Piste ou banque modifiée'); return []
+        if self.create_reply:
+            reply = self.create_reply; self.create_reply = None
+            self.feed('/procontrol/plugin/result', reply)
+        if self.create_pending:
+            if now - self.create_at > 5:
+                self.create_pending = None; self.error = self.create_error = 'Ajout non confirme'
+                self.next_poll = now + 1
+            self.render(now)
+            result = self.outgoing; self.outgoing = []
+            return result
         if self.catalog_wait:
             self.catalog_wait = False; self.next_poll = 0
         if self.stage and now - self.request_at > self.SNAPSHOT_TIMEOUT:
@@ -228,10 +293,30 @@ class EQEditor:
         return result
 
     def feed(self, path, values):
+        if path == '/procontrol/plugin/version':
+            self.creation_supported = values == [1]; return
         if not self.active: return
+        if path == '/procontrol/plugin/result':
+            if len(values) != 7 or tuple(values[:4]) != self.create_pending: return
+            if not self.routing.ready:
+                self.create_reply = list(values); return
+            self.create_pending = None; self.stage = None; self.next_poll = 0
+            if not self.valid_target(): return
+            result, pid, name = values[4:]
+            entry = next((e for e in CATALOG if e[0] == values[2]), None)
+            if result not in (1, 2) or type(pid) is not int or pid < 1 or not entry or name not in entry[2]:
+                self.error = {-2:'Format voie', -3:'Plusieurs', -4:'Non installe', -5:'Profil invalide', -6:'Echec ajout'}.get(result, 'Ajout refuse')
+                self.create_error = self.error
+                self.ready = False; self.next_poll = self.clock() + 1; return
+            self.plugin = pid; self.plugin_name = name; self.explicit_plugin = True
+            self.family = values[2] if values[2] in ('eq', 'comp') else None
+            self.mode = 'eq' if self.family == 'eq' else 'params'
+            self.params = {}; self.pending = {}; self.page = 0; self.error = None
+            return
         if path == '/strip/list':
             self.catalog_wait = True; self.ready = False; self.stage = None
-            self.outgoing.clear(); self.pending.clear(); return
+            if not self.create_pending: self.outgoing.clear()
+            self.pending.clear(); return
         if path == '/strip/select' and len(values) == 2 and values[1] and values[0] != self.sid:
             self.exit('Autre piste sélectionnée'); return
         if path == '/strip/plugin/list' and self.stage == 'list' and values and values[0] == self.sid:
@@ -239,17 +324,22 @@ class EQEditor:
             if not all(type(values[i]) is int and values[i]>0 and isinstance(values[i+1],str)
                        and values[i+2] in (0,1) for i in range(1,len(values),3)): return
             self.plugins = [(values[i], values[i+1], bool(values[i+2])) for i in range(1,len(values),3)]
-            if self.mode == 'browse':
+            if self.mode in ('browse', 'library'):
+                if self.mode == 'browse' and not self.plugins: self.mode = 'library'
                 self.ready = True; self.error = None; self.last_valid = self.clock()
                 self.stage = None; self.next_poll = self.clock()+self.POLL_INTERVAL
-                self.plugin_page = min(self.plugin_page,max(0,(len(self.plugins)-1)//8))
+                self.plugin_page = min(self.plugin_page,max(0,(len(self.browser_rows())-1)//8))
+                self.cursor = min(self.cursor, len(self.browser_rows())-1)
                 self.render(); return
             matches = ([p for p in self.plugins if p[1] in (NAMES if self.family=='eq' else COMPRESSORS)] if self.family and not self.explicit_plugin
                        else [p for p in self.plugins if p[:2] == (self.plugin,self.plugin_name)])
             if len(matches) != 1:
                 self.ready = False; self.error = 'Absent' if not matches else 'Plusieurs EQ'
-                self.stage = None; self.next_poll = self.clock()+1; return
+                self.stage = None; self.next_poll = self.clock()+1
+                if not matches and self.create_armed: self.ensure_plugin(self.family)
+                return
             plugin, name, enabled = matches[0]
+            self.create_armed = False
             if self.plugin is not None and (plugin != self.plugin or name != self.plugin_name):
                 self.ready = False; self.params = {}; self.pending = {}
             self.plugin = plugin; self.plugin_name = name; self.processor_enabled = bool(enabled)
@@ -271,6 +361,7 @@ class EQEditor:
                                        fmt=values[8], choices=dict(zip(values[10:-1:2],values[11:-1:2])))
         elif path == '/strip/plugin/descriptor_end' and self.stage == 'descriptor' and values == [self.sid,self.plugin]:
             required = ([f'{prefix} {i}' for prefix in FIELDS.values() for i in range(8)] + ['Output gain','Enabled']) if self.mode == 'eq' else []
+            required += [p[0] for p in profile_for_name(self.plugin_name)]
             if self.snapshot_invalid or not all(label in self.snapshot for label in required):
                 self.ready = False; self.error = 'Profil LSP incomplet'
             else:
@@ -323,13 +414,19 @@ class EQEditor:
         if getattr(self,'plugin_name','') in COMPRESSORS:
             first = ('Attack threshold','Ratio','Attack time','Release time','Knee','Makeup gain','Wet gain','Output gain')
             rows.sort(key=lambda x:first.index(x[0]) if x[0] in first else 8+x[1]['id'])
+        profile = profile_for_name(getattr(self, 'plugin_name', ''))
+        if profile:
+            rows = [(label, self.params[label]) for label, _, _, _ in profile if label in self.params]
         return rows
 
     def turn_parameter(self, knob, delta):
         rows = self.parameter_list(); index = self.page*8+knob
         if not delta or not 0 <= index < len(rows): return
         label,p = rows[index]; fine = bool(self.routing.mapper.modifiers)
-        if getattr(self,'plugin_name','').startswith('LSP Compressor') and label in ('Attack threshold','Knee','Makeup gain','Wet gain','Output gain'):
+        profile = next((item for item in profile_for_name(getattr(self,'plugin_name','')) if item[0] == label), None)
+        if profile and profile[3] is not None:
+            value = p['value'] + delta * profile[3] * (.1 if fine else 1)
+        elif getattr(self,'plugin_name','').startswith('LSP Compressor') and label in ('Attack threshold','Knee','Makeup gain','Wet gain','Output gain'):
             value = max(p['value'],1e-3)*10**(delta*(.05 if fine else .25)/20)
         elif getattr(self,'plugin_name','').startswith('LSP Compressor') and label in ('Attack time','Release time'):
             value = p['value']+delta*(.1 if fine else 1)
@@ -350,11 +447,14 @@ class EQEditor:
         now = self.clock() if now is None else now
         blink = int(now*4)%2 == 0; slots = self.routing.display_slots()
         usable = self.usable()
+        if not usable and self.mode in ('eq', 'params'):
+            self.render_waiting(now); return
         if self.mode != 'eq': self.render_browser(now); return
         for ch in range(1,9):
             on = self.sid in slots and ch == slots.index(self.sid)+1 and blink
             self.feedback.put(('led',ch-1,2),button_led(ch-1,2,on))
             self.feedback.put(('led',ch-1,3),button_led(ch-1,3,False))
+            self.feedback.put(('led',ch-1,10),button_led(ch-1,10,False))
             text = self.knob_text(ch-1) if usable else ('EQ WAIT' if not self.error else 'EQ ERROR')
             self.feedback.put(('value',ch),scribble(ch,text,False))
             band = ch-1; enabled = usable and self.value('type',band) != 0 and not self.value('mute',band)
@@ -367,6 +467,33 @@ class EQEditor:
                 z = 0x0d+band; self.feedback.put(('led',z,key),button_led(z,key,state))
         self.feedback.put(('led',0x15,2),button_led(0x15,2,True))
         self.feedback.put(('led',0x15,10),button_led(0x15,10,usable and (not self.value('enabled') or not self.processor_enabled)))
+
+    def render_waiting(self, now):
+        """One readable diagnosis across rows, rather than eight false errors."""
+        reason = self.create_error or self.error
+        if self.create_pending: rows = ('AJOUT', 'EN COURS')
+        elif reason == 'MAJ Ardour': rows = ('RELANCER', 'ARDOUR', 'PUIS EQ', 'OU DYN')
+        elif reason == 'Absent':
+            rows = ('EQ ABS.' if self.family == 'eq' else 'DYN ABS.',
+                    'PRESS EQ' if self.family == 'eq' else 'PRESSDYN', 'OU', 'INSERTS')
+        elif reason:
+            rows = {'Non installe': ('PLUGIN', 'ABSENT', 'INSERTS'),
+                    'Ajout non confirme': ('AJOUT', 'NON CONF', 'INSERTS'),
+                    'Identite': ('ATTENDRE', 'LA VOIE'),
+                    'Profil LSP incomplet': ('PROFIL', 'INCOMPL.', 'INSERTS')}.get(reason, (str(reason)[:8], 'INSERTS'))
+        else: rows = ('LECTURE', 'ARDOUR')
+        slots = self.routing.display_slots(); blink = int(now*4)%2 == 0
+        for ch in range(1,9):
+            text = rows[ch-1] if ch <= len(rows) else ''
+            self.feedback.put(('dsp',ch),dsp_text(ch,text))
+            self.feedback.put(('value',ch),scribble(ch,text,False))
+            target = self.sid in slots and ch == slots.index(self.sid)+1 and blink
+            for key, family in ((2,'eq'), (3,'comp'), (10,None)):
+                self.feedback.put(('led',ch-1,key),button_led(ch-1,key,target and family is not None and self.family == family))
+            for key in (0,1,2):
+                self.feedback.put(('led',0x0c+ch,key),button_led(0x0c+ch,key,False))
+        self.feedback.put(('led',0x15,2),button_led(0x15,2,True))
+        self.feedback.put(('led',0x15,10),button_led(0x15,10,False))
 
     def knob_text(self, knob):
         n = self.filter+1; field = KNOBS[knob]; v = self.value(field)
@@ -394,19 +521,29 @@ class EQEditor:
             target = self.sid in slots and ch == slots.index(self.sid)+1
             self.feedback.put(('led',ch-1,2),button_led(ch-1,2,False))
             self.feedback.put(('led',ch-1,3),button_led(ch-1,3,target and self.family=='comp' and self.mode=='params' and blink))
-            index = (self.plugin_page if self.mode == 'browse' else self.page)*8+ch-1
+            self.feedback.put(('led',ch-1,10),button_led(ch-1,10,target and self.mode in ('browse','library') and blink))
+            index = (self.plugin_page if self.mode in ('browse','library') else self.page)*8+ch-1
             text = ''; value = ''; enabled = False; present = False
             if self.mode == 'browse' and index < len(self.plugins):
                 pid,name,enabled = self.plugins[index]; present = True
                 text = self.short_plugin(name); value = f'P{pid} '+('ON' if enabled else 'BYPASS')
+            elif self.mode == 'browse' and index == len(self.plugins):
+                text = '+ Effet'; value = 'SELECT'; present = True
+            elif self.mode == 'library' and index < len(CATALOG):
+                entry = CATALOG[index]; text = entry[1]; present = True
+                value = 'OUVRIR' if any(p[1] in entry[2] for p in self.plugins) else 'AJOUTER'
             elif self.mode == 'params' and usable and index < len(parameters):
                 label,p = parameters[index]; present = True; text = label[:8]
                 value = self.parameter_text(label,p); enabled = True
+                profile = next((p for p in profile_for_name(self.plugin_name) if p[0] == label), None)
+                if profile: text = profile[1]
             if not usable: text = (self.error or 'Charg...')[:8]
-            elif not self.plugins: text = 'Vide' if ch==1 else ''
+            if self.create_pending: text = 'Ajout...'; value = ''
+            elif self.create_error and ch == 1: text = self.create_error[:8]
+            if self.mode in ('browse','library') and index == self.cursor and present: value = '>'+value[:7]
             self.feedback.put(('dsp',ch),dsp_text(ch,text))
             self.feedback.put(('value',ch),scribble(ch,value,False))
-            for key,on in ((0,present and (self.mode=='browse' or ch-1==self.filter and blink)),
+            for key,on in ((0,present and (self.mode in ('browse','library') or ch-1==self.filter and blink)),
                            (1,present and enabled),(2,present and not enabled)):
                 z=0x0c+ch;self.feedback.put(('led',z,key),button_led(z,key,on))
         self.feedback.put(('led',0x15,2),button_led(0x15,2,True))
@@ -416,6 +553,12 @@ class EQEditor:
         v = p['value']
         if p.get('choices'): return str(p['choices'].get(v,f'{v:.4g}'))[:8]
         if p['flags'] & 64: return 'ON' if v else 'OFF'
+        profile = next((item for item in profile_for_name(getattr(self,'plugin_name','')) if item[0] == label), None)
+        if profile and profile[2]:
+            unit = profile[2]
+            if unit == '%01': v *= 100; unit = '%'
+            if unit == 'Hz' and abs(v) >= 1000: return f'{v/1000:.2f}kHz'[:8]
+            return f'{v:.3g}{unit}'[:8]
         if getattr(self,'plugin_name','').startswith('LSP Compressor'):
             if label in ('Attack threshold','Knee','Makeup gain','Wet gain','Output gain'):
                 return '-inf dB' if v <= 0 else f'{20*math.log10(v):+.1f}dB'
@@ -426,4 +569,6 @@ class EQEditor:
     def status(self):
         return {'active':self.active,'ready':self.usable(),'mode':self.mode,'page':self.page+1,'plugin_page':self.plugin_page+1,'track':getattr(self,'route_name',None),
                 'sid':self.sid,'plugin':self.plugin,'filter':self.filter+1,
-                'error':self.error,'edits':self.edits,'snapshots':self.snapshots}
+                'error':self.error,'edits':self.edits,'snapshots':self.snapshots,
+                'creation_supported':self.creation_supported,'creating':bool(self.create_pending), 'creation_error':self.create_error,
+                'library':[e[1] for e in CATALOG], 'cursor':self.cursor+1}

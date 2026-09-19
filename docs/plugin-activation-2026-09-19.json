@@ -1,0 +1,203 @@
+{
+  "utc": "2026-09-19T18:08:50.003986+00:00",
+  "cause": "Ardour still mapped the previous deleted module inode; GUI restart activated installed module.",
+  "old_ardour_pid": 320787,
+  "ardour_pid": 324443,
+  "normal_quit": true,
+  "save_before_restart": true,
+  "same_executable_session_and_audio_environment": true,
+  "native_sha256": "db8e0747c5a7593e460db1bffd5be9a71d59658f53819fe263cccfd34c30a992",
+  "native_module_deleted": false,
+  "native_version": 1,
+  "initial_startup_probe": "Timed out before later fresh-socket confirmation; process remained active.",
+  "backup": "backups/before-plugin-activation-20260919T200349",
+  "python_tests": 195,
+  "display_fix": "Explicit status on both DSP and upper strip displays in EQ and DYN modes.",
+  "first_creation": {
+    "route": "MPC 01-02",
+    "initial_chain": [
+      1
+    ],
+    "eq_result": [
+      2,
+      1,
+      "LSP Parametric Equalizer x8 Stereo"
+    ],
+    "compressor_result": [
+      2,
+      2,
+      "LSP Compressor Stereo"
+    ],
+    "mapped": true,
+    "reopened_without_ensure": true,
+    "native_reuse_results": [
+      1,
+      1
+    ],
+    "evidence": "First verify_live.py output; later XML IO assertion detected the disconnected USB device."
+  },
+  "live_recheck": {
+    "utc": "2026-09-19T18:08:09.911808+00:00",
+    "session": "/home/moi/Musique/studio-mpc-usb",
+    "route": {
+      "sid": 1,
+      "kind": "AT",
+      "name": "MPC 01-02",
+      "channels": 2,
+      "route_id": "14076"
+    },
+    "before": [
+      1,
+      1,
+      "LSP Parametric Equalizer x8 Stereo",
+      1,
+      2,
+      "LSP Compressor Stereo",
+      1
+    ],
+    "after": [
+      1,
+      1,
+      "LSP Parametric Equalizer x8 Stereo",
+      1,
+      2,
+      "LSP Compressor Stereo",
+      1
+    ],
+    "checks": [
+      {
+        "key": "eq",
+        "ensure_requests": 0,
+        "mapped": {
+          "active": true,
+          "ready": true,
+          "mode": "eq",
+          "page": 1,
+          "plugin_page": 1,
+          "track": "MPC 01-02",
+          "sid": 1,
+          "plugin": 1,
+          "filter": 1,
+          "error": null,
+          "edits": 0,
+          "snapshots": 1,
+          "creation_supported": true,
+          "creating": false,
+          "creation_error": null,
+          "library": [
+            "LSP EQ8",
+            "LSP Comp",
+            "Reverb",
+            "Delay",
+            "Phaser"
+          ],
+          "cursor": 1
+        },
+        "descriptor_count": 97,
+        "band_gains": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "reopen_mapped": true,
+        "native_reuse": [
+          1,
+          1,
+          "LSP Parametric Equalizer x8 Stereo"
+        ]
+      },
+      {
+        "key": "comp",
+        "ensure_requests": 0,
+        "mapped": {
+          "active": true,
+          "ready": true,
+          "mode": "params",
+          "page": 1,
+          "plugin_page": 1,
+          "track": "MPC 01-02",
+          "sid": 1,
+          "plugin": 2,
+          "filter": 1,
+          "error": null,
+          "edits": 0,
+          "snapshots": 1,
+          "creation_supported": true,
+          "creating": false,
+          "creation_error": null,
+          "library": [
+            "LSP EQ8",
+            "LSP Comp",
+            "Reverb",
+            "Delay",
+            "Phaser"
+          ],
+          "cursor": 1
+        },
+        "descriptor_count": 40,
+        "ratio": 1.0,
+        "reopen_mapped": true,
+        "native_reuse": [
+          1,
+          2,
+          "LSP Compressor Stereo"
+        ]
+      }
+    ],
+    "save_confirmed": true,
+    "route_inputs_outputs_unchanged": false,
+    "changed_io_routes": [
+      "MPC 01-02",
+      "MPC 03-04",
+      "MPC 05-06",
+      "MPC 07-08",
+      "MPC 09-10",
+      "MPC 11-12",
+      "MPC 13-14",
+      "MPC 15-16",
+      "Roland RS-9 MIDI"
+    ],
+    "other_route_processors_unchanged": true,
+    "engine_hints_unchanged": true,
+    "physical_button_presses": "not performed by this harness",
+    "test": "Actual EQEditor button dispatch over OSC to live Ardour; no Ethernet sender"
+  },
+  "runtime_check": {
+    "console": "online",
+    "ardour": "responding",
+    "session": "/home/moi/Musique/studio-mpc-usb",
+    "routing_ready": true,
+    "gateway_pid": 324577,
+    "ardour_pid": 324443,
+    "pointer_pid": 324580,
+    "pointer_running": true,
+    "creation_supported": true,
+    "feedback": {
+      "sent": 203,
+      "acked": 203,
+      "timeouts": 0,
+      "recoveries": 0
+    },
+    "queued": 0,
+    "errors": [
+      null,
+      null,
+      null
+    ]
+  },
+  "audio_device_observation": {
+    "kernel_disconnect_local": "2026-09-19 20:06:34 Europe/Paris",
+    "ardour_restart_local": "2026-09-19 20:04 Europe/Paris",
+    "mpc_usb_present": false,
+    "behringer_connections_present": true,
+    "mpc_temporary_scripts_present": false,
+    "restoration": "Existing Studio MPC USB launcher recreates temporary USB device and routes; pre-insertion session backup retained."
+  },
+  "physical_console_validation": "awaiting user",
+  "audio_listening": "not performed"
+}

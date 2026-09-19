@@ -20,6 +20,7 @@ class ArdourSurface(ArdourTransport):
             self.socket.send(message('/set_surface',0,63,FEEDBACK_BITS,2,8,8,0))
             self.request_catalog()
             self.socket.send(message('/procontrol/plugin_ui/version'))
+            self.socket.send(message('/procontrol/plugin/version'))
         except Exception:
             self.socket.close();raise
 

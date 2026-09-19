@@ -52,7 +52,7 @@ class JogTests(unittest.TestCase):
             server.bind(('127.0.0.1',0));server.settimeout(.05)
             client=ArdourSurface(server.getsockname()[1],SurfaceMap())
             try:
-                for _ in range(4):server.recv(65535)
+                for _ in range(5):server.recv(65535)
                 with patch('jog_scheduler.time.monotonic',return_value=100):
                     client.actions([('osc','/jog',[.2])])
                 self.assertEqual(decode(server.recv(65535))[0][0],'/jog')

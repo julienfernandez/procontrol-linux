@@ -1,6 +1,6 @@
 # EQ, compresseur et navigateur de greffons
 
-Version du 15 septembre 2026. Déployée dans le démon ; validation physique en cours.
+Le parcours est complété le 19 septembre par [la création automatique et la bibliothèque restreinte](curated-plugins.md). Les sections ci-dessous décrivent la base du 15 septembre.
 
 ## Parcours depuis la console
 
