@@ -1,0 +1,100 @@
+{
+  "date": "2026-09-20",
+  "counter": {
+    "cause": "Ardour 1920 ticks-per-beat overflowed the three-digit field at tick 1000",
+    "layout": "3 bars / 2 beats / 3 ticks at 960 displayed ticks per beat",
+    "automated_tests": 5,
+    "physical_display_confirmed": false
+  },
+  "suite": {
+    "command": "python3 -m unittest discover -s tests",
+    "passed": 204,
+    "duration_seconds": 31.149
+  },
+  "midi_diagnostic": {
+    "received_on_mpc_usb": true,
+    "ticks": 196,
+    "span_seconds": 4.06,
+    "estimated_bpm": 120.07389162557702,
+    "mpc_sequencer_following_confirmed": false
+  },
+  "link": {
+    "sdk_revision": "902aef95bf94af49746fdda5369b42cdcfa1e6d2",
+    "direction": "Ardour to Link",
+    "ardour_jack_timebase_master": true,
+    "ardour_clock_and_mmc_output_disabled": true,
+    "actual_mpc_protocol_test": {
+      "date": "2026-09-20",
+      "validation": "Actual MPC and bridge Link multicast state during Ardour OSC PLAY/STOP",
+      "protocol_reference": "Ableton Link Timeline.hpp, Tempo.hpp, StartStopState.hpp at 902aef95bf94af49746fdda5369b42cdcfa1e6d2",
+      "capture_sha256": "c137fc0887a2a44faa81a5a00e36b5ee25b269671e6fecdb873af08528e65e53",
+      "timestamp_resolution_seconds": [
+        1e-09
+      ],
+      "duration_seconds": 12.083,
+      "sources": {
+        "MPC": {
+          "announcements": 52,
+          "tempos_bpm": [
+            120.0
+          ],
+          "transport_transitions": [
+            {
+              "playing": false,
+              "seconds_from_first_packet": 0.0
+            },
+            {
+              "playing": true,
+              "seconds_from_first_packet": 1.422
+            },
+            {
+              "playing": false,
+              "seconds_from_first_packet": 4.9097
+            }
+          ]
+        },
+        "bridge": {
+          "announcements": 52,
+          "tempos_bpm": [
+            120.0
+          ],
+          "transport_transitions": [
+            {
+              "playing": false,
+              "seconds_from_first_packet": 0.1449
+            },
+            {
+              "playing": true,
+              "seconds_from_first_packet": 1.2827
+            },
+            {
+              "playing": false,
+              "seconds_from_first_packet": 4.7765
+            }
+          ]
+        }
+      },
+      "limits": "Link protocol state from MPC is confirmed. Screen rendering, audible alignment and endurance remain unconfirmed. Announcement timing is not an audio latency measurement."
+    },
+    "independent_local_peer_test": {
+      "tempo_bpm": 120,
+      "remote_137_bpm_request_returns_to_ardour_120": true,
+      "play_stop_received": true
+    },
+    "service": {
+      "systemd_user": true,
+      "stop_start_tested": true,
+      "start_idempotent_same_pid": true,
+      "duplicate_process_rejected_exit_code": 2,
+      "new_binary_built_and_running": true
+    },
+    "audio_routing_unchanged": true,
+    "behringer_master_connected": true
+  },
+  "remaining_validation": [
+    "MPC screen and audible sequencing confirmation",
+    "ProControl BBT counter visual confirmation",
+    "Meters other than 4/4, tempo ramps, loops and seeking under load",
+    "Audio alignment and endurance"
+  ]
+}

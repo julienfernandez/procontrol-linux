@@ -96,6 +96,11 @@ dépend des patches fournis, pas de toute installation Ardour standard.
 La bibliothèque comprend aussi **Chaleur (Valve), Tube (ZamTube) et Tape (CHOW)**,
 avec les commandes wow/flutter sur la console : [guide](docs/warm-tape-plugins.md).
 
+Le [guide compteur et synchro MPC](docs/counter-mpc-sync.md) décrit le rendu
+mesures/temps, le diagnostic MIDI Clock et le pont optionnel **Ardour → Ableton Link**.
+Le service se pilote avec `./link start|status|stop` après installation ; son état
+distingue le processus actif, le tempo transmis et les participants Link détectés.
+
 ## Développement et tests
 
 ```bash

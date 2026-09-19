@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Adapté de ReaCommon.py / procontrolosc.py, Copyright (C) 2018 PhaseWalker.
 import ast
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -34,3 +35,19 @@ def clock_command(text):
 
 
 CLOCK_TEST_STEPS = ((3, '12345678'), (33, '87654321'), (63, '        '))
+
+
+# Ardour Temporal::ticks_per_beat is 1920. The three-digit console field uses
+# 960 ticks per beat. Convert before formatting so 1000..1919 never shifts
+# the bar/beat fields; dots 0x14 delimit the fixed 3 / 2 / 3 digit layout.
+def bbt_clock_command(text):
+    match = re.fullmatch(r"\s*(-?\d+)\|(\d+)\|(\d+)\s*", str(text))
+    if not match:
+        return clock_command('        ')
+    bar, beat, tick = map(int, match.groups())
+    bars = f'{bar:03d}' if -99 <= bar <= 999 and bar != 0 else '---'
+    beats = f'{beat:02d}' if 1 <= beat <= 99 else '--'
+    ticks = f'{tick // 2:03d}' if 0 <= tick < 1920 else '---'
+    command = bytearray(clock_command(bars + beats + ticks))
+    command[5] = 0x14
+    return bytes(command)

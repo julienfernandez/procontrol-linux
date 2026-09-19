@@ -5,7 +5,7 @@ import math
 import re
 import time
 import unicodedata
-from procontrol_display import clock_command
+from procontrol_display import clock_command, bbt_clock_command
 from automation_modes import PATH as AUTO_PATH, mode_value, lamp_command
 
 
@@ -107,12 +107,10 @@ class SurfaceFeedback:
     def clock(self,mode,text):
         self.last_clock[mode]=str(text)
         if mode!=self.clock_mode:return
-        digits=re.sub('[^0-9]','',str(text))
         if mode=='bbt':
-            fields=re.findall(r'\d+',str(text))
-            if len(fields)>=3:digits=f'{int(fields[0]):03d}{int(fields[1]):02d}{int(fields[2]):03d}'
-        digits=digits[-8:].rjust(8,'0')
-        body=bytearray(clock_command(digits));body[5]=0x14 if mode=='bbt' else 0x2a
+            self.put(('clock',),bbt_clock_command(text));return
+        digits=re.sub('[^0-9]','',str(text))[-8:].rjust(8,'0')
+        body=bytearray(clock_command(digits));body[5]=0x2a
         self.put(('clock',),bytes(body))
 
     def feed(self,path,values):

@@ -1,5 +1,9 @@
 # Afficheurs ProControl — validation obtenue
 
+Mise à jour du 20 septembre : [correction du compteur mesures/temps/ticks](counter-mpc-sync.md).
+Le dépassement des ticks Ardour à quatre chiffres est corrigé en logiciel ;
+la confirmation visuelle de cette correction reste distincte des anciens tests SMPTE.
+
 Le **13 septembre 2026**, après déploiement du feedback continu, l'utilisateur
 confirme explicitement : **« Afficheurs et jog fonctionnent tous »**, en réponse
 à la question portant sur les noms des tranches, la position du compteur à
