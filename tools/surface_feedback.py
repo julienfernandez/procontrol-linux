@@ -47,7 +47,7 @@ class SurfaceFeedback:
         self.urgent_burst=0
         self.local_motor={};self.motor_echo=set()
         self.clock_mode='smpte';self.last_clock={};self.initialized=False
-        self.eq=None;self.mix_values={}
+        self.eq=None;self.monitor=None;self.mix_values={}
         self.pending_items={};self.confirmed={};self.last_motor_send=-1.
         self.last_ack_ms=None;self.max_ack_ms=0.;self.motor_batches=0;self.motor_targets=0
 
@@ -147,7 +147,7 @@ class SurfaceFeedback:
         elif path=='/strip/gain':
             body=scribble(channel,f'{float(value):+.1f} dB',False)
             self.mix_values[channel]=body
-            if self.eq is None or not self.eq.active:self.put(('value',channel),body)
+            if (self.eq is None or not self.eq.active) and (self.monitor is None or not self.monitor.active):self.put(('value',channel),body)
         elif path in ('/strip/mute','/strip/solo','/strip/select','/strip/recenable'):
             k={'/strip/mute':8,'/strip/solo':7,'/strip/select':6,'/strip/recenable':0}[path]
             self.put(('led',channel-1,k),button_led(channel-1,k,bool(value)))

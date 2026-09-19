@@ -14,6 +14,7 @@ class SurfaceRouting:
         self.rows = {}; self.cache = {}; self.pending = None; self.ready = False
         self.start = 0; self.master = False; self.revision = 0; self.need_catalog = False
         self.lua_rows = []; self.identities = {}; self.session = ''; self.identity_ready = False
+        self.monitor = None
         self.last_error = None
         self.send_pending = {}; self.deferred = []
         self.automation_pending = {}
@@ -46,6 +47,7 @@ class SurfaceRouting:
         self.pending = {}; self.list_started = time.monotonic()
 
     def disconnect(self):
+        if self.monitor is not None:self.monitor.disconnect()
         if getattr(self,'eq',None) is not None:
             self.eq.exit('Ardour déconnecté'); self.eq.creation_supported = False; self.eq.creation_version = 0
         self.ready = False; self.identity_ready = False; self.cache.clear(); self.rows.clear()
@@ -65,6 +67,10 @@ class SurfaceRouting:
         return self.view_ids()[self.start:self.start + 8] if self.ready else []
 
     def feed(self, path, values):
+        if self.monitor is not None:path,values=self.monitor.normalize(path,values)
+        if path in ('/strip/monitor_input', '/strip/monitor_disk'):
+            if (len(values) != 2 or type(values[0]) is not int or values[0] <= 0 or
+                    type(values[1]) not in (int, float) or values[1] not in (0, 1)):return
         # gainmode=2 sends gain automation under /fader, not /gain. Keep one
         # canonical cache for initial feedback, bank switches and GUI changes.
         if path in (AUTO_PATH, '/strip/fader/automation'):
@@ -108,6 +114,7 @@ class SurfaceRouting:
                 self.rows = new; self.ready = True
                 self.start = min(self.start, max(0, ((len(self.view_ids()) - 1) // 8) * 8))
                 if changed:
+                    if self.monitor is not None:self.monitor.catalog_changed()
                     self.send_pending.clear(); self.deferred.clear()
                     self.automation_pending.clear()
                     self.revision += 1
@@ -129,6 +136,7 @@ class SurfaceRouting:
                 self.ready = False; self.identity_ready = False; self.need_catalog = True
             slots = self.slots()
             if sid in slots:self.feedback.feed(path, [slots.index(sid)+1]+list(values[1:]))
+            if self.monitor is not None:self.monitor.feed(path,values)
             if path == '/strip/' + self.mapper.matrix_mode:self.render_matrix()
             return
         self.feedback.feed(path, values)
@@ -153,6 +161,7 @@ class SurfaceRouting:
         self.feedback.local(('led','27:10',[int(self.start>0)]))
         self.feedback.local(('led','27:12',[int(self.start+8<len(self.view_ids()))]))
         self.render_matrix()
+        if self.monitor is not None:self.monitor.render()
 
     def change_bank(self, start):
         if self.mapper.touched:return False
@@ -165,6 +174,9 @@ class SurfaceRouting:
     def actions(self, actions):
         result=[]
         for kind,path,values in actions:
+            if kind=='monitor':
+                if self.monitor is not None:result.extend(self.monitor.handle(path,values))
+                continue
             if kind=='automation':
                 slot,direction=values;slots=self.slots()
                 if path!='cycle' or direction not in (-1,1) or not 1<=slot<=len(slots):continue
@@ -204,6 +216,7 @@ class SurfaceRouting:
                 if not self.change_bank((index//8)*8):continue
                 sid=ids[index]
                 if path=='select':
+                    if self.monitor is not None:self.monitor.select_requested(sid)
                     self.mapper.invalidate_selected();result.append(select_strip(sid))
                 else:
                     addr='/strip/'+path; old=self.cache.get((addr,sid),[sid,0])[1]
@@ -214,11 +227,13 @@ class SurfaceRouting:
                 self.feedback.resync();self.render()
             if path in ('/strip/select','/select/next','/select/previous'):
                 self.mapper.invalidate_selected()
+                if path != '/strip/select' and self.monitor is not None:self.monitor.select_requested()
             elif path in ('/select/plug_page','/select/plugin'):
                 self.mapper.invalidate_selected(plugin_only=True)
             if path.startswith('/strip/') and values:
                 slot=int(values[0]); slots=self.slots()
                 if not 1<=slot<=len(slots):continue
+                if path == '/strip/select' and self.monitor is not None:self.monitor.select_requested(slots[slot-1])
                 result.append(osc(path,slots[slot-1],*values[1:]))
             else:result.append((kind,path,values))
         self.render_matrix()

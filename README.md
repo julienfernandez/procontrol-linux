@@ -17,6 +17,8 @@ ProControl ↔ Ethernet brut ↔ procontrold ↔ OSC ↔ Ardour
   sélection, mute, solo, armement et panoramique.
 - Automatisation du gain par touche AUTO : Manual, Play, Write, Touch, Latch,
   avec les voyants correspondants.
+- Écoute IN / DISK par tranche depuis MON/Ø et ASSIGN/MUTE, raccourcis
+  INPUT / OUTPUT et retour AUTO par DEFAULT ; état confirmé par Ardour.
 - Noms de pistes, valeurs, compteur de position, LEDs de la Channel Matrix,
   vumètres stéréo et master sur les grandes colonnes calibrées.
 - Trackpad, clics, mode clavier ALPHA et pavé numérique via X11.
@@ -73,6 +75,7 @@ et [les réglages stéréo](docs/stereo-settings.md).
 
 - [Contrat OSC et commandes](docs/ardour-osc-contract.md)
 - [Automatisation et LEDs](docs/automation-modes.md)
+- [Écoute IN / DISK depuis la console](docs/track-monitoring.md)
 - [Flux EQ, compresseur et navigateur de greffons](docs/eq-plugin-workflow.md)
 - [Suivi des fenêtres et correctif Ardour 9.8](docs/plugin-window-follow.md)
 - [Greffons libres et chaînes de test](docs/free-plugins-selection.md)
@@ -107,7 +110,7 @@ distingue le processus actif, le tempo transmis et les participants Link détect
 python3 -m unittest discover -s tests -v
 ```
 
-179 tests passent sur la machine de développement. Les tests du helper natif
+223 tests passent sur la machine de développement. Les tests du helper natif
 peuvent être ignorés s'il n'est pas installé ; certaines vérifications de
 capture nécessitent les utilitaires Linux `ip` et `flock`. Les tests de
 capture emploient un faux dumpcap et n'accèdent pas à la console réelle.

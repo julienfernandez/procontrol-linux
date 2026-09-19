@@ -26,6 +26,7 @@ from surface_feedback import SurfaceFeedback
 from surface_osc import ArdourSurface
 from surface_routing import SurfaceRouting
 from eq_editor import EQEditor
+from track_monitor import TrackMonitor
 from plugin_window import PluginWindowFollower
 from stereo_bridge import StereoBridge
 from surface_settings import load as load_settings, validate as validate_settings
@@ -239,6 +240,7 @@ def worker(args):
     surface.jog_gain = settings['jog_gain']
     routing = SurfaceRouting(surface, feedback)
     eq = EQEditor(routing, feedback)
+    monitor = TrackMonitor(routing, feedback)
     plugin_window = PluginWindowFollower()
     display_probe = DSPDisplayProbe(feedback)
     stereo = StereoBridge(routing, feedback, settings, port=0 if args.interface.startswith('test') else 3820)
@@ -264,7 +266,7 @@ def worker(args):
                              'queued_outputs': len(feedback.queue)},
                  'settings_revision': settings['revision'], 'settings': settings,
                  'routing': routing.status(), 'stereo': stereo.status(), 'dsp': eq.status(),
-                 'plugin_window': plugin_window.status(),
+                 'plugin_window': plugin_window.status(), 'track_monitor': monitor.status(),
                  'jog': osc.jog.status() if osc else None,
                  'resources': process_resources(),
                  'osc_reply_port': args.osc_reply_port, 'osc_error': osc_error,
@@ -323,7 +325,7 @@ def worker(args):
                             event('osc_feedback', address=address, values=values)
                     if now - (last_osc if last_osc is not None else osc_started) >= OSC_TIMEOUT:
                         raise TimeoutError('Aucune réponse OSC depuis 20 secondes')
-                    deferred = routing.drain() + eq.tick(now) + plugin_window.update(eq, routing, now)
+                    deferred = routing.drain() + monitor.tick(now) + eq.tick(now) + plugin_window.update(eq, routing, now)
                     if deferred:
                         addresses = osc.actions(deferred)
                         counts['osc_sent'] += len(addresses)

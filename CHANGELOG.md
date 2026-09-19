@@ -1,5 +1,15 @@
 # Historique des versions
 
+## 20 septembre 2026 — monitoring par tranche
+
+- Page MON/Ø : ASSIGN/MUTE bascule IN/DISK, INPUT/OUTPUT ciblent la piste
+  sélectionnée et DEFAULT rend le choix à Ardour. Aucun changement de REC.
+- Affichages et voyants confirmés par OSC ; AUTO lent, attente rapide.
+- Écritures des deux bits d’écoute sérialisées pour éviter IN+DISK involontaire ;
+  cibles absolues protégées lors des changements rapides de sélection/banque.
+- 223 tests logiciels passent. Essai physique et auditif de cette extension
+  encore à effectuer ; voir [le guide](docs/track-monitoring.md).
+
 ## 17 septembre 2026 — stabilité OSC
 
 - Port de retour OSC stable, reconnexion après silence et fermeture silencieuse

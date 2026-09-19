@@ -1,5 +1,15 @@
 # Carte fonctionnelle ProControl → Ardour / Linux
 
+## Écoute IN / DISK — 20 septembre 2026
+
+MON/Ø ouvre la page d’écoute des huit tranches ; leur bouton ASSIGN/MUTE
+bascule IN ↔ DISK. INPUT / OUTPUT forcent IN / DISK sur la piste sélectionnée,
+DEFAULT revient à AUTO dans cette page. Voyants selon les retours Ardour,
+sans toucher à REC. Shift + MON/Ø conserve la polarité. Voir
+[le guide de monitoring et ses limites de validation](track-monitoring.md).
+Cette section remplace l’affectation simple MON/Ø à la polarité des anciens
+inventaires, qui instancient uniquement SurfaceMap sans ses éditeurs de mode.
+
 ## Bibliothèque DSP — 20 septembre 2026
 
 EQ/DYN créent leur effet s’il manque. INSERTS par voie ouvre la chaîne puis une

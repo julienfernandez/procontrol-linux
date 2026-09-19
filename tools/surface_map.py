@@ -86,6 +86,7 @@ class SurfaceMap:
         self.auto_held=set()
 
     def reset_inputs(self):
+        if getattr(self,'monitor',None) is not None:self.monitor.disconnect()
         if getattr(self,'eq',None) is not None:self.eq.exit('Console reconnectée')
         self.seen.clear(); self.alpha=False; self.caps=False; self.modifiers.clear()
         self.held_keys.clear(); self.buttons=0; self.touched.clear()
@@ -121,6 +122,9 @@ class SurfaceMap:
         return actions
 
     def command(self,c,now):
+        if getattr(self,'monitor',None) is not None:
+            result=self.monitor.command(c)
+            if result is not None:return result
         if getattr(self,'eq',None) is not None:
             result=self.eq.command(c)
             if result is not None:return result
