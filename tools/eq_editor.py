@@ -10,7 +10,7 @@ import uuid
 from surface_map import osc, select_strip
 from surface_feedback import scribble, button_led
 from dsp_controls import dsp_text
-from plugin_catalog import CATALOG, entry_for_name, profile_for_name
+from plugin_catalog import CATALOG, entry_for_name, profile_for_name, minimum_version
 
 NAMES = {'LSP Parametric Equalizer x8 Mono', 'LSP Parametric Equalizer x8 Stereo'}
 COMPRESSORS = {'LSP Compressor Mono', 'LSP Compressor Stereo'}
@@ -39,6 +39,7 @@ class EQEditor:
         self.processor_enabled = False
         self.catalog_wait = False
         self.creation_supported = False
+        self.creation_version = 0
         self.create_pending = None
         self.create_reply = None
         self.create_error = None
@@ -247,7 +248,7 @@ class EQEditor:
     def ensure_plugin(self, key):
         self.create_armed = False
         if self.create_pending or not self.valid_target(): return
-        if not self.creation_supported:
+        if not self.creation_supported or self.creation_version < minimum_version(key):
             self.error = self.create_error = 'MAJ Ardour'; return
         if not self.routing.identity_ready or not self.identity or not self.session:
             self.error = self.create_error = 'Identite'; return
@@ -294,7 +295,8 @@ class EQEditor:
 
     def feed(self, path, values):
         if path == '/procontrol/plugin/version':
-            self.creation_supported = values == [1]; return
+            self.creation_version = values[0] if len(values) == 1 and type(values[0]) is int and values[0] in (1, 2) else 0
+            self.creation_supported = self.creation_version > 0; return
         if not self.active: return
         if path == '/procontrol/plugin/result':
             if len(values) != 7 or tuple(values[:4]) != self.create_pending: return
@@ -424,7 +426,9 @@ class EQEditor:
         if not delta or not 0 <= index < len(rows): return
         label,p = rows[index]; fine = bool(self.routing.mapper.modifiers)
         profile = next((item for item in profile_for_name(getattr(self,'plugin_name','')) if item[0] == label), None)
-        if profile and profile[3] is not None:
+        if profile and profile[2] == 'bool':
+            value = 1 if delta > 0 else 0
+        elif profile and profile[3] is not None:
             value = p['value'] + delta * profile[3] * (.1 if fine else 1)
         elif getattr(self,'plugin_name','').startswith('LSP Compressor') and label in ('Attack threshold','Knee','Makeup gain','Wet gain','Output gain'):
             value = max(p['value'],1e-3)*10**(delta*(.05 if fine else .25)/20)
@@ -556,6 +560,9 @@ class EQEditor:
         profile = next((item for item in profile_for_name(getattr(self,'plugin_name','')) if item[0] == label), None)
         if profile and profile[2]:
             unit = profile[2]
+            if unit == 'bool': return 'ON' if v >= .5 else 'OFF'
+            if unit == 'tape_out_db': return f'{v*60-30:+.1f}dB'
+            if unit == 'tape_in_db': return f'{v*36-30:+.1f}dB'
             if unit == '%01': v *= 100; unit = '%'
             if unit == 'Hz' and abs(v) >= 1000: return f'{v/1000:.2f}kHz'[:8]
             return f'{v:.3g}{unit}'[:8]
@@ -570,5 +577,5 @@ class EQEditor:
         return {'active':self.active,'ready':self.usable(),'mode':self.mode,'page':self.page+1,'plugin_page':self.plugin_page+1,'track':getattr(self,'route_name',None),
                 'sid':self.sid,'plugin':self.plugin,'filter':self.filter+1,
                 'error':self.error,'edits':self.edits,'snapshots':self.snapshots,
-                'creation_supported':self.creation_supported,'creating':bool(self.create_pending), 'creation_error':self.create_error,
+                'creation_supported':self.creation_supported,'creation_version':self.creation_version,'creating':bool(self.create_pending), 'creation_error':self.create_error,
                 'library':[e[1] for e in CATALOG], 'cursor':self.cursor+1}

@@ -15,7 +15,7 @@ class PluginCatalogTests(unittest.TestCase):
         self.r.session = '/session'
         self.r.identities = {i: str(100+i) for i in self.r.rows}
         self.r.identity_ready = True
-        self.r.feed('/procontrol/plugin/version', [1])
+        self.r.feed('/procontrol/plugin/version', [2])
 
     def missing(self, command='90 02 40'):
         self.connected(); self.action(command); self.eq.tick()
@@ -126,16 +126,16 @@ class PluginCatalogTests(unittest.TestCase):
         actions = self.action('90 00 4e')
         self.assertEqual(actions[0][2][:3], ['/session','109','comp'])
 
-    def test_library_has_five_choices_without_discovery(self):
+    def test_library_has_eight_choices_without_discovery(self):
         self.connected(); self.action('90 0a 40'); self.load()
         self.action('90 00 4f')  # third row = + Effet
         self.assertEqual(self.eq.mode, 'library')
-        self.assertEqual(len(self.eq.browser_rows()), 5)
-        self.assertEqual([r[0] for r in CATALOG], ['eq','comp','reverb','delay','phaser'])
+        self.assertEqual(len(self.eq.browser_rows()), 8)
+        self.assertEqual([r[0] for r in CATALOG], ['eq','comp','reverb','delay','phaser','warm','tube','tape'])
         self.action('b0 54 3f')
-        self.assertEqual(self.eq.cursor, 4)
+        self.assertEqual(self.eq.cursor, 7)
         actions = self.action('90 11 5a')  # ENTER confirms the rotary cursor.
-        self.assertEqual(actions[0][2][2], 'phaser')
+        self.assertEqual(actions[0][2][2], 'tape')
 
     def test_dsp_knob_controls_compressor_and_stale_catalog_blocks(self):
         self.action('90 03 40'); self.load(2)
@@ -172,7 +172,47 @@ class PluginCatalogTests(unittest.TestCase):
         self.r.feed('/strip/plugin/descriptor_end', [1,1])
         self.assertFalse(self.eq.usable())
 
-    def test_real_mono_and_stereo_descriptors_bind_all_five_profiles(self):
+    def test_old_native_module_only_blocks_new_effects(self):
+        self.connected(); self.r.feed('/procontrol/plugin/version', [1])
+        self.action('90 0a 40'); self.eq.tick(); self.r.feed('/strip/plugin/list', [1])
+        self.eq.handle('open', [7])
+        self.assertEqual(self.eq.create_error, 'MAJ Ardour')
+        self.assertFalse(self.eq.create_pending)
+        self.assertEqual(self.eq.tick(), [])
+        self.r.feed('/procontrol/plugin/version', [2])
+        request = self.eq.handle('open', [7])
+        self.assertEqual(request[0][2][2], 'tape')
+
+    def test_native_version_reconnect_and_unknown_protocol(self):
+        self.connected(); self.assertEqual(self.eq.creation_version, 2)
+        self.r.disconnect()
+        self.assertEqual(self.eq.creation_version, 0)
+        self.assertFalse(self.eq.creation_supported)
+        for bad in ([], [True], [3], ['2']):
+            self.eq.feed('/procontrol/plugin/version', bad)
+            self.assertFalse(self.eq.creation_supported)
+
+    def test_tape_normalized_units_and_compact_labels(self):
+        self.eq.plugin_name = 'CHOWTapeModel'
+        self.assertEqual(self.eq.parameter_text('Input Gain', dict(value=30/36, flags=128)), '+0.0dB')
+        self.assertEqual(self.eq.parameter_text('Output Gain', dict(value=.5, flags=128)), '+0.0dB')
+        self.assertEqual(self.eq.parameter_text('Wow Depth', dict(value=.18, flags=128)), '18%')
+        self.assertEqual(self.eq.parameter_text('Wow/Flutter On/Off', dict(value=0., flags=128)), 'OFF')
+        for name in ('Valve saturation', 'ZamTube', 'CHOWTapeModel'):
+            for _, caption, _, _ in profile_for_name(name):self.assertLessEqual(len(caption), 8)
+
+    def test_normalized_tape_switch_ignores_fine_increment(self):
+        self.eq.plugin_name = 'CHOWTapeModel'
+        self.eq.params = {'Tape On/Off': dict(id=1, flags=128, low=0., high=1., value=1.)}
+        self.r.mapper.modifiers = {1}
+        writes = []
+        self.eq.write_label = lambda label, value: writes.append((label, value))
+        self.eq.turn_parameter(0, -1)
+        self.eq.params['Tape On/Off']['value'] = 0.
+        self.eq.turn_parameter(0, 1)
+        self.assertEqual(writes, [('Tape On/Off', 0), ('Tape On/Off', 1)])
+
+    def test_real_mono_and_stereo_descriptors_bind_all_catalog_profiles(self):
         fixture = json.loads((Path(__file__).parent/'fixtures/curated-live-descriptors.json').read_text())
         for key, entry in fixture.items():
             with self.subTest(plugin=key):

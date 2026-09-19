@@ -1,7 +1,7 @@
 """Small, explicit console library. Names bind to live Ardour descriptors.
 
 Never enumerate the workstation's VST/LV2 inventory here. The native endpoint
-has the same five allowlisted keys and chooses mono/stereo at insertion time.
+has the same allowlisted keys and chooses mono/stereo at insertion time.
 """
 # SPDX-License-Identifier: GPL-3.0-or-later
 CATALOG = (
@@ -10,10 +10,34 @@ CATALOG = (
     ('reverb', 'Reverb', ('Dragonfly Room Reverb',)),
     ('delay', 'Delay', ('ZamDelay',)),
     ('phaser', 'Phaser', ('LFO Phaser',)),
+    ('warm', 'Chaleur', ('Valve saturation',)),
+    ('tube', 'Tube', ('ZamTube',)),
+    ('tape', 'Tape', ('CHOWTapeModel',)),
 )
 
 # label, console caption, unit, per-detent increment (None = descriptor rule).
 PROFILES = {
+    'warm': (
+        ('Distortion level', 'Chaleur', '%01', .01),
+        ('Distortion character', 'Caract.', '%01', .01),
+    ),
+    'tube': (
+        ('Tube Drive', 'Drive', '', .1), ('Input level', 'Niveau', 'dB', .25),
+        ('Bass', 'Graves', '', .1), ('Mids', 'Mediums', '', .1),
+        ('Treble', 'Aigus', '', .1), ('Tone Stack Model', 'Modele', '', None),
+        ('Insane Boost', 'Boost', '', None),
+    ),
+    # CHOW's LV2 wrapper exports normalized 0..1 parameters. Wow/flutter
+    # rates also use this scale in its own GUI: do not mislabel them as Hz.
+    'tape': (
+        ('Wow Depth', 'WowProf', '%01', .01), ('Wow Rate', 'WowVit', '%01', .01),
+        ('Flutter Depth', 'FlutProf', '%01', .01), ('Flutter Rate', 'FlutVit', '%01', .01),
+        ('Tape Drive', 'Drive', '%01', .01), ('Tape Saturation', 'Satur.', '%01', .01),
+        ('Dry/Wet', 'Melange', '%01', .01), ('Output Gain', 'Sortie', 'tape_out_db', 1/240),
+        ('Wow Variance', 'Alea', '%01', .01), ('Wow Drift', 'Derive', '%01', .01),
+        ('Tape Bias', 'Bias', '%01', .01), ('Input Gain', 'Entree', 'tape_in_db', 1/144),
+        ('Tape On/Off', 'Bande', 'bool', 1), ('Wow/Flutter On/Off', 'Detune', 'bool', 1),
+    ),
     'reverb': (
         ('Decay', 'Duree', 's', .05), ('Predelay', 'Predelay', 'ms', 1),
         ('Size', 'Taille', 'm', .5), ('Late Level', 'Reverb', '%', 1),
@@ -36,6 +60,10 @@ PROFILES = {
         ('Feedback', 'Retour', '%01', .01), ('Spread (octaves)', 'Etendue', 'oct', .05),
     ),
 }
+
+
+def minimum_version(key):
+    return 2 if key in ('warm', 'tube', 'tape') else 1
 
 
 def entry_for_name(name):

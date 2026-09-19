@@ -93,6 +93,9 @@ corrigé démarre normalement sans préchargement ASan ; la stabilité sur une
 nuit entière reste à confirmer. La disponibilité des interfaces natives
 dépend des patches fournis, pas de toute installation Ardour standard.
 
+La bibliothèque comprend aussi **Chaleur (Valve), Tube (ZamTube) et Tape (CHOW)**,
+avec les commandes wow/flutter sur la console : [guide](docs/warm-tape-plugins.md).
+
 ## Développement et tests
 
 ```bash

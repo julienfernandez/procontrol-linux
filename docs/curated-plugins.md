@@ -1,6 +1,6 @@
 # EQ/DYN automatiques et bibliothèque de console
 
-19 septembre 2026. La passerelle utilise une bibliothèque explicite de cinq
+Mise à jour le 20 septembre 2026. La passerelle utilise une bibliothèque explicite de huit
 effets. Elle ne parcourt pas le catalogue VST/LV2 installé pour proposer des ajouts.
 
 ## Gestes
@@ -33,7 +33,7 @@ effet sur la nouvelle voie**. Appuyer explicitement sur EQ/DYN ou confirmer dans
 la bibliothèque pour insérer. Les effets existants hors bibliothèque restent
 consultables dans la chaîne de la voie ; ils ne deviennent pas des choix d'ajout.
 
-## Les cinq choix
+## Les huit choix
 
 | Choix | Plugin | Première page |
 |---|---|---|
@@ -42,6 +42,12 @@ consultables dans la chaîne de la voie ; ils ne deviennent pas des choix d'ajou
 | Réverb | Dragonfly Room Reverb | Durée, prédélai, taille, niveau réverb, réflexions, direct, coupe-haut, largeur |
 | Délai | ZamDelay | Temps, feedback, mélange, filtre, synchro BPM, division, sortie, inversion |
 | Phaser | SWH LFO Phaser | Vitesse, profondeur, feedback, étendue |
+| Chaleur | SWH Valve saturation | Chaleur, caractère |
+| Tube | ZamTube | Drive, niveau, graves, médiums, aigus, modèle, boost |
+| Tape | CHOW Tape Model | Wow profondeur/vitesse, flutter profondeur/vitesse, drive, saturation, mélange, sortie |
+
+Voir [Chaleur et Tape](warm-tape-plugins.md) pour les réglages de départ,
+les deux pages Tape et la validation des trois ajouts du 20 septembre.
 
 Les profils associent les libellés aux identifiants **réellement renvoyés par
 Ardour**, avec bornes et flags. Un profil incomplet interdit les écritures.
@@ -62,15 +68,17 @@ Sources des effets : [Dragonfly](https://github.com/michaelwillis/dragonfly-reve
 
 `native/ardour-9.8-curated-plugins.patch` s'applique après les deux patches
 `ardour-9.8-plugin-ui.patch` et `ardour-9.8-osc-stability.patch` sur Ardour 9.8.
+Ajouter ensuite `native/ardour-9.8-warm-tape.patch` pour les huit effets.
 Compilation : `python3 waf build --targets=libardour_osc -j2`.
 
 | Message | Arguments |
 |---|---|
-| `/procontrol/plugin/version` | Aucun ; réponse entière `1` |
+| `/procontrol/plugin/version` | Aucun ; réponse entière `2` (`1` pour les cinq effets initiaux) |
 | `/procontrol/plugin/ensure` | `ssss` : chemin session, ID route persistant, clé, jeton de requête |
 | `/procontrol/plugin/result` | `ssssiis` : mêmes quatre chaînes, résultat, index 1-based, nom |
 
-Clés autorisées : `eq`, `comp`, `reverb`, `delay`, `phaser`.
+Clés autorisées : `eq`, `comp`, `reverb`, `delay`, `phaser`, `warm`, `tube`, `tape`.
+Les trois dernières demandent la version native 2.
 Résultats : `1` réutilisé, `2` créé, `-1` identité refusée, `-2` format/clé non
 supporté, `-3` plusieurs instances, `-4` absent du catalogue Ardour, `-5` valeurs
 initiales incompatibles, `-6` échec insertion. Master/monitor et voies autres que
@@ -99,7 +107,7 @@ négociation. Si le module actif ne fournit pas encore l'ajout, la console affic
 `RELANCER / ARDOUR / PUIS EQ / OU DYN`. Les états d'attente et d'erreur s'affichent
 sur le DSP et les afficheurs de tranche, y compris en mode compresseur.
 
-Validation : **195 tests Python**, compilation native, dix créations réelles
+Validation initiale du 19 septembre : **195 tests Python**, compilation native, dix créations réelles
 (cinq effets × deux formats), dix réutilisations, **72 réglages relus par OSC**,
 rejets session/route/master/format/clé, fermeture normale de la session de test.
 Les snapshots réels servent de fixtures mono et stéréo.
@@ -116,5 +124,5 @@ réutilisation confirmées sans doublon. Aucun geste physique n'a été injecté
 sur Ethernet. Voir `plugin-activation-2026-09-19.json`.
 
 Restent à confirmer sur la console physique : affichage du nouveau navigateur,
-sens/confort du curseur et audition des trois nouveaux effets. Les tests réseau
+sens/confort du curseur et audition des effets. Les tests réseau
 et les relectures de paramètres ne sont pas une validation visuelle ou sonore.

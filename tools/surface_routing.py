@@ -47,7 +47,7 @@ class SurfaceRouting:
 
     def disconnect(self):
         if getattr(self,'eq',None) is not None:
-            self.eq.exit('Ardour déconnecté'); self.eq.creation_supported = False
+            self.eq.exit('Ardour déconnecté'); self.eq.creation_supported = False; self.eq.creation_version = 0
         self.ready = False; self.identity_ready = False; self.cache.clear(); self.rows.clear()
         self.send_pending.clear(); self.deferred.clear()
         self.automation_pending.clear()

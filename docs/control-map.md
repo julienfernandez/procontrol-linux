@@ -1,5 +1,12 @@
 # Carte fonctionnelle ProControl → Ardour / Linux
 
+## Bibliothèque DSP — 20 septembre 2026
+
+EQ/DYN créent leur effet s’il manque. INSERTS par voie ouvre la chaîne puis une
+bibliothèque de huit effets validés : EQ, compresseur, réverb, délai, phaser,
+Chaleur, Tube et Tape. Navigation et paramètres sur les huit rotatifs DSP.
+Voir [le parcours](curated-plugins.md) et [les nouveaux effets](warm-tape-plugins.md).
+
 ## Édition EQ / plugins — 15 septembre 2026
 
 Le [mode EQ et navigateur de greffons](eq-plugin-workflow.md) est installé :

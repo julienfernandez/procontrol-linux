@@ -1,0 +1,588 @@
+{
+  "date": "2026-09-20",
+  "native_version": 2,
+  "native_module_sha256": "2dd16f75066c500ce79db0d9e0bdca083349a1217548e917068c5aaebecd7ee1",
+  "patches_reproduce_all_4_built_sources": true,
+  "creations": 6,
+  "reuse_without_duplicate": 6,
+  "control_write_readbacks": 46,
+  "profiles": {
+    "warm": 2,
+    "tube": 7,
+    "tape": 14
+  },
+  "python_tests": 199,
+  "native_normal_exit": 0,
+  "new_fixture_count": 6,
+  "total_fixture_count": 16,
+  "artifacts": {
+    "ChowTapeModel-Linux-x64-2.11.4.deb": "71aaae1c454ac83ac16b248d4cc99c12bf6d11452a87376fcb6b1e79060e3a5c",
+    "CHOWTapeModel.so": "ef27983e18e81d4bc4f1a3357d15913d55f57dc19d13233a6b809004cac8ece1",
+    "plugin-linux.so": "91a46ff0eaecb2fbb9ebf143a767de2c55fe5e230374067bf958075d5316ef4e",
+    "ZamTube_dsp.so": "89e730914209329031cc36d854380dd4f90e5a001cb0d43343ed24dc07e100d4",
+    "ZamTube_ui.so": "7613cf2425dd277d95079d5261950c9d85b16dabad4bed637257b7591c420cf3"
+  },
+  "audio_offline": {
+    "warm": {
+      "input_channels": 1,
+      "output_channels": 1,
+      "peak": 0.255467,
+      "rms": 0.176107,
+      "seconds": 16,
+      "cpu_seconds": 0.048279,
+      "pitch_cents_stddev": 0.00021820981050460234,
+      "controls": {
+        "Distortion level": 0.2,
+        "Distortion character": 0.25
+      }
+    },
+    "tube": {
+      "input_channels": 1,
+      "output_channels": 1,
+      "peak": 0.0970745,
+      "rms": 0.0579664,
+      "seconds": 16,
+      "cpu_seconds": 1.79617,
+      "pitch_cents_stddev": 0.17634309953682184,
+      "controls": {
+        "Tube Drive": 1.2,
+        "Input level": -3,
+        "Insane Boost": 0
+      }
+    },
+    "tape": {
+      "input_channels": 2,
+      "output_channels": 2,
+      "peak": 0.202949,
+      "rms": 0.0910205,
+      "seconds": 16,
+      "cpu_seconds": 0.872937,
+      "pitch_cents_stddev": 3.7292685664872964,
+      "controls": {
+        "Tape Drive": 0.35,
+        "Tape Saturation": 0.4,
+        "Tape Bias": 0.6,
+        "Wow Depth": 0.4,
+        "Wow Rate": 0.2,
+        "Flutter Depth": 0.06,
+        "Wow Variance": 0.1,
+        "Wow Drift": 0.08
+      }
+    }
+  },
+  "native_cases": [
+    {
+      "track": "Test1",
+      "key": "warm",
+      "preset_verified": {
+        "Distortion level": 0.2,
+        "Distortion character": 0.25
+      },
+      "readbacks": [
+        {
+          "page": 1,
+          "knob": 1,
+          "label": "Distortion level",
+          "control_id": 1,
+          "requested": 0.21000000298023225,
+          "actual": 0.21000000834465027
+        },
+        {
+          "page": 1,
+          "knob": 2,
+          "label": "Distortion character",
+          "control_id": 2,
+          "requested": 0.26,
+          "actual": 0.25999999046325684
+        }
+      ]
+    },
+    {
+      "track": "Test1",
+      "key": "tube",
+      "preset_verified": {
+        "Tube Drive": 1.2,
+        "Input level": -3.0,
+        "Insane Boost": 0.0
+      },
+      "readbacks": [
+        {
+          "page": 1,
+          "knob": 1,
+          "label": "Tube Drive",
+          "control_id": 1,
+          "requested": 1.300000047683716,
+          "actual": 1.3000000715255737
+        },
+        {
+          "page": 1,
+          "knob": 2,
+          "label": "Input level",
+          "control_id": 6,
+          "requested": -2.75,
+          "actual": -2.75
+        },
+        {
+          "page": 1,
+          "knob": 3,
+          "label": "Bass",
+          "control_id": 2,
+          "requested": 5.1,
+          "actual": 5.099999904632568
+        },
+        {
+          "page": 1,
+          "knob": 4,
+          "label": "Mids",
+          "control_id": 3,
+          "requested": 5.1,
+          "actual": 5.099999904632568
+        },
+        {
+          "page": 1,
+          "knob": 5,
+          "label": "Treble",
+          "control_id": 4,
+          "requested": 5.1,
+          "actual": 5.099999904632568
+        },
+        {
+          "page": 1,
+          "knob": 6,
+          "label": "Tone Stack Model",
+          "control_id": 5,
+          "requested": 1.0,
+          "actual": 1.0
+        },
+        {
+          "page": 1,
+          "knob": 7,
+          "label": "Insane Boost",
+          "control_id": 7,
+          "requested": 1.0,
+          "actual": 1.0
+        }
+      ]
+    },
+    {
+      "track": "Test1",
+      "key": "tape",
+      "preset_verified": {
+        "Wow Depth": 0.4,
+        "Wow Rate": 0.2,
+        "Flutter Depth": 0.06,
+        "Flutter Rate": 0.3,
+        "Tape Drive": 0.35,
+        "Tape Saturation": 0.4,
+        "Tape Bias": 0.6,
+        "Dry/Wet": 1.0,
+        "Input Gain": 0.8333333333333334,
+        "Output Gain": 0.5,
+        "Wow/Flutter On/Off": 1.0,
+        "Tape On/Off": 1.0,
+        "Wow Variance": 0.1,
+        "Wow Drift": 0.08,
+        "Degrade On/Off": 0.0,
+        "Chew On/Off": 0.0,
+        "Oversampling Factor": 0.25
+      },
+      "readbacks": [
+        {
+          "page": 1,
+          "knob": 1,
+          "label": "Wow Depth",
+          "control_id": 38,
+          "requested": 0.4100000059604645,
+          "actual": 0.4099999964237213
+        },
+        {
+          "page": 1,
+          "knob": 2,
+          "label": "Wow Rate",
+          "control_id": 37,
+          "requested": 0.21000000298023225,
+          "actual": 0.21000000834465027
+        },
+        {
+          "page": 1,
+          "knob": 3,
+          "label": "Flutter Depth",
+          "control_id": 36,
+          "requested": 0.06999999865889549,
+          "actual": 0.07000000029802322
+        },
+        {
+          "page": 1,
+          "knob": 4,
+          "label": "Flutter Rate",
+          "control_id": 35,
+          "requested": 0.31000001192092896,
+          "actual": 0.3100000023841858
+        },
+        {
+          "page": 1,
+          "knob": 5,
+          "label": "Tape Drive",
+          "control_id": 19,
+          "requested": 0.35999999403953553,
+          "actual": 0.35999998450279236
+        },
+        {
+          "page": 1,
+          "knob": 6,
+          "label": "Tape Saturation",
+          "control_id": 20,
+          "requested": 0.4100000059604645,
+          "actual": 0.4099999964237213
+        },
+        {
+          "page": 1,
+          "knob": 7,
+          "label": "Dry/Wet",
+          "control_id": 5,
+          "requested": 0.99,
+          "actual": 0.9900000095367432
+        },
+        {
+          "page": 1,
+          "knob": 8,
+          "label": "Output Gain",
+          "control_id": 4,
+          "requested": 0.5041666666666667,
+          "actual": 0.5041666626930237
+        },
+        {
+          "page": 2,
+          "knob": 1,
+          "label": "Wow Variance",
+          "control_id": 39,
+          "requested": 0.11000000149011611,
+          "actual": 0.10999999940395355
+        },
+        {
+          "page": 2,
+          "knob": 2,
+          "label": "Wow Drift",
+          "control_id": 40,
+          "requested": 0.08999999821186065,
+          "actual": 0.08999999612569809
+        },
+        {
+          "page": 2,
+          "knob": 3,
+          "label": "Tape Bias",
+          "control_id": 21,
+          "requested": 0.6100000238418579,
+          "actual": 0.6100000143051147
+        },
+        {
+          "page": 2,
+          "knob": 4,
+          "label": "Input Gain",
+          "control_id": 3,
+          "requested": 0.8402777579095628,
+          "actual": 0.8402777314186096
+        },
+        {
+          "page": 2,
+          "knob": 5,
+          "label": "Tape On/Off",
+          "control_id": 18,
+          "requested": 0.0,
+          "actual": 0.0
+        },
+        {
+          "page": 2,
+          "knob": 6,
+          "label": "Wow/Flutter On/Off",
+          "control_id": 34,
+          "requested": 0.0,
+          "actual": 0.0
+        }
+      ]
+    },
+    {
+      "track": "Test2",
+      "key": "warm",
+      "preset_verified": {
+        "Distortion level": 0.2,
+        "Distortion character": 0.25
+      },
+      "readbacks": [
+        {
+          "page": 1,
+          "knob": 1,
+          "label": "Distortion level",
+          "control_id": 1,
+          "requested": 0.21000000298023225,
+          "actual": 0.21000000834465027
+        },
+        {
+          "page": 1,
+          "knob": 2,
+          "label": "Distortion character",
+          "control_id": 2,
+          "requested": 0.26,
+          "actual": 0.25999999046325684
+        }
+      ]
+    },
+    {
+      "track": "Test2",
+      "key": "tube",
+      "preset_verified": {
+        "Tube Drive": 1.2,
+        "Input level": -3.0,
+        "Insane Boost": 0.0
+      },
+      "readbacks": [
+        {
+          "page": 1,
+          "knob": 1,
+          "label": "Tube Drive",
+          "control_id": 1,
+          "requested": 1.300000047683716,
+          "actual": 1.3000000715255737
+        },
+        {
+          "page": 1,
+          "knob": 2,
+          "label": "Input level",
+          "control_id": 6,
+          "requested": -2.75,
+          "actual": -2.75
+        },
+        {
+          "page": 1,
+          "knob": 3,
+          "label": "Bass",
+          "control_id": 2,
+          "requested": 5.1,
+          "actual": 5.099999904632568
+        },
+        {
+          "page": 1,
+          "knob": 4,
+          "label": "Mids",
+          "control_id": 3,
+          "requested": 5.1,
+          "actual": 5.099999904632568
+        },
+        {
+          "page": 1,
+          "knob": 5,
+          "label": "Treble",
+          "control_id": 4,
+          "requested": 5.1,
+          "actual": 5.099999904632568
+        },
+        {
+          "page": 1,
+          "knob": 6,
+          "label": "Tone Stack Model",
+          "control_id": 5,
+          "requested": 1.0,
+          "actual": 1.0
+        },
+        {
+          "page": 1,
+          "knob": 7,
+          "label": "Insane Boost",
+          "control_id": 7,
+          "requested": 1.0,
+          "actual": 1.0
+        }
+      ]
+    },
+    {
+      "track": "Test2",
+      "key": "tape",
+      "preset_verified": {
+        "Wow Depth": 0.4,
+        "Wow Rate": 0.2,
+        "Flutter Depth": 0.06,
+        "Flutter Rate": 0.3,
+        "Tape Drive": 0.35,
+        "Tape Saturation": 0.4,
+        "Tape Bias": 0.6,
+        "Dry/Wet": 1.0,
+        "Input Gain": 0.8333333333333334,
+        "Output Gain": 0.5,
+        "Wow/Flutter On/Off": 1.0,
+        "Tape On/Off": 1.0,
+        "Wow Variance": 0.1,
+        "Wow Drift": 0.08,
+        "Degrade On/Off": 0.0,
+        "Chew On/Off": 0.0,
+        "Oversampling Factor": 0.25
+      },
+      "readbacks": [
+        {
+          "page": 1,
+          "knob": 1,
+          "label": "Wow Depth",
+          "control_id": 38,
+          "requested": 0.4100000059604645,
+          "actual": 0.4099999964237213
+        },
+        {
+          "page": 1,
+          "knob": 2,
+          "label": "Wow Rate",
+          "control_id": 37,
+          "requested": 0.21000000298023225,
+          "actual": 0.21000000834465027
+        },
+        {
+          "page": 1,
+          "knob": 3,
+          "label": "Flutter Depth",
+          "control_id": 36,
+          "requested": 0.06999999865889549,
+          "actual": 0.07000000029802322
+        },
+        {
+          "page": 1,
+          "knob": 4,
+          "label": "Flutter Rate",
+          "control_id": 35,
+          "requested": 0.31000001192092896,
+          "actual": 0.3100000023841858
+        },
+        {
+          "page": 1,
+          "knob": 5,
+          "label": "Tape Drive",
+          "control_id": 19,
+          "requested": 0.35999999403953553,
+          "actual": 0.35999998450279236
+        },
+        {
+          "page": 1,
+          "knob": 6,
+          "label": "Tape Saturation",
+          "control_id": 20,
+          "requested": 0.4100000059604645,
+          "actual": 0.4099999964237213
+        },
+        {
+          "page": 1,
+          "knob": 7,
+          "label": "Dry/Wet",
+          "control_id": 5,
+          "requested": 0.99,
+          "actual": 0.9900000095367432
+        },
+        {
+          "page": 1,
+          "knob": 8,
+          "label": "Output Gain",
+          "control_id": 4,
+          "requested": 0.5041666666666667,
+          "actual": 0.5041666626930237
+        },
+        {
+          "page": 2,
+          "knob": 1,
+          "label": "Wow Variance",
+          "control_id": 39,
+          "requested": 0.11000000149011611,
+          "actual": 0.10999999940395355
+        },
+        {
+          "page": 2,
+          "knob": 2,
+          "label": "Wow Drift",
+          "control_id": 40,
+          "requested": 0.08999999821186065,
+          "actual": 0.08999999612569809
+        },
+        {
+          "page": 2,
+          "knob": 3,
+          "label": "Tape Bias",
+          "control_id": 21,
+          "requested": 0.6100000238418579,
+          "actual": 0.6100000143051147
+        },
+        {
+          "page": 2,
+          "knob": 4,
+          "label": "Input Gain",
+          "control_id": 3,
+          "requested": 0.8402777579095628,
+          "actual": 0.8402777314186096
+        },
+        {
+          "page": 2,
+          "knob": 5,
+          "label": "Tape On/Off",
+          "control_id": 18,
+          "requested": 0.0,
+          "actual": 0.0
+        },
+        {
+          "page": 2,
+          "knob": 6,
+          "label": "Wow/Flutter On/Off",
+          "control_id": 34,
+          "requested": 0.0,
+          "actual": 0.0
+        }
+      ]
+    },
+    {
+      "rejected_kind": "wrong_session",
+      "code": -1
+    },
+    {
+      "rejected_kind": "invalid_route",
+      "code": -1
+    },
+    {
+      "rejected_kind": "master_or_4ch",
+      "code": -1
+    },
+    {
+      "rejected_kind": "master_or_4ch",
+      "code": -2
+    },
+    {
+      "rejected_kind": "unlisted_plugin",
+      "code": -2
+    }
+  ],
+  "limits": [
+    "Native tests run with isolated config, OSC port and Dummy audio, no changes to the user session.",
+    "Audio render is offline LV2 processing, not audition on the Behringer or validation of physical console gestures.",
+    "CPU measurement from one sine render is not an endurance or production-load measurement."
+  ],
+  "activation": {
+    "date": "2026-09-20",
+    "old_pid": 340272,
+    "new_pid": 366322,
+    "native_version": 2,
+    "save_confirmed": true,
+    "normal_quit": true,
+    "same_ardour_audio_connections": true,
+    "audio_connections": 79,
+    "restored_connections": 0,
+    "master_behringer_stereo": true,
+    "module_sha256": "2dd16f75066c500ce79db0d9e0bdca083349a1217548e917068c5aaebecd7ee1",
+    "no_new_effects_added_to_user_tracks": true,
+    "plugin_chains_and_values_unchanged": true,
+    "gateway_pid": 366410,
+    "console": "online",
+    "ardour": "responding",
+    "library": [
+      "LSP EQ8",
+      "LSP Comp",
+      "Reverb",
+      "Delay",
+      "Phaser",
+      "Chaleur",
+      "Tube",
+      "Tape"
+    ]
+  }
+}

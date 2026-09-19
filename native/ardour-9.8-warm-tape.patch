@@ -1,0 +1,42 @@
+--- a/libs/surfaces/osc/osc.cc
++++ b/libs/surfaces/osc/osc.cc
+@@ -5387,7 +5387,7 @@
+ int
+ OSC::procontrol_plugin_version (lo_message msg)
+ {
+-	return int_message (X_("/procontrol/plugin/version"), 1, get_address (msg));
++	return int_message (X_("/procontrol/plugin/version"), 2, get_address (msg));
+ }
+ 
+ int
+@@ -5420,6 +5420,9 @@
+ 	else if (key == "reverb") { uri = "urn:dragonfly:room"; }
+ 	else if (key == "delay") { uri = "urn:zamaudio:ZamDelay"; }
+ 	else if (key == "phaser") { uri = "http://plugin.org.uk/swh-plugins/lfoPhaser"; }
++	else if (key == "warm") { uri = "http://plugin.org.uk/swh-plugins/valve"; }
++	else if (key == "tube") { uri = "urn:zamaudio:ZamTube"; }
++	else if (key == "tape") { uri = "https://github.com/jatinchowdhury18/AnalogTapeModel"; }
+ 	else { result = -2; return reply (); }
+ 
+ 	std::shared_ptr<Processor> before;
+@@ -5457,6 +5460,20 @@
+ 	} else if (key == "comp") { initial["Ratio"] = 1; }
+ 	else if (key == "delay") { initial["Time"] = 250; initial["Feedback"] = .25; initial["Dry/Wet"] = .2; }
+ 	else if (key == "phaser") { initial["LFO rate (Hz)"] = .4; initial["LFO depth"] = .5; initial["Feedback"] = .2; }
++	else if (key == "warm") { initial["Distortion level"] = .2; initial["Distortion character"] = .25; }
++	else if (key == "tube") { initial["Tube Drive"] = 1.2; initial["Input level"] = -3; initial["Insane Boost"] = 0; }
++	else if (key == "tape") {
++		// CHOW Tape 2.11.4 exposes normalized LV2 controls. Gentle tape
++		// wobble, no noise or damaged-tape dropouts, 2x oversampling.
++		initial["Input Gain"] = 30.0f / 36.0f; initial["Output Gain"] = .5;
++		initial["Dry/Wet"] = 1; initial["Tape On/Off"] = 1;
++		initial["Tape Drive"] = .35; initial["Tape Saturation"] = .4; initial["Tape Bias"] = .6;
++		initial["Wow/Flutter On/Off"] = 1; initial["Wow Depth"] = .4; initial["Wow Rate"] = .2;
++		initial["Flutter Depth"] = .06; initial["Flutter Rate"] = .3;
++		initial["Wow Variance"] = .1; initial["Wow Drift"] = .08;
++		initial["Degrade On/Off"] = 0; initial["Chew On/Off"] = 0;
++		initial["Oversampling Factor"] = .25;
++	}
+ 	for (uint32_t n = 0; ; ++n) {
+ 		bool ok = false;
+ 		const uint32_t port = pi->plugin ()->nth_parameter (n, ok);
