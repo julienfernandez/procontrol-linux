@@ -9,6 +9,12 @@ Le sélecteur `70 01` atteint les faders, avec réponse
 `A/M/m` pour comm et `U/Q/q` pour fader. Le relais série filtre certains octets
 des réponses fader ; les [huit octets de vecteurs récupérés via son tampon RX](fader-raw-readback-2026-09-20.md)
 ont néanmoins été comparés au constructeur trois fois, avec audit des captures.
+Les [essais de neutralisation](fader-touch-recovery-2026-09-21.md) documentent
+ensuite les faux événements tactiles produits par certaines valeurs lues et
+les huit lectures de relâchement ajoutées à chaque bloc. Le
+[vérificateur d'archive](fader-archive-verification.md) distingue les blocs
+terminés d'une acquisition complète et décrit la surveillance du lecteur
+exclusif. La double acquisition des faders est encore en cours à cette étape.
 Ces rapports précisent les adresses, empreintes, effets volatils et limites ;
 ils n'établissent pas une sauvegarde restaurable de toute la console.
 

@@ -72,6 +72,11 @@ Sources : [protocole](protocol.md), [captures Linux](capture-linux.md),
 - Un fichier `status.json` ancien ne prouve pas qu'un processus tourne. Vérifier
   PID, verrou, fraîcheur, état Online, réponse Ardour et erreurs avant et après
   intervention. Les changements de documentation ne nécessitent pas d'arrêt.
+- Le verrou partagé peut appartenir au lecteur de firmware. Dans cet état,
+  `running: true` ne désigne pas nécessairement le démon, et l'inventaire
+  historique des processus de capture peut omettre le lecteur Python.
+  Identifier le propriétaire réel avant toute relance ; voir le
+  [relevé et la procédure de surveillance](fader-archive-verification.md#identifier-le-processus-qui-détient-le-réseau).
 - Une expérience exclusive suspend le relais des gestes vers Ardour. La mener
   pendant une période compatible et garantir la relance normale même en cas
   d'échec. Ne pas confondre la fin d'un outil avec la reprise de tous les services.

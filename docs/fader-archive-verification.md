@@ -60,6 +60,38 @@ doivent pas être ajoutés au dépôt public.
 
 ## Contrôle pendant une acquisition longue
 
+### Identifier le processus qui détient le réseau
+
+Pendant la collecte, la passerelle est volontairement arrêtée et le lecteur
+détient `run/daemon.lock`. Dans la révision `bb6235d`,
+[`procontrold.status()`](../tools/procontrold.py) calcule `running` depuis
+l'occupation de ce verrou, puis l'ajoute au dernier état conservé du démon.
+Ainsi `running: true` avec `console: stopped` et un ancien PID peut décrire
+le lecteur exclusif, sans que la passerelle soit active. Le champ
+`daemon_running` du pointeur reprend la même information.
+
+Observation du **20 septembre 2026 à 22:39:38 UTC** : `lslocks` attribue le
+verrou au lecteur Python PID 641580 ; `/proc/641580/cmdline` identifie
+`tools/fader_archive.py`. Le PID 637686 du dernier état du démon n'existe plus.
+Le manifeste vient d'être actualisé à 22:39:37 UTC : 402 blocs, 4 804 octets,
+premier passage inachevé et aucune erreur déclarée. Ce relevé de progression
+ne constitue pas un nouvel audit indépendant des captures.
+
+[`tools/status.py`](../tools/status.py) ne recense alors que certains noms
+de processus de capture, dont `dumpcap`, `tcpdump` et `session_probe.py`.
+Sa ligne « Aucun » n'exclut donc pas ce lecteur Python utilisant directement
+des sockets. Ces deux limites d'affichage sont documentées ; les outils en
+cours d'exécution n'ont pas été modifiés.
+
+À la reprise, vérifier la commande du processus, le propriétaire du verrou,
+la fraîcheur du manifeste et sa progression. Ne pas lancer un deuxième lecteur
+ni redémarrer la passerelle sur la seule base de cet affichage. Après la fin
+effective du collecteur, vérifier `restart-result.json`, `restart.log`, puis
+un nouveau PID du démon et un état Online frais. La sortie du lecteur et la
+reprise de la passerelle sont deux résultats distincts.
+
+### Auditer uniquement les blocs clôturés
+
 Le collecteur inscrit un bloc dans son manifeste seulement après avoir fermé
 ses captures et terminé son audit. Le remplacement du manifeste est atomique.
 L'option suivante fige ce manifeste et inspecte uniquement les blocs déjà
@@ -97,6 +129,13 @@ des archives synthétiques à deux passages, une archive interrompue, un dossier
 de capture en cours volontairement invalide, une capture réutilisée, des blocs
 absents ou dupliqués, des fichiers falsifiés et la conservation exacte du
 manifeste. Les modules utilisés par l'acquisition en cours n'ont pas été modifiés.
+
+La [CI de la révision `bb6235d`](https://github.com/julienfernandez/procontrol-linux/actions/runs/35542188547)
+a ensuite réussi : **402 tests en 65,399 s**, avec un test ignoré car le helper
+local à capability n'est pas installé sur le runner. La syntaxe, l'inventaire
+généré et les compilations natives prévus par le workflow passent également.
+Ce résultat valide les contrôles logiciels ; l'acquisition matérielle reste
+soumise à son propre bilan après les deux passages.
 
 Deux audits successifs ont porté sur des instantanés distincts :
 
