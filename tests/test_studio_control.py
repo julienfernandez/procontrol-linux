@@ -138,6 +138,11 @@ class SupervisorTests(unittest.TestCase):
             self.assertTrue(not stat.exists() or stat.read_text().split()[2]=='Z')
         finally:
             self.c.stopping.set();t.join(4)
+    def test_shutdown_does_not_start_next_command(self):
+        self.c.stopping.set()
+        with patch('studio_control.subprocess.Popen') as spawn:
+            with self.assertRaises(RuntimeError):self.c.run_command('route')
+            spawn.assert_not_called()
     def test_busy_rejected_during_worker_claim(self):
         self.c.request({'action':'recover'})
         def operation(a):

@@ -310,6 +310,8 @@ class StudioController:
         return self.state()
 
     def run_command(self, action):
+        if self.stopping.is_set():
+            raise RuntimeError('Supervision en cours d’arrêt ; aucune nouvelle commande lancée')
         session = Path(self.config['session'])
         env = dict(os.environ, MPC_HOST=self.backend.host, PYTHONUNBUFFERED='1',
                    MPC_STUDIO_ROOT=str(self.backend.home),
