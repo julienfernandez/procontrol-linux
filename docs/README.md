@@ -26,6 +26,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Exploration du firmware et du diagnostic réseau](firmware-research-2026-09-20.md),
+  [preuves, empreintes et adresses](firmware-research-2026-09-20.json).
+
 - [Édition, sélection et voyants de transport](edit-interaction-2026-09-20.md).
 
 - [Revue et publication du 20 septembre](review-2026-09-20.md).

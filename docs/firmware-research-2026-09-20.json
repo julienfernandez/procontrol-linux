@@ -1,0 +1,652 @@
+{
+  "date": "2026-09-20",
+  "method": "Passive live capture, offline corpus census, CRC-verified official installer extraction, strict resource and HEX validation, static M68K disassembly. No firmware commands transmitted.",
+  "live_capture": {
+    "path": "captures/20260920T203317Z-firmware-recon-passive-M6CB51/traffic.pcap",
+    "sha256": "8be39435eaeb9da2e4f0a910059727c10a9b30c03cd63cdefa351bd362973c73",
+    "frames": 46,
+    "console_source_ethertypes": {
+      "0x885f": 14
+    },
+    "diginet_selected_frames": 20,
+    "announcements": 8,
+    "advertised_version": "1.37",
+    "advertised_name": "MAINUNIT",
+    "received": 46,
+    "dropped": 0,
+    "controlled_gestures": 0,
+    "announcement_frames": [
+      5,
+      7,
+      10,
+      16,
+      19,
+      33,
+      40,
+      46
+    ],
+    "ack_frames": [
+      2,
+      9,
+      15,
+      18,
+      39,
+      45
+    ],
+    "keepalive_frames": [
+      1,
+      8,
+      14,
+      17,
+      38,
+      44
+    ]
+  },
+  "corpus": {
+    "files": [
+      {
+        "path": "captures/dsp-buttons-20260914/ethernet.pcap",
+        "sha256": "15b3b7fccd08b14715c187a205dda1ecc42bdf4eb1f71d0d367878067380a546",
+        "console_command_counts": {
+          "e1": 22,
+          "a0": 15,
+          "00": 50
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T163251Z-online-probe-9g3d1oq0/traffic.pcap",
+        "sha256": "e1e84c6b7a3fc69b2ec2cda2aa3d5024bbe1e24bdd3d118fe724e9b06fe49388",
+        "console_command_counts": {
+          "e0": 16,
+          "a0": 52,
+          "e1": 74,
+          "00": 379
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T173255Z-trackpad-horizontal-online-vgcJ0Q/traffic.pcap",
+        "sha256": "ca4497b25476fa33d425357cc5a172e871e08529dfdf9db9cef24eb8786a3484",
+        "console_command_counts": {
+          "e1": 13,
+          "a0": 9,
+          "00": 1424
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T193803Z-stereo-select-master-5svEA6/traffic.pcap",
+        "sha256": "7df53feb3ea7c4f4ea2bd7a98a3d9c0bb1981035318b619d42923adbfd096339",
+        "console_command_counts": {
+          "e1": 3,
+          "e0": 39
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T165816Z-online-probe-s89y2fd9/traffic.pcap",
+        "sha256": "8791653ae953ef09fdc0984d3a76ddfe984071dc248d35c7448a9776333e4db3",
+        "console_command_counts": {
+          "e0": 1,
+          "a0": 18,
+          "e1": 28,
+          "00": 386
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T152134Z-startup-1wddjZ/traffic.pcap",
+        "sha256": "3bf426a0f801fd9197c0a7550cc66a3e3711fb25ada43d2384bbef9db8a73de2",
+        "console_command_counts": {
+          "e0": 7,
+          "00": 6
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260920T072426Z-ins-send-browser-AO2LWq/traffic.pcap",
+        "sha256": "61656c98ba71fba64f16cda2bd0c2c1aa73e5959de9abed051df6a0a8d548455",
+        "console_command_counts": {
+          "e1": 13,
+          "a0": 222
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T174437Z-trackpad-x11-live-vK4Upf/traffic.pcap",
+        "sha256": "775fc51b8b977ef66b7fb50eab80c226806877d09301a45bda53922cb1fa82e4",
+        "console_command_counts": {
+          "a0": 12,
+          "e1": 16,
+          "00": 1830
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260920T193950Z-edition-selection-lights-UGOqrt/traffic.pcap",
+        "sha256": "19e83b49cfdfc67c160855c93298985733b695c79300c44ef198d37c950d433a",
+        "console_command_counts": {
+          "e1": 84,
+          "a0": 60,
+          "00": 1
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T173936Z-trackpad-vertical-only-QHmmiK/traffic.pcap",
+        "sha256": "560672c41ad0d80fef7986aefdfe67dfe36d014c6f022dd17de2c2da0d56e73e",
+        "console_command_counts": {
+          "e1": 13,
+          "a0": 9,
+          "00": 608
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T203252Z-feedback-recovery-3YKbu8/traffic.pcap",
+        "sha256": "dafc2ccb86966c4be7319a99257831a1b44df8c38a8ac625f83d5bfc3426324e",
+        "console_command_counts": {
+          "e1": 9,
+          "a0": 173,
+          "e0": 1
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T155212Z-idle-normal-5aADp2/traffic.pcap",
+        "sha256": "e56f8b086b67d0c2128604f9d01c845ed91da8e98f143a55e1fb013cd7ffa158",
+        "console_command_counts": {
+          "e0": 4
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T161516Z-online-probe-y9kcm0yu/traffic-us.pcap",
+        "sha256": "e1988ac18d9d89c630cd47227d5b865fe7b1d9b3755836e567bbc3feb05371f9",
+        "console_command_counts": {
+          "e0": 1,
+          "a0": 12,
+          "e1": 20
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260920T203317Z-firmware-recon-passive-M6CB51/traffic.pcap",
+        "sha256": "8be39435eaeb9da2e4f0a910059727c10a9b30c03cd63cdefa351bd362973c73",
+        "console_command_counts": {
+          "a0": 6,
+          "e1": 8
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T162655Z-play-online-DX00Sr/traffic.pcap",
+        "sha256": "376d6d40012a2e34b032625c99848f8d6c89cf250c5cedaeb7ba41b7b4527a00",
+        "console_command_counts": {
+          "e1": 9,
+          "a0": 5,
+          "00": 3
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T183358Z-extended-surface-online-p2Vy6E/traffic.pcap",
+        "sha256": "c3bcb08b7959feb276906b6ede87f66ea6eabe9ab63983ce7701d9f6281bd76c",
+        "console_command_counts": {
+          "e0": 4,
+          "a0": 102,
+          "e1": 31,
+          "00": 93
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T152442Z-startup-i3v6DV/traffic.pcap",
+        "sha256": "0ce957e9a1572080829743d7bfa764b402390ff6100643b9bb3817f287fba933",
+        "console_command_counts": {
+          "e0": 104,
+          "00": 42
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T163533Z-stop-ardour-JhZItB/traffic.pcap",
+        "sha256": "9f03665d447d6ff391b0ae51362478cc773b61e3c2ab13ff94e74b932e41062f",
+        "console_command_counts": {
+          "a0": 6,
+          "e1": 8,
+          "00": 3
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T155757Z-stop-offline-CuTd6P/traffic.pcap",
+        "sha256": "66d90c488412ea2b9b566343f64537d2003256c4cdd6c693119fba82101c769b",
+        "console_command_counts": {
+          "e0": 17,
+          "00": 1
+        },
+        "error": null
+      },
+      {
+        "path": "captures/dsp-encoders-take2-20260914/ethernet.pcap",
+        "sha256": "7803ea2b7681c71dc4f15e46fc7ec4a5357fe710fd4632f9656e6b95d5f9c984",
+        "console_command_counts": {
+          "a0": 1908,
+          "e1": 9,
+          "00": 360
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T182202Z-alpha-keypad-controls-batch-ndOm88/traffic.pcap",
+        "sha256": "0939224b4f274f40ff634506ba26dfa159a6703233ebecde53c953b63a1d5fa9",
+        "console_command_counts": {
+          "e1": 25,
+          "a0": 18,
+          "00": 27
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T171154Z-online-probe-cej_2q_o/traffic.pcap",
+        "sha256": "92411bcf14bd6a4f2fb6d146900adaf6419a17302696bcefae0a9f47121b827f",
+        "console_command_counts": {
+          "e0": 1,
+          "a0": 10,
+          "e1": 16
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T173709Z-trackpad-horizontal-only-HPVbyL/traffic.pcap",
+        "sha256": "97517ac44737270af86bd01d280c816e2f7eeb09509a2018efe957eb20ff0a40",
+        "console_command_counts": {
+          "a0": 12,
+          "e1": 16,
+          "00": 624
+        },
+        "error": null
+      },
+      {
+        "path": "captures/jog-automation-20260915/before-derived.pcap",
+        "sha256": "adcc23e80c9b57d5c759a7d5aa18372ab127f7db642a62ed403d4d52578f6bc4",
+        "console_command_counts": {
+          "e1": 10,
+          "a0": 2724,
+          "00": 1686
+        },
+        "error": null
+      },
+      {
+        "path": "captures/jog-automation-20260915/after-derived.pcap",
+        "sha256": "0afd522f2f6e02c610163df67aec7af1ddc5b2dd799a277fd3c54042711ed799",
+        "console_command_counts": {
+          "e1": 12,
+          "a0": 9
+        },
+        "error": null
+      },
+      {
+        "path": "captures/automation-modes-20260915/live-derived.pcap",
+        "sha256": "34bb8704211e1b8c49c02710480ea8292ed0c9860959c9e302f8f71858463b6b",
+        "console_command_counts": {
+          "e1": 12,
+          "a0": 1827,
+          "00": 922
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260920T185103Z-navigation-lights-test-kY3WLz/traffic.pcap",
+        "sha256": "b4b75e69127f76a24b3bfd036eb993944b074d9c1990bb9da7137c1db1923564",
+        "console_command_counts": {
+          "e1": 84,
+          "a0": 514,
+          "00": 146
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T162523Z-online-probe-eye_t5t2/traffic-us.pcap",
+        "sha256": "c2f9fe2cdc2b15475afc38fe450157038f60570aa6467401dd1aad92350c9231",
+        "console_command_counts": {
+          "e0": 1,
+          "a0": 18,
+          "e1": 30,
+          "00": 3
+        },
+        "error": null
+      },
+      {
+        "path": "captures/dsp-displays-20260914/ethernet.pcap",
+        "sha256": "6830502ff7ec3e41b7c6239ff4b3d2b7a3167ea620ce0ddaae76287d1e7a5bc5",
+        "console_command_counts": {
+          "a0": 47,
+          "e1": 21
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T170423Z-online-probe-k353ijr6/traffic.pcap",
+        "sha256": "9e5b96e71a515bff94e2c96631a12e863ea8f9a554dfb6726dc3c176359aef35",
+        "console_command_counts": {
+          "e0": 1,
+          "a0": 10,
+          "e1": 16,
+          "00": 20
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T163354Z-play-ardour-5f4kD7/traffic.pcap",
+        "sha256": "d0b76539544507d4c839e10ef04d75ffc9481bf6acd049c184b2d56fcebf8202",
+        "console_command_counts": {
+          "a0": 6,
+          "e1": 8,
+          "00": 3
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260920T184056Z-navigation-identification-q6LHjl/traffic.pcap",
+        "sha256": "87f12062d41aea2269d68ea61bbc04a80f81526fb6e43049e2396c32dcfecbd5",
+        "console_command_counts": {
+          "e1": 34,
+          "a0": 71,
+          "00": 35
+        },
+        "error": null
+      },
+      {
+        "path": "captures/20260913T155318Z-play-offline-ef6VCD/traffic.pcap",
+        "sha256": "5f81a4941fb78b2c038d084972d314dfacd3f63f859ed46d8e8095fc837e1172",
+        "console_command_counts": {
+          "e0": 9,
+          "00": 1
+        },
+        "error": null
+      },
+      {
+        "path": "captures/dsp-encoders-20260914/ethernet.pcap",
+        "sha256": "e4ba472bd1a0b98686e7a1ef878d7b3c44c7c167b68e1c961e67a035afbbd02f",
+        "console_command_counts": {
+          "a0": 1243,
+          "e1": 12,
+          "00": 16
+        },
+        "error": null
+      }
+    ],
+    "console_command_counts": {
+      "e1": 656,
+      "a0": 9118,
+      "00": 8669,
+      "e0": 206
+    },
+    "unique_announcement_bodies": [
+      {
+        "body_hex": "3c 97 0e 1b 3a 00 00 00 00 02 00 00 00 03 76 31 2e 33 37 00 00 00 00 00 4d 41 49 4e 55 4e 49 54 00 00",
+        "examples": [
+          {
+            "pcap": "captures/dsp-buttons-20260914/ethernet.pcap",
+            "frame": 1
+          },
+          {
+            "pcap": "captures/20260913T163251Z-online-probe-9g3d1oq0/traffic.pcap",
+            "frame": 1
+          },
+          {
+            "pcap": "captures/20260913T173255Z-trackpad-horizontal-online-vgcJ0Q/traffic.pcap",
+            "frame": 1
+          }
+        ]
+      },
+      {
+        "body_hex": "00 00 00 00 00 00 00 00 00 02 00 00 00 03 63 31 2e 33 37 00 00 00 00 00 4d 41 49 4e 55 4e 49 54 00 00",
+        "examples": [
+          {
+            "pcap": "captures/20260913T152134Z-startup-1wddjZ/traffic.pcap",
+            "frame": 12
+          }
+        ]
+      },
+      {
+        "body_hex": "00 00 00 00 00 00 00 00 00 02 00 00 00 03 76 31 2e 33 37 00 00 00 00 00 4d 41 49 4e 55 4e 49 54 00 00",
+        "examples": [
+          {
+            "pcap": "captures/20260913T152134Z-startup-1wddjZ/traffic.pcap",
+            "frame": 17
+          },
+          {
+            "pcap": "captures/20260913T155212Z-idle-normal-5aADp2/traffic.pcap",
+            "frame": 1
+          },
+          {
+            "pcap": "captures/20260913T161516Z-online-probe-y9kcm0yu/traffic-us.pcap",
+            "frame": 1
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "File census only: durations and gestures differ; counts are not independent trials.",
+      "Two timestamp-corrected traffic-us.pcap files used in place of their originals.",
+      "No Intel HEX or erase candidate found in complete 70 00/01 envelopes; normal-operation corpus, not a controlled firmware-transfer capture."
+    ],
+    "diagnostic_colon_candidates": []
+  },
+  "installer": {
+    "source_url": "https://akmedia.digidesign.com/support/compressed/Pro_Tools_10_3_10_Win_84130.zip",
+    "source_page": "https://kb.avid.com/pkb/articles/download/Pro-Tools-10-3-10-Downloads",
+    "zip_size": 1905248238,
+    "central_directory_sha256": "7acbc418501095d09e1a149673a8afd0b2b8c4f6be75d50cb5d5e705e5f5248a",
+    "files": [
+      {
+        "name": "Pro Tools/Pro Tools Installer/program files/Avid/Pro Tools/DAE/Controllers/Procontrol.dll",
+        "method": 8,
+        "crc32": 4038404805,
+        "compressed": 172027,
+        "size": 602112,
+        "offset": 1691361021,
+        "extracted_path": "work/firmware-research-20260920/Procontrol.dll",
+        "sha256": "222cad7e7abcf3f8f91bffc6ff9f3ea87ac2ee990328e93a20bda6770f43a903",
+        "zip_crc32_verified": true
+      },
+      {
+        "name": "Pro Tools/Pro Tools Installer/program files/Avid/Pro Tools/DAE/Controllers/Procontrol.dll.rsr",
+        "method": 8,
+        "crc32": 3410010958,
+        "compressed": 56746,
+        "size": 181758,
+        "offset": 1691533167,
+        "extracted_path": "work/firmware-research-20260920/Procontrol.dll.rsr",
+        "sha256": "0603a032f3abf4af6e266ba05486d186e031a5e2448da86d0aacc2b1e1eb1a53",
+        "zip_crc32_verified": true
+      },
+      {
+        "name": "Pro Tools/Pro Tools Installer/program files/Avid/Pro Tools/DAE/Controllers/Procontrol_M.dll",
+        "method": 8,
+        "crc32": 233776645,
+        "compressed": 91852,
+        "size": 356352,
+        "offset": 1691590036,
+        "extracted_path": "work/firmware-research-20260920/Procontrol_M.dll",
+        "sha256": "c05dc43a0e944bd1dae6e2ed9a04edb2ba8dcda2e40b61d772fb951a99baa4db",
+        "zip_crc32_verified": true
+      }
+    ]
+  },
+  "firmware": {
+    "source": "work/firmware-research-20260920/Procontrol.dll.rsr",
+    "source_sha256": "0603a032f3abf4af6e266ba05486d186e031a5e2448da86d0aacc2b1e1eb1a53",
+    "resources": [
+      {
+        "type": "CODE",
+        "id": 26,
+        "name": "comm",
+        "offset": 269,
+        "size": 153522,
+        "sha256": "b91aa049a413e02ed4dca5bf62bc85c14937061ce05abff35a73bc8167e82203",
+        "intel_hex": {
+          "records": 1998,
+          "record_types": {
+            "03": 1,
+            "02": 1,
+            "00": 1995,
+            "01": 1
+          },
+          "checksums_valid": 1998,
+          "start_records": [
+            {
+              "type": "03",
+              "raw_hex": "00000000"
+            }
+          ],
+          "addressed_bytes": 63768
+        },
+        "segments": [
+          {
+            "start": 131072,
+            "end_exclusive": 131080,
+            "size": 8,
+            "sha256": "230e4cc0835ad1fbd6cac5b383d422b9f270ca2000d5072a428b9b035f235b03",
+            "file": "CODE-26-00020000.bin"
+          },
+          {
+            "start": 131172,
+            "end_exclusive": 131200,
+            "size": 28,
+            "sha256": "64e9a8906127c7ba897b21e6e2d87336c8957576d3d6ed13070a0043f8209074",
+            "file": "CODE-26-00020064.bin"
+          },
+          {
+            "start": 131328,
+            "end_exclusive": 131344,
+            "size": 16,
+            "sha256": "ab98bf58a7b2442d97c4c9c61d414a231ee743687c840983d9aa7ea0d2e07bf2",
+            "file": "CODE-26-00020100.bin"
+          },
+          {
+            "start": 132096,
+            "end_exclusive": 195812,
+            "size": 63716,
+            "sha256": "e2945b200be72745afb10a3bc68300b4dc3b5adba90b3a8157cec37f051e1af8",
+            "file": "CODE-26-00020400.bin"
+          }
+        ],
+        "hex_file": "CODE-26.hex"
+      },
+      {
+        "type": "CODE",
+        "id": 27,
+        "name": "fader",
+        "offset": 153795,
+        "size": 27862,
+        "sha256": "c4d8d682ba7db95a7d659e917e6ac2d4e3861a78bffeb5dc9cc5b4fb371baee7",
+        "intel_hex": {
+          "records": 366,
+          "record_types": {
+            "03": 1,
+            "02": 1,
+            "00": 363,
+            "01": 1
+          },
+          "checksums_valid": 366,
+          "start_records": [
+            {
+              "type": "03",
+              "raw_hex": "00000000"
+            }
+          ],
+          "addressed_bytes": 11546
+        },
+        "segments": [
+          {
+            "start": 32768,
+            "end_exclusive": 32776,
+            "size": 8,
+            "sha256": "0b94948d9565a02762f1a6b7f83c5cf28908ea1bf882cdc5800eb57e0fdd8b2d",
+            "file": "CODE-27-00008000.bin"
+          },
+          {
+            "start": 32868,
+            "end_exclusive": 32896,
+            "size": 28,
+            "sha256": "e35d2da6b9a2cab4ad24a40299cbbf8d6028950f3c33d8914dc057e174d8f4ec",
+            "file": "CODE-27-00008064.bin"
+          },
+          {
+            "start": 33024,
+            "end_exclusive": 33040,
+            "size": 16,
+            "sha256": "42bfe0154783f4cf48373891ce4bad48f4dac5ff0d54020c61b656473f06222b",
+            "file": "CODE-27-00008100.bin"
+          },
+          {
+            "start": 33792,
+            "end_exclusive": 45286,
+            "size": 11494,
+            "sha256": "2479230a850da18b33b1dcf7292dbb12af6421aceabc047b2ae07d5582f23e05",
+            "file": "CODE-27-00008400.bin"
+          }
+        ],
+        "hex_file": "CODE-27.hex"
+      },
+      {
+        "type": "TEXT",
+        "id": 24,
+        "name": "version",
+        "offset": 260,
+        "size": 5,
+        "sha256": "ac06159257753f07e65a8983c9149ce6d84e903867edf1bfaced8979713ab8ca",
+        "text": "v1.37"
+      }
+    ],
+    "scope": "Offline installer image inspection; no network or hardware access; not a dump of installed flash, boot ROM, calibration or EEPROM."
+  },
+  "static_routes": {
+    "ethernet_receive": "0x2972e -> 0x2b48e -> 0x2a6dc",
+    "sysex_dispatch": "0x2a3d0",
+    "family_70": "0x2a63c",
+    "comm_queue": "0x6b50a",
+    "comm_monitor": "0x22090",
+    "comm_version_handler": "0x22192",
+    "comm_reply_wrapper": "0x21fce",
+    "fader_serial_send": "0x2ada0",
+    "fader_monitor": "0x91c2",
+    "fader_address_handler": "0x9750",
+    "fader_read_handler": "0x97da",
+    "fader_read_increment_handler": "0x97ca",
+    "comm_address_handler": "0x22484",
+    "comm_memory_pointer": "0x5007a",
+    "comm_read_handler": "0x22546",
+    "comm_read_increment_handler": "0x2252e",
+    "comm_read_formatter": "0x21f52",
+    "comm_flash_candidate": "0x2232a"
+  },
+  "not_verified": [
+    "Installed flash equals installer image byte-for-byte",
+    "Physical CPU model",
+    "Live network diagnostic read or firmware dump",
+    "Boot ROM and EEPROM backup",
+    "Complete control flow and serial routing to fader monitor",
+    "Any firmware modification or restoration"
+  ],
+  "validation": {
+    "unit_tests": 7,
+    "unit_test_command": "python3 -m unittest discover -s tests -p test_inspect_firmware.py -v",
+    "retrieval_reproduced": true,
+    "capstone": "5.0.7",
+    "independent_disassembly": "GNU objdump m68k 2.42 (Ubuntu 2.42-4ubuntu2.10)",
+    "hardware_commands_sent": 0,
+    "clean_export_base_commit": "22e3bc3",
+    "full_python_suite_tests": 297,
+    "full_python_suite_seconds": 54.468,
+    "full_python_suite_result": "OK",
+    "full_python_suite_log_sha256": "88130725d6b4e2644b55482496b7abb546157f2accb87996d1b9c3d7780bf10c",
+    "mapping_inventory_check": "current",
+    "python_compile": "passed"
+  }
+}
