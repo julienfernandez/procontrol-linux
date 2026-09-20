@@ -28,6 +28,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Diagnostic réseau et premières lectures de mémoire sur la console](firmware-network-validation-2026-09-20.md),
+  [preuves des cinq expériences](firmware-network-validation-2026-09-20.json).
+
 - [Exploration du firmware et du diagnostic réseau](firmware-research-2026-09-20.md),
   [preuves, empreintes et adresses](firmware-research-2026-09-20.json).
 

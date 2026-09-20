@@ -1,5 +1,10 @@
 # Open ProControl : exploration du firmware par le réseau
 
+**Suite expérimentale, le même soir :** le canal de diagnostic répond et deux
+zones de mémoire ont été lues sur la console. Voir la
+[validation matérielle séparée](firmware-network-validation-2026-09-20.md).
+Le carnet ci-dessous conserve les faits et limites de l'étape initiale.
+
 Date : 20 septembre 2026. Objectif utilisateur : comprendre le logiciel interne
 de la Digidesign ProControl originale, améliorer son contrôle et préserver les
 connaissances nécessaires à sa réutilisation durable. Cette recherche reste

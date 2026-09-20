@@ -1,0 +1,205 @@
+{
+  "scope": "Five completed hardware experiments; comm version and 264 distinct code bytes, read twice",
+  "console_mac": "00:a0:7e:a0:ad:9c",
+  "host_mac": "3c:97:0e:1b:3a:00",
+  "interface": "enp0s25",
+  "version_response_hex": "43 4f 4d 76 31 2e 33 37 0a 0d",
+  "experiments": [
+    {
+      "name": "live-version-1",
+      "directory": "work/firmware-research-20260920/live-version-1",
+      "started_utc": "2026-09-20T20:52:05.131468+00:00",
+      "finished_utc": "2026-09-20T20:52:07.740449+00:00",
+      "pcap_sha256": "10c09e3182213d01451e3b99dea21712364dfbaae814a8dac7409aec4c98fbf7",
+      "result_sha256": "a73acb76a6693d1654e345206150fd7677a4c8428d9c9a928082e1607dbeac7e",
+      "frames": 7,
+      "all_checksums_match": true,
+      "socket_drops": 0,
+      "requests": 1,
+      "version_request_frame": 4,
+      "version_response_frame": 6,
+      "address_set_reply_count": 0,
+      "duplicate_response_frames": [],
+      "version_reply_delay_ms": 4.169
+    },
+    {
+      "name": "live-vectors-1",
+      "directory": "work/firmware-research-20260920/live-vectors-1",
+      "started_utc": "2026-09-20T20:54:29.124510+00:00",
+      "finished_utc": "2026-09-20T20:54:35.289580+00:00",
+      "pcap_sha256": "05e64b1ef98bb4f5c7da75cf62f372f357210198f8ef9df299562fcab72f6e49",
+      "result_sha256": "57362a8ef1d19ee6ef0e9820622905199c6d172f8e691fe53c29a7efac6a956b",
+      "frames": 55,
+      "all_checksums_match": true,
+      "socket_drops": 0,
+      "requests": 9,
+      "version_request_frame": 4,
+      "version_response_frame": 6,
+      "address_set_reply_count": 8,
+      "duplicate_response_frames": [],
+      "version_reply_delay_ms": 2.389,
+      "address_start": "0x20000",
+      "address_end_inclusive": "0x20007",
+      "read_count": 8,
+      "memory_sha256": "230e4cc0835ad1fbd6cac5b383d422b9f270ca2000d5072a428b9b035f235b03",
+      "matches_official_resource": true,
+      "memory_first_frame": 12,
+      "memory_last_frame": 54,
+      "memory_delay_ms": {
+        "minimum": 4.071,
+        "median": 4.307,
+        "maximum": 6.092
+      }
+    },
+    {
+      "name": "live-vectors-2",
+      "directory": "work/firmware-research-20260920/live-vectors-2",
+      "started_utc": "2026-09-20T20:54:35.447413+00:00",
+      "finished_utc": "2026-09-20T20:54:43.822359+00:00",
+      "pcap_sha256": "d61b07eca74a7081e5c77fcd4a9790a44d8afe58a58940a9c6007ebe6a519d63",
+      "result_sha256": "5559897cfc1111c5c40498d3690bc5f841309467c56c243ff17e019ec42ef8f8",
+      "frames": 55,
+      "all_checksums_match": true,
+      "socket_drops": 0,
+      "requests": 9,
+      "version_request_frame": 4,
+      "version_response_frame": 6,
+      "address_set_reply_count": 8,
+      "duplicate_response_frames": [],
+      "version_reply_delay_ms": 2.412,
+      "address_start": "0x20000",
+      "address_end_inclusive": "0x20007",
+      "read_count": 8,
+      "memory_sha256": "230e4cc0835ad1fbd6cac5b383d422b9f270ca2000d5072a428b9b035f235b03",
+      "matches_official_resource": true,
+      "memory_first_frame": 12,
+      "memory_last_frame": 54,
+      "memory_delay_ms": {
+        "minimum": 4.05,
+        "median": 4.646,
+        "maximum": 5.993
+      }
+    },
+    {
+      "name": "live-dispatcher-1",
+      "directory": "work/firmware-research-20260920/live-dispatcher-1",
+      "started_utc": "2026-09-20T20:55:17.454613+00:00",
+      "finished_utc": "2026-09-20T20:55:27.880306+00:00",
+      "pcap_sha256": "cc91f7b0b3ac83ee6f8db7f70dae99e2cd1dc58c50ee8656a848a730dc4d0243",
+      "result_sha256": "ff6e11448e51bd01fcd13d645a2ba370512db528b38c75338bc3940b84e1bc52",
+      "frames": 1546,
+      "all_checksums_match": true,
+      "socket_drops": 0,
+      "requests": 257,
+      "version_request_frame": 4,
+      "version_response_frame": 6,
+      "address_set_reply_count": 256,
+      "duplicate_response_frames": [
+        918
+      ],
+      "version_reply_delay_ms": 2.116,
+      "address_start": "0x2a3d0",
+      "address_end_inclusive": "0x2a4cf",
+      "read_count": 256,
+      "memory_sha256": "80fb0f68362a8ffac1baa0589df74a4e3da1cafd4d305bd872ab1cab42a76c87",
+      "matches_official_resource": true,
+      "memory_first_frame": 12,
+      "memory_last_frame": 1545,
+      "memory_delay_ms": {
+        "minimum": 3.887,
+        "median": 4.532,
+        "maximum": 36.855
+      }
+    },
+    {
+      "name": "live-dispatcher-2",
+      "directory": "work/firmware-research-20260920/live-dispatcher-2",
+      "started_utc": "2026-09-20T20:55:28.038674+00:00",
+      "finished_utc": "2026-09-20T20:55:39.081133+00:00",
+      "pcap_sha256": "1c46883b2a4ae7352ae83476b83db81dea36c1213af8ddfa2f6ea51a98f86939",
+      "result_sha256": "60aaa60571616b5ce906b474858dd146e10988b5c9da6a5e4d32afd874a9997a",
+      "frames": 1545,
+      "all_checksums_match": true,
+      "socket_drops": 0,
+      "requests": 257,
+      "version_request_frame": 4,
+      "version_response_frame": 6,
+      "address_set_reply_count": 256,
+      "duplicate_response_frames": [
+        696
+      ],
+      "version_reply_delay_ms": 2.542,
+      "address_start": "0x2a3d0",
+      "address_end_inclusive": "0x2a4cf",
+      "read_count": 256,
+      "memory_sha256": "80fb0f68362a8ffac1baa0589df74a4e3da1cafd4d305bd872ab1cab42a76c87",
+      "matches_official_resource": true,
+      "memory_first_frame": 12,
+      "memory_last_frame": 1544,
+      "memory_delay_ms": {
+        "minimum": 3.921,
+        "median": 4.6295,
+        "maximum": 37.587
+      }
+    }
+  ],
+  "limitations": [
+    "Not a full device backup",
+    "No boot ROM, EEPROM, calibration or fader CPU memory acquired",
+    "No firmware write/erase/reboot or motor diagnostic command sent",
+    "A sets a volatile monitor pointer; m reads code and does not increment it"
+  ],
+  "validation": {
+    "base_commit": "90b0850f38630c1e49522b6b8c408ff435ec1bf9",
+    "python_tests": 334,
+    "test_seconds": 80.199,
+    "firmware_probe_tests": 9,
+    "test_log_sha256": "0a1e0ea7430a18caca8ab5cdf3e3ea9c8280831523cfaaf15ea46e8bfe82ea7c",
+    "python_compileall": true,
+    "mapping_inventory_check": true,
+    "git_diff_check": true,
+    "final_probe_source_sha256": "0d71f2a51732d90787a26b279fb1e3bc539eb0216f77118cbe8a78c63da80e81",
+    "note": "Hardware captures preceded final additions for source hashing, statistics errors and abort on offline announcement; these changes are covered by the final software suite."
+  },
+  "distinct_code_bytes": 264,
+  "total_code_bytes_read": 528,
+  "version_requests": 5,
+  "diagnostic_requests": 533,
+  "source_snapshots": {
+    "initial_version_probe_sha256": "bca5286f322a74cb2b18cfd4b16e856d695e221127fa5c94b1f3693b6c4525d6",
+    "memory_probe_sha256": "7ed81b52ad4d1ce6cbd0d9fca3f343d79d5512ec608b1742e3b66dd0029dde46"
+  },
+  "gateway_after": {
+    "pid": 613729,
+    "updated_utc": "2026-09-20T20:55:42.868682+00:00",
+    "console": "online",
+    "ardour": "responding",
+    "surface": {
+      "alpha": false,
+      "encoder_mode": "pan",
+      "jog_mode": 0,
+      "bank_start": 1,
+      "feedback": {
+        "sent": 219,
+        "acked": 219,
+        "timeouts": 0,
+        "recoveries": 0
+      },
+      "output_error": null,
+      "output_timing": {
+        "pending_sequence": null,
+        "pending_ms": 0,
+        "last_ack_ms": 1.7929619643837214,
+        "max_ack_ms": 3.3743319800123572,
+        "motor_batches": 1,
+        "motor_targets": 8,
+        "queued_motors": 0,
+        "motor_hz": 50.0,
+        "ack_timeout_ms": 100.0,
+        "button_pulses": 0
+      },
+      "queued_outputs": 0
+    },
+    "error": null
+  }
+}
