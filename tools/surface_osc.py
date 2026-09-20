@@ -4,7 +4,7 @@ import socket
 from ardour_transport import ArdourTransport,message
 from jog_scheduler import JogScheduler
 
-FEEDBACK_BITS=1+2+16+32+64+8192
+FEEDBACK_BITS=1+2+16+32+64+1024+8192
 
 
 class ArdourSurface(ArdourTransport):

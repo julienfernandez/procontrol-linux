@@ -1,5 +1,14 @@
 # Historique des versions
 
+## 20 septembre 2026 — sélection et états d’édition
+
+- Analyse des gestes réels CUT à CAPTURE et transport ; reproduction de la
+  différence entre sélection à couper/supprimer et séparation au curseur.
+- GRAB reprend le contexte de plage ; EX TRANS et QUICK PUNCH ne répètent pas
+  la bascule quand le bouton reste maintenu.
+- Guide IN/OUT lumineux et voyants synchro, punch et enregistrement depuis
+  un statut Ardour de lecture seule. [Essais et limites](docs/edit-interaction-2026-09-20.md).
+
 ## 20 septembre 2026 — navigation et retours des touches
 
 - Identification physique de PREVIOUS, ZOOM/SEL, NEXT, UP et DOWN : quinze

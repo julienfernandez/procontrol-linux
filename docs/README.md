@@ -18,13 +18,15 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 ## Développer et reconstruire
 
 - [Tests et structure du dépôt](../README.md#développement-et-tests).
-- [Ordre des cinq patches Ardour et compilation native](../native/README.md).
+- [Ordre des six patches Ardour et compilation native](../native/README.md).
 - [Contrat OSC](ardour-osc-contract.md), [ordonnancement jog/moteurs](jog-motor-scheduling.md).
 - [Inventaire généré des boutons](mapping-backlog.md) et [actions par mode](mapping-coverage.json).
 - [Protocole observé](protocol.md), [capture contrôlée](capture-linux.md),
   [provenance des références](research.md).
 
 ## Vérifications récentes
+
+- [Édition, sélection et voyants de transport](edit-interaction-2026-09-20.md).
 
 - [Revue et publication du 20 septembre](review-2026-09-20.md).
 - [Édition Ardour sur copie jetable](console-editing-validation-2026-09-20.json).

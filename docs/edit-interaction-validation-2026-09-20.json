@@ -1,0 +1,466 @@
+{
+  "date": "2026-09-20",
+  "evidence_source": "permanent gateway journal; no active PCAP during gestures",
+  "sequence_utc": [
+    "2026-09-20T19:24:31",
+    "2026-09-20T19:25:24"
+  ],
+  "local_extract_sha256": "75f91b408ccb5c790ed7d885c8b1b5ab6a331e7c9d17410dea65a82391270426",
+  "press_counts_zone_key": {
+    "1b/04": 3,
+    "1b/05": 3,
+    "1b/06": 3,
+    "1b/07": 3,
+    "1b/08": 3,
+    "1b/09": 3,
+    "1c/00": 3,
+    "1c/01": 3,
+    "1c/02": 3,
+    "1c/03": 3,
+    "1c/04": 3,
+    "1c/0a": 1,
+    "1c/0b": 3,
+    "1c/09": 2,
+    "1c/08": 2,
+    "1c/0f": 2
+  },
+  "led_transmissions": {
+    "1b/04": 6,
+    "1b/05": 6,
+    "1b/06": 6,
+    "1b/07": 6,
+    "1b/08": 6,
+    "1b/09": 6,
+    "1c/00": 6,
+    "1c/01": 6,
+    "1c/02": 6,
+    "1c/03": 6,
+    "1c/04": 6,
+    "1c/0a": 2,
+    "1c/0f": 2,
+    "1c/10": 2
+  },
+  "python_tests": {
+    "passed": 256,
+    "seconds": 60.773
+  },
+  "isolated_ardour_editing": {
+    "ardour": "9.8.0",
+    "backend": "Dummy",
+    "isolated_display": ":97",
+    "osc_port": 3901,
+    "physical_console_test": false,
+    "results": [
+      {
+        "check": "IN OUT CAPTURE: exact 2s to 6s loop",
+        "passed": true,
+        "evidence": {
+          "id": "40847",
+          "name": "Loop",
+          "start": "a564480000",
+          "end": "a1693440000",
+          "flags": "IsAutoLoop",
+          "locked": "0",
+          "timestamp": "1789889639",
+          "cue": "0"
+        }
+      },
+      {
+        "check": "delete changes only selected playlist",
+        "passed": true,
+        "evidence": {
+          "before": 2,
+          "after": 4
+        }
+      },
+      {
+        "check": "undo delete",
+        "passed": true,
+        "evidence": null
+      },
+      {
+        "check": "redo delete",
+        "passed": true,
+        "evidence": null
+      },
+      {
+        "check": "cut changes only selected playlist",
+        "passed": true,
+        "evidence": {
+          "before": 2,
+          "after": 4
+        }
+      },
+      {
+        "check": "undo cut",
+        "passed": true,
+        "evidence": null
+      },
+      {
+        "check": "copy preserves original",
+        "passed": true,
+        "evidence": null
+      },
+      {
+        "check": "paste at playhead",
+        "passed": true,
+        "evidence": [
+          [
+            "a1128960000@a5644800000",
+            "a551372800",
+            "Take3_MPC 01-02-1.57"
+          ],
+          [
+            "a1128960000@a5644800000",
+            "a564480000",
+            "Take1_MPC 01-02-2.57"
+          ],
+          [
+            "a2539417600@a13107200",
+            "a0",
+            "Take3_MPC 01-02-1.1"
+          ],
+          [
+            "a4518604800@a0",
+            "a0",
+            "Take1_MPC 01-02-2.1"
+          ]
+        ]
+      },
+      {
+        "check": "duplicate range",
+        "passed": true,
+        "evidence": [
+          [
+            "a1128960000@a1693440000",
+            "a551372800",
+            "Take3_MPC 01-02-1.59"
+          ],
+          [
+            "a1128960000@a1693440000",
+            "a564480000",
+            "Take1_MPC 01-02-2.59"
+          ],
+          [
+            "a2539417600@a13107200",
+            "a0",
+            "Take3_MPC 01-02-1.1"
+          ],
+          [
+            "a4518604800@a0",
+            "a0",
+            "Take1_MPC 01-02-2.1"
+          ]
+        ]
+      },
+      {
+        "check": "separate at range boundaries",
+        "passed": true,
+        "evidence": [
+          [
+            "a1128960000@a564480000",
+            "a551372800",
+            "Take3_MPC 01-02-1.60"
+          ],
+          [
+            "a1128960000@a564480000",
+            "a564480000",
+            "Take1_MPC 01-02-2.60"
+          ],
+          [
+            "a2825158400@a1693440000",
+            "a1693440000",
+            "Take1_MPC 01-02-2.61"
+          ],
+          [
+            "a551366400@a13107200",
+            "a0",
+            "Take3_MPC 01-02-1.1"
+          ],
+          [
+            "a564473600@a0",
+            "a0",
+            "Take1_MPC 01-02-2.1"
+          ],
+          [
+            "a859078400@a1693440000",
+            "a1680332800",
+            "Take3_MPC 01-02-1.61"
+          ]
+        ]
+      },
+      {
+        "check": "SHIFT SEPARATE: single cut at playhead despite old range",
+        "passed": true,
+        "evidence": [
+          [
+            "a2244812800@a13107200",
+            "a0",
+            "Take3_MPC 01-02-1.62"
+          ],
+          [
+            "a2257920000@a0",
+            "a0",
+            "Take1_MPC 01-02-2.62"
+          ],
+          [
+            "a2260684800@a2257920000",
+            "a2257920000",
+            "Take1_MPC 01-02-2.63"
+          ],
+          [
+            "a294604800@a2257920000",
+            "a2244812800",
+            "Take3_MPC 01-02-1.63"
+          ]
+        ]
+      },
+      {
+        "check": "trim range",
+        "passed": true,
+        "evidence": [
+          [
+            "a1128960000@a564480000",
+            "a551372800",
+            "Take3_MPC 01-02-1.1"
+          ],
+          [
+            "a1128960000@a564480000",
+            "a564480000",
+            "Take1_MPC 01-02-2.1"
+          ]
+        ]
+      },
+      {
+        "check": "GRAB SPOT: align regions to playhead",
+        "passed": true,
+        "evidence": [
+          [
+            "a2539417600@a5657907200",
+            "a0",
+            "Take3_MPC 01-02-1.1"
+          ],
+          [
+            "a4518604800@a5644800000",
+            "a0",
+            "Take1_MPC 01-02-2.1"
+          ]
+        ]
+      },
+      {
+        "check": "NUDGE moves selected regions by Ardour distance",
+        "passed": true,
+        "evidence": [
+          [
+            "a2539417600@a1424307200",
+            "a0",
+            "Take3_MPC 01-02-1.1"
+          ],
+          [
+            "a4518604800@a1411200000",
+            "a0",
+            "Take1_MPC 01-02-2.1"
+          ]
+        ]
+      },
+      {
+        "check": "loop really rolls and wraps",
+        "passed": true,
+        "evidence": {
+          "speed": 1.0,
+          "frame_after_4s": 114552,
+          "loop_feedback": 1.0
+        }
+      },
+      {
+        "check": "second LOOP disables loop",
+        "passed": true,
+        "evidence": null
+      },
+      {
+        "check": "SHIFT IN OUT move loop boundaries",
+        "passed": true,
+        "evidence": {
+          "id": "40847",
+          "name": "Loop",
+          "start": "a1128960000",
+          "end": "a2257920000",
+          "flags": "IsAutoLoop",
+          "locked": "0",
+          "timestamp": "1789889639",
+          "cue": "0"
+        }
+      },
+      {
+        "check": "POST jumps one measure at 120 BPM",
+        "passed": true,
+        "evidence": null
+      },
+      {
+        "check": "SHIFT POST jumps four measures",
+        "passed": true,
+        "evidence": null
+      },
+      {
+        "check": "PRE jumps back one measure",
+        "passed": true,
+        "evidence": null
+      }
+    ]
+  },
+  "no_selection_reproduction": [
+    {
+      "check": "DELETE without region or range is a no-op",
+      "passed": true,
+      "evidence": null
+    },
+    {
+      "check": "CUT without region or range is a no-op",
+      "passed": true,
+      "evidence": null
+    },
+    {
+      "check": "SEPARATE works at playhead without selection",
+      "passed": true,
+      "evidence": null
+    }
+  ],
+  "native_transport_states": [
+    {
+      "check": "Version and seven integer fields",
+      "passed": true,
+      "reply": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "check": "Punch action returns actual paired configuration",
+      "passed": true,
+      "reply": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "check": "Punch second action restores original state",
+      "passed": true,
+      "reply": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "check": "Independent punch-in yields partial state",
+      "passed": true,
+      "reply": [
+        1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "check": "Armed transport is Enabled rather than Recording",
+      "passed": true,
+      "reply": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "check": "Disarm returns Disabled",
+      "passed": true,
+      "reply": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "check": "External sync reported as a valid confirmed bit",
+      "passed": true,
+      "reply": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "check": "Real Dummy recording returns Recording and armed-track bit",
+      "passed": true,
+      "reply": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        2,
+        1
+      ]
+    },
+    {
+      "check": "Stopping leaves recording state",
+      "passed": true,
+      "reply": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "physical_lamp_visibility": "pending user confirmation",
+  "implementation_scope": "GRAB range context, held toggle guard, IN/OUT guide and confirmed transport lights. CUT and DELETE retain explicit selection semantics.",
+  "native_patch_chain": {
+    "patches": 6,
+    "source_files_byte_identical": 9,
+    "base": "22ed8656c2533e325322ff11831448e5123e0d4b"
+  },
+  "deployed": {
+    "ardour_pid": 584535,
+    "gateway_pid": 584531,
+    "pointer_pid": 584534,
+    "ardour": "responding",
+    "console": "online",
+    "confirmed_transport_feedback": true,
+    "osc_module_sha256": "1bc7e98f65bbdaae2bebdebac0e5cbeade56ba145c8fcfd4ed3961cab48bbcce",
+    "feedback_acked": 243,
+    "feedback_sent": 243,
+    "feedback_timeouts": 0
+  }
+}

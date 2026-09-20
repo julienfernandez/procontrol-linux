@@ -1,0 +1,46 @@
+--- a/libs/surfaces/osc/osc.cc
++++ b/libs/surfaces/osc/osc.cc
+@@ -630,6 +630,7 @@
+ 		REGISTER_CALLBACK (serv, X_("/strip/plugin/list"), "i", route_plugin_list);
+ 		REGISTER_CALLBACK (serv, X_("/strip/plugin/descriptor"), "ii", route_plugin_descriptor);
+ 		REGISTER_CALLBACK (serv, X_("/procontrol/plugin/version"), "", procontrol_plugin_version);
++		REGISTER_CALLBACK (serv, X_("/procontrol/transport/state"), "", procontrol_transport_state);
+ 		REGISTER_CALLBACK (serv, X_("/procontrol/plugin/ensure"), "ssss", procontrol_plugin_ensure);
+ 		REGISTER_CALLBACK (serv, X_("/procontrol/plugin_ui/version"), "", procontrol_plugin_ui_version);
+ 		REGISTER_CALLBACK (serv, X_("/procontrol/plugin_ui/show"), "ssis", procontrol_plugin_ui_show);
+@@ -5386,6 +5387,24 @@
+ 	return 0;
+ }
+ 
++/* Read-only console indicators; does not create or refresh an OSC surface. */
++int
++OSC::procontrol_transport_state (lo_message msg)
++{
++	if (!session) { return -1; }
++	lo_message reply = lo_message_new ();
++	lo_message_add_int32 (reply, 1); // version
++	lo_message_add_int32 (reply, session->config.get_external_sync () ? 1 : 0);
++	lo_message_add_int32 (reply, session->config.get_punch_in () ? 1 : 0);
++	lo_message_add_int32 (reply, session->config.get_punch_out () ? 1 : 0);
++	lo_message_add_int32 (reply, session->get_play_loop () ? 1 : 0);
++	lo_message_add_int32 (reply, (int)session->record_status ());
++	lo_message_add_int32 (reply, session->have_rec_enabled_track () ? 1 : 0);
++	lo_send_message (get_address (msg), X_("/procontrol/transport/state"), reply);
++	lo_message_free (reply);
++	return 0;
++}
++
+ int
+ OSC::procontrol_plugin_version (lo_message msg)
+ {
+--- a/libs/surfaces/osc/osc.h
++++ b/libs/surfaces/osc/osc.h
+@@ -706,6 +706,8 @@
+ 	int procontrol_plugin_ui_show (lo_arg**, lo_message);
+ 	int procontrol_plugin_ui_version (lo_message);
+ 	int procontrol_plugin_version (lo_message);
++	int procontrol_transport_state (lo_message);
++	PATH_CALLBACK_MSG(procontrol_transport_state);
+ 	int procontrol_plugin_ensure (lo_arg**, lo_message);
+ 	static int _procontrol_plugin_ensure (const char*, const char*, lo_arg** argv, int, lo_message msg, void* data) {
+ 		return static_cast<OSC*>(data)->procontrol_plugin_ensure (argv, msg);

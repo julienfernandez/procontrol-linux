@@ -27,6 +27,22 @@ immédiatement accolée au dernier paquet de jog peut précéder la mise à jour
 curseur dans Ardour. Le test sans pause a reproduit cette limite ; aucune garantie
 à l'échantillon près n'est revendiquée pour ce geste simultané.
 
+## CUT et DELETE : choisir la cible
+
+**SEPARATE coupe au curseur ; CUT retire une sélection et la place dans le
+presse-papiers.** DELETE retire également une sélection. Un curseur placé sur
+une forme d’onde n’est pas, à lui seul, une région sélectionnée.
+
+Depuis la console : SELECT sur la tranche → IN → déplacer le jog ou POST → OUT
+→ CUT ou DELETE. Pour une région entière, la sélectionner avec le trackpad,
+ou tracer IN/OUT autour puis GRAB. COPY conserve la source ; PASTE colle au
+curseur. UNDO annule la dernière modification.
+
+Le 20 septembre, le cas « CUT/DELETE sans cible, SEPARATE fonctionnel » a été
+reproduit dans une copie Dummy. Les commandes avec IN/OUT fonctionnent. Les
+boutons physiques sont correctement identifiés : trois appuis reçus pour chaque
+commande annoncée. [Analyse et voyants](edit-interaction-2026-09-20.md).
+
 ## Touches d'édition
 
 Les opérations agissent sur les pistes/régions sélectionnées dans Ardour. SELECT
@@ -66,6 +82,10 @@ supprimer ou déplacer plusieurs pistes.
 **CTRL + PRE/POST** rejoint le début/la fin de la plage. **CTRL + IN/OUT** conserve
 les bascules punch-in/punch-out. LOOP REC prépare les bornes ; l'armement des pistes,
 le punch et l'enregistrement restent des commandes distinctes.
+
+QUICK PUNCH bascule punch-in et punch-out ; son voyant suit les deux états
+confirmés. EX TRANS / ON LINE bascule la synchro externe d’Ardour, et ne choisit
+pas à lui seul le protocole ni la source de synchronisation.
 
 NUDGE allumé : les flèches BANK SELECT décalent les régions sélectionnées selon
 la distance Nudge réglée dans Ardour. Cette distance n'est pas forcément une

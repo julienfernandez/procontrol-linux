@@ -14,7 +14,7 @@ class ConsoleEditing:
     BUTTONS = ({(0x18, n) for n in range(5)} |
                {(0x19, n) for n in (0, 1, 3, 6, 7)} |
                {(0x1b, n) for n in range(17)} |
-               {(0x1c, n) for n in (0, 1, 2, 3, 4, 9, 10)})
+               {(0x1c, n) for n in (0, 1, 2, 3, 4, 5, 8, 9, 10, 11)})
 
     def __init__(self, mapper):
         self.mapper = mapper
@@ -24,6 +24,8 @@ class ConsoleEditing:
     def reset(self):
         self.held.clear()
         self.zoom_navigation = False
+        indicators = getattr(self.mapper, 'indicators', None)
+        if indicators is not None: indicators.reset_range()
 
     def editor(self, *names):
         # Edits must never follow a stale mouse pointer over another waveform.
@@ -127,13 +129,16 @@ class ConsoleEditing:
                 return self.editor(*(['Common/select-all-tracks'] if shift else []),
                                    'EditorEditing/set-mouse-mode-range')
             if n == 15:
-                # Convert IN/OUT's range to selected regions for align/nudge.
-                return self.editor('Editor/select-all-within-cursors' if shift else 'Editor/select-all-between-cursors',
+                # Restore range mode before reading IN/OUT, even after a prior GRAB.
+                return self.editor('EditorEditing/set-mouse-mode-range',
+                                   'Editor/select-all-within-cursors' if shift else 'Editor/select-all-between-cursors',
                                    'EditorEditing/set-mouse-mode-object')
             if n == 16:
                 return self.editor('EditorEditing/set-mouse-mode-draw')
 
         if z == 0x1c:
+            if n in (5, 8, 11):
+                return actions('Transport/TogglePunch' if n == 11 else 'Transport/ToggleExternalSync')
             if n in (1, 4):
                 if ctrl:
                     return self.editor('Editor/playhead-to-range-start' if n == 1 else 'Editor/playhead-to-range-end')

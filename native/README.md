@@ -10,18 +10,19 @@ Sur un checkout de travail propre à cette révision, appliquer **dans cet ordre
 3. [curated-plugins](ardour-9.8-curated-plugins.patch) : identités de pistes et insertion contrôlée des effets.
 4. [warm-tape](ardour-9.8-warm-tape.patch) : profils Chaleur, Tube et Tape, validation des contrôles LV2.
 5. [jog-pool](ardour-9.8-jog-pool.patch) : pool d’événements, plan JACK et position audible du jog/compteur.
+6. [console-state](ardour-9.8-console-state.patch) : retour de lecture seule des états synchro, punch et enregistrement.
 
 Exemple depuis ce checkout Ardour, en remplaçant le chemin de la passerelle :
 
 ```sh
 bridge_root=/chemin/procontrol-linux
-for patch_name in plugin-ui osc-stability curated-plugins warm-tape jog-pool; do
+for patch_name in plugin-ui osc-stability curated-plugins warm-tape jog-pool console-state; do
   git apply --check "$bridge_root/native/ardour-9.8-$patch_name.patch" || break
   git apply "$bridge_root/native/ardour-9.8-$patch_name.patch" || break
 done
 ```
 
-Vérifier que les cinq applications ont réussi avant la compilation. Le build
+Vérifier que les six applications ont réussi avant la compilation. Le build
 Ardour doit déjà être configuré avec ses dépendances et son préfixe d’installation.
 Les trois cibles modifiées sont :
 

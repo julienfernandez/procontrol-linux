@@ -48,7 +48,7 @@ class SurfaceFeedback:
                      {(8, n) for n in (0, 2, 4, 6)} |
                      {(0x19, n) for n in (0, 1, 2, 3, 5, 6, 7)} |
                      {(0x1b, n) for n in range(17) if n != 11} |
-                     {(0x1c, n) for n in (0, 1, 2, 3, 4, 6, 7, 10)} |
+                     {(0x1c, n) for n in (0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11)} |
                      {(0x17, n) for n in (0x28, 0x29, 0x30)})
     def __init__(self,mapper):
         self.mapper=mapper;self.queue=OrderedDict();self.sent={};self.active={}
@@ -171,6 +171,9 @@ class SurfaceFeedback:
         transport={'/transport_play':(0x1c,0x10),'/transport_stop':(0x1c,0x0f),
                    '/rewind':(0x1c,0x0d),'/ffwd':(0x1c,0x0e),'/rec_enable_toggle':(0x1c,0x11),
                    '/loop_toggle':(0x1c,9),'/cancel_all_solos':(8,0x14)}
+        indicators = getattr(self.mapper, 'indicators', None)
+        if path == '/rec_enable_toggle' and indicators is not None and indicators.transport is not None:
+            return  # detailed recording state is rendered by ConsoleIndicators
         if path in transport:
             z,k=transport[path];self.put(('led',z,k),button_led(z,k,bool(values[0])));return
         if not path.startswith('/strip/') or len(values)<2:return

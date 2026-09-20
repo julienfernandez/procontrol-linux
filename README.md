@@ -125,13 +125,13 @@ python3 tools/mapping_inventory.py --check
 python3 -m compileall -q tools tests
 ```
 
-250 tests passent sur la machine de développement après l’ajout de la navigation et des voyants du 20 septembre. Les tests du helper natif
+256 tests passent sur la machine de développement après l’ajout de la navigation et des voyants du 20 septembre. Les tests du helper natif
 peuvent être ignorés s'il n'est pas installé ; certaines vérifications de
 capture nécessitent les utilitaires Linux `ip` et `flock`. Les tests de
 capture emploient un faux dumpcap et n'accèdent pas à la console réelle.
 
 - `tools/` : session Ethernet, ordonnanceurs, mapping, OSC et services.
-- `native/` : helper CAP_NET_RAW, pont Link et cinq patches Ardour ;
+- `native/` : helper CAP_NET_RAW, pont Link et six patches Ardour ;
   [ordre d’application et tests natifs](native/README.md).
 - `ardour/` : scripts Lua côté DAW.
 - `tests/` : tests et fixtures minimales de protocole.

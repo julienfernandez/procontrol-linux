@@ -28,6 +28,7 @@ from surface_routing import SurfaceRouting
 from eq_editor import EQEditor
 from track_monitor import TrackMonitor
 from plugin_window import PluginWindowFollower
+from console_indicators import ConsoleIndicators
 from stereo_bridge import StereoBridge
 from surface_settings import load as load_settings, validate as validate_settings
 from audit_diginet import candidate_header
@@ -235,6 +236,7 @@ def worker(args):
     surface = SurfaceMap()
     feedback = SurfaceFeedback(surface)
     feedback.initialize()
+    indicators = ConsoleIndicators(surface, feedback)
     settings_path = runtime.parent / 'settings.json'
     settings = load_settings(settings_path)
     surface.jog_gain = settings['jog_gain']
@@ -267,6 +269,7 @@ def worker(args):
                  'settings_revision': settings['revision'], 'settings': settings,
                  'routing': routing.status(), 'stereo': stereo.status(), 'dsp': eq.status(),
                  'plugin_window': plugin_window.status(), 'track_monitor': monitor.status(),
+                 'console_editing': indicators.status(),
                  'jog': osc.jog.status() if osc else None,
                  'resources': process_resources(),
                  'osc_reply_port': args.osc_reply_port, 'osc_error': osc_error,
@@ -297,6 +300,7 @@ def worker(args):
         if osc: osc.close(notify=False)
         routing.disconnect()
         plugin_window.reset()
+        indicators.disconnect()
         osc = None; last_osc = None; next_osc = time.monotonic()+5
     event('started', pid=os.getpid(), uid=os.geteuid(), interface=args.interface, peer=args.mac)
     publish()
@@ -319,13 +323,14 @@ def worker(args):
                         if osc_error is not None:
                             event('ardour_connected', reply_port=osc.socket.getsockname()[1])
                             osc_error = None
+                        indicators.feed(address, values, now)
                         plugin_window.feed(address, values)
                         routing.feed(address, values)
                         if address in ('/transport_play', '/transport_stop', '/transport_speed'):
                             event('osc_feedback', address=address, values=values)
                     if now - (last_osc if last_osc is not None else osc_started) >= OSC_TIMEOUT:
                         raise TimeoutError('Aucune réponse OSC depuis 20 secondes')
-                    deferred = routing.drain() + monitor.tick(now) + eq.tick(now) + plugin_window.update(eq, routing, now)
+                    deferred = indicators.tick(now) + routing.drain() + monitor.tick(now) + eq.tick(now) + plugin_window.update(eq, routing, now)
                     if deferred:
                         addresses = osc.actions(deferred)
                         counts['osc_sent'] += len(addresses)
@@ -400,6 +405,7 @@ def worker(args):
                         if connections != flow.connections:
                             if osc: osc.jog.cancel()
                             event('input_events', actions=surface.reset_inputs())
+                            indicators.reset_range()
                             feedback.resync()
                             routing.render_matrix()
                             if osc:
@@ -422,6 +428,7 @@ def worker(args):
                                     try:
                                         addresses = osc.actions(routed_actions)
                                         if addresses:
+                                            indicators.accepted(routed_actions)
                                             feedback.pulse_buttons(surface.last_button_presses)
                                             counts['osc_sent'] += len(addresses)
                                             last_action = {'utc': utc(), 'address': addresses[-1]}

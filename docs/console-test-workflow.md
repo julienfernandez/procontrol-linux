@@ -97,3 +97,9 @@ de mapping n’a été nécessaire. Les résultats et exemples de trames figuren
 [le compte rendu de cet essai](navigation-live-validation-2026-09-20.json).
 Le rendu visuel des flashes et les essais physiques SAVE/UNDO restent à confirmer ;
 aucun appui SAVE n’est présent dans cette seconde capture.
+
+## Séquence édition suivante
+
+Les gestes CUT à CAPTURE, AUDITION, IN/OUT et punch ont été analysés après cette
+fenêtre : voir [le rapport dédié](edit-interaction-2026-09-20.md), qui complète
+les flashes par un guide IN/OUT et les états de transport confirmés.
