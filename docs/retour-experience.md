@@ -127,6 +127,8 @@ Sources : [session](session-reference.md), [helper sans root](rootless-launch.md
 | Audit d'un préfixe avec seulement le hash du manifeste évolutif | Conserver une copie exacte avant la lecture des preuves ; le premier instantané a été récupéré et vérifié par son hash, puis le CLI corrigé | [Instantanés et couverture](fader-archive-verification.md) |
 | Assimiler image de mise à jour et contenu restaurable | Les sommes du démarrage portent aussi sur des trous absents d'Intel HEX ; des réglages et mots de contrôle résident hors image. Ne pas inventer leur remplissage | [Carte de préservation](preservation-layout-2026-09-21.md) |
 | Lire une valeur brute comme un pourcentage | Les seuils fader passent par un facteur 128/100 ; identifier la conversion et les unités avant de proposer un réglage | [État de calibration et seuils](preservation-layout-2026-09-21.md#calibration-des-faders--un-état-calculé-en-ram) |
+| Assimiler une réponse mémoire à une lecture atomique | Le formateur fader lit séparément la valeur hexadécimale et le caractère brut ; une modification intermédiaire de RAM peut les faire diverger. Conserver et refuser la réponse incohérente sans inventer une perte réseau | [Deux accès mémoire par réponse](fader-preservation-progress-2026-09-21.md#une-réponse-fader-peut-contenir-deux-lectures-de-ram) |
+| Optimiser seulement le délai visible | La relecture RX représente 48,72 % du temps des blocs du premier passage, contre 9,72 % pour la requête et son attente. Mesurer toutes les étapes, y compris le préalable comm imbriqué | [Mesures et limites de la comparaison](fader-preservation-progress-2026-09-21.md#mesurer-avant-daccélérer-les-acquisitions-suivantes) |
 
 ## Ce que l'on conserve et où
 

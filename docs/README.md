@@ -35,6 +35,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Lecteurs de réglages préparés et mesure de la durée de collecte fader](fader-preservation-progress-2026-09-21.md),
+  [tests, compatibilité des captures, sources et archive](fader-preservation-progress-2026-09-21.json).
+
 - [Première passe complète du programme fader installé](fader-first-pass-2026-09-21.md),
   [audit indépendant, segments et archive des captures](fader-first-pass-2026-09-21.json).
 

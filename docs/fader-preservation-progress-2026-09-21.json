@@ -1,0 +1,205 @@
+{
+  "date_local": "2026-09-21",
+  "scope": "Preparation and offline analysis while the second fader firmware pass remains active",
+  "new_hardware_fields_read": false,
+  "prepared_branch": "research/preservation-reads",
+  "prepared_commit": "2549e65a507a296a45ad5ef8cb059b20dd3702bb",
+  "ci": {
+    "conclusion": "success",
+    "headSha": "2549e65a507a296a45ad5ef8cb059b20dd3702bb",
+    "status": "completed",
+    "url": "https://github.com/julienfernandez/procontrol-linux/actions/runs/35544429893",
+    "run_id": "35544429893",
+    "log": "github-actions-2549e65.txt",
+    "log_sha256": "19d6355a271e7842a8777925b9759ee6a5774415eed0198467b84d76a80b6ab5",
+    "test_runs": [
+      [
+        "433",
+        "77.912"
+      ]
+    ],
+    "verdict_lines": [
+      "tests\tPython regression suite\t2026-09-20T23:23:34.6883570Z OK (skipped=1)"
+    ]
+  },
+  "archive": {
+    "created_utc": "2026-09-20T23:26:28.083265+00:00",
+    "archive": "procontrol-fader-preservation-preparation.tar.gz",
+    "bytes": 329366,
+    "sha256": "7e643368e110acb544915b3fd75d46f966fb21229fd1edb384bb928aa1895dc1",
+    "members_verified": 27,
+    "file_manifest": "FADER-PRESERVATION-PREP-FILE-MANIFEST.json",
+    "file_manifest_sha256": "b868f46a65192b63897aa67373b2b0849d679f4cfc2ddb5443b2ec700ca285a5",
+    "stage_commit": "2549e65a507a296a45ad5ef8cb059b20dd3702bb",
+    "contains_original_pcaps": false,
+    "original_pcap_archive_sha256": "49e09556f1a3102302d7011e3128b6ce8610c65cfeed86895c41f9ebdc3da7d3",
+    "copy_directory": "~/Documents/OpenProControl-preservation/2026-09-20-comm-1.37/",
+    "independent_storage_device": false,
+    "new_hardware_fields_read": false
+  },
+  "real_capture_compatibility": {
+    "verified_utc": "2026-09-20T23:20:00.940347+00:00",
+    "method": "Run the staged, extended independent audit against the restored real first-pass evidence",
+    "matches_original_audit_except_snapshot_filename": true,
+    "original_report_sha256": "145b3972110dde681c5e2246646bf276566f9135fde67e6d075908af78dcbef4",
+    "staged_report_sha256": "73c94a1c33952677e45d6200a463e37d5c41695490245c54e88b0933518617f0",
+    "pcaps": 15376,
+    "frames": 675735,
+    "new_named_fields_hardware_tested": false
+  },
+  "static_formatter_analysis": {
+    "analysis_utc": "2026-09-20T23:21:56.797346+00:00",
+    "source_file": "CODE-27-00008400.bin",
+    "source_sha256": "2479230a850da18b33b1dcf7292dbb12af6421aceabc047b2ae07d5582f23e05",
+    "formatter_entry": 37080,
+    "hexadecimal_value_load": {
+      "address": 37130,
+      "opcode_hex": "1010",
+      "instruction": "moveb (a0),d0"
+    },
+    "literal_value_load": {
+      "address": 37154,
+      "opcode_hex": "1ad0",
+      "instruction": "moveb (a0),(a5)+"
+    },
+    "two_separate_memory_loads": true,
+    "volatile_disagreement_observed_on_hardware": false,
+    "behavior": "Reject mismatched hex/literal values and preserve the capture; do not infer packet loss without evidence",
+    "disassembly_window_sha256": "1c87bd4e6188e9149b4b1039b230c692cda1eefff80244a0e11ea96cf63c7748"
+  },
+  "timing_report": {
+    "scope": "First fader code pass: host wall times of acquisition steps; no physical latency or CPU benchmark",
+    "manifest_snapshot_sha256": "94be2e4d37cdb322e971209bf92570874606cc49f986c2c014b48e46307bdea3",
+    "blocks": 964,
+    "useful_code_bytes": 11546,
+    "nested_comm_version_gate_included": true,
+    "first_block_started_utc": "2026-09-20T22:21:57.680353+00:00",
+    "last_block_finished_utc": "2026-09-20T23:04:24.487589+00:00",
+    "pass_span_seconds": 2546.807236,
+    "sum_block_seconds": 2514.3947820000003,
+    "between_block_seconds": 32.4124539999998,
+    "block_median_ms": 2615.2325,
+    "block_p95_ms": 2634.899,
+    "steps": {
+      "versions": {
+        "calls": 964,
+        "seconds": 56.428266,
+        "median_ms": 58.4765,
+        "p95_ms": 59.582,
+        "fraction_of_block_time": 0.022442086821034456,
+        "diagnostic_envelopes_sent": 964
+      },
+      "touch-before": {
+        "calls": 964,
+        "seconds": 88.876727,
+        "median_ms": 92.149,
+        "p95_ms": 94.097,
+        "fraction_of_block_time": 0.03534716490673977,
+        "diagnostic_envelopes_sent": 1928
+      },
+      "mode-before": {
+        "calls": 964,
+        "seconds": 78.18858,
+        "median_ms": 80.96000000000001,
+        "p95_ms": 82.831,
+        "fraction_of_block_time": 0.03109638174551382,
+        "diagnostic_envelopes_sent": 1928
+      },
+      "errors-before": {
+        "calls": 964,
+        "seconds": 80.093259,
+        "median_ms": 82.981,
+        "p95_ms": 85.051,
+        "fraction_of_block_time": 0.031853891669426794,
+        "diagnostic_envelopes_sent": 1928
+      },
+      "rx-before": {
+        "calls": 964,
+        "seconds": 119.063062,
+        "median_ms": 123.45150000000001,
+        "p95_ms": 125.90499999999999,
+        "fraction_of_block_time": 0.047352572814876294,
+        "diagnostic_envelopes_sent": 2892
+      },
+      "request": {
+        "calls": 964,
+        "seconds": 244.372585,
+        "median_ms": 253.4535,
+        "p95_ms": 253.90200000000002,
+        "fraction_of_block_time": 0.09718942576138387,
+        "diagnostic_envelopes_sent": 964
+      },
+      "rx-after": {
+        "calls": 964,
+        "seconds": 119.31801700000001,
+        "median_ms": 123.715,
+        "p95_ms": 126.09300000000002,
+        "fraction_of_block_time": 0.047453970973123025,
+        "diagnostic_envelopes_sent": 2892
+      },
+      "rx-data": {
+        "calls": 2751,
+        "seconds": 1224.920364,
+        "median_ms": 466.50399999999996,
+        "p95_ms": 660.4250000000001,
+        "fraction_of_block_time": 0.487163102933929,
+        "diagnostic_envelopes_sent": 31642
+      },
+      "rx-final": {
+        "calls": 964,
+        "seconds": 119.201832,
+        "median_ms": 123.59,
+        "p95_ms": 125.93199999999999,
+        "fraction_of_block_time": 0.04740776303440483,
+        "diagnostic_envelopes_sent": 2892
+      },
+      "fader-version-after": {
+        "calls": 964,
+        "seconds": 56.349199,
+        "median_ms": 58.361,
+        "p95_ms": 59.577,
+        "fraction_of_block_time": 0.022410641082852834,
+        "diagnostic_envelopes_sent": 964
+      },
+      "touch-after": {
+        "calls": 964,
+        "seconds": 88.950783,
+        "median_ms": 92.2505,
+        "p95_ms": 94.322,
+        "fraction_of_block_time": 0.035376617720009246,
+        "diagnostic_envelopes_sent": 1928
+      },
+      "mode-after": {
+        "calls": 964,
+        "seconds": 78.197221,
+        "median_ms": 81.019,
+        "p95_ms": 82.72,
+        "fraction_of_block_time": 0.03109981835779995,
+        "diagnostic_envelopes_sent": 1928
+      },
+      "errors-after": {
+        "calls": 964,
+        "seconds": 80.077805,
+        "median_ms": 82.9325,
+        "p95_ms": 85.096,
+        "fraction_of_block_time": 0.031847745458771795,
+        "diagnostic_envelopes_sent": 1928
+      },
+      "versions/comm-version": {
+        "calls": 964,
+        "seconds": 52.161379999999994,
+        "median_ms": 53.977,
+        "p95_ms": 55.298,
+        "fraction_of_block_time": 0.020745103503002734,
+        "diagnostic_envelopes_sent": 964
+      }
+    },
+    "unattributed_inside_blocks_seconds": 28.195702000000047,
+    "optimization_hardware_tested": false,
+    "probe_source_commit": "5c4959d42b3acb7a2eff62d4e3a8162adfb91516",
+    "analysis_script_sha256": "6e5936a93f54d608b57266120fc5de668a4e4f7f15d94e327c4a78fc428fa225"
+  },
+  "timing_report_sha256": "a89928c178ff190d3a69abd4a9a97d128cb352e96f13bffd1d786cb1598bd05f",
+  "analysis_script_sha256": "6e5936a93f54d608b57266120fc5de668a4e4f7f15d94e327c4a78fc428fa225",
+  "timing_percent_denominator": "Sum of block wall time, 2514.394782 seconds; excludes 32.412454 seconds between blocks"
+}
