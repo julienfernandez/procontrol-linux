@@ -28,6 +28,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Deux lectures complètes des segments du firmware comm](comm-firmware-readback-2026-09-20.md),
+  [empreintes des 504 captures et résultats](comm-firmware-readback-2026-09-20.json).
+
 - [Diagnostic réseau et premières lectures de mémoire sur la console](firmware-network-validation-2026-09-20.md),
   [preuves des cinq expériences](firmware-network-validation-2026-09-20.json).
 

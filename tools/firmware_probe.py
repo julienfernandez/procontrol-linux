@@ -34,15 +34,19 @@ CODE_SEGMENTS = ((0x20000, 0x20008), (0x20064, 0x20080),
                  (0x20100, 0x20110), (0x20400, 0x2fce4))
 
 
-def requests_for(address=None, length=1):
+def requests_for(address=None, length=1, batch_size=1):
     """Absolute address per byte: an absent/duplicate reply cannot shift reads."""
     result = [(None, VERSION_REQUEST)]
+    if not 1 <= batch_size <= 16:
+        raise ValueError('Lot limité à 1..16 octets')
     if address is not None:
         if (not 1 <= length <= 256 or not any(
                 lo <= address and address+length <= hi for lo, hi in CODE_SEGMENTS)):
             raise ValueError('Lecture limitée à 1..256 octets dans un segment comm 1.37 connu')
-        for target in range(address, address+length):
-            result.append((target, PREFIX + f'A{target:08X}m'.encode('ascii') + b'\xf7'))
+        for target in range(address, address+length, batch_size):
+            size = min(batch_size, address+length-target)
+            reads = b'm' if batch_size == 1 else b'M'*size
+            result.append((target, PREFIX + f'A{target:08X}'.encode('ascii') + reads + b'\xf7'))
     return result
 
 
@@ -78,10 +82,39 @@ def diagnostic_payload(body):
     return None
 
 
+def diagnostic_payloads(body):
+    """Recognized response sizes, never a split on f7 inside a literal byte.
+
+    A batch can place multiple complete envelopes in one DigiNet body. Reject
+    ambiguous concatenations instead of guessing where a raw memory byte ends.
+    Unknown standalone envelopes remain available to the version gate/log.
+    """
+    result = []
+    while body.startswith(PREFIX):
+        for size in (8, 16, 24):
+            if len(body) < size or body[size-1] != 0xf7:
+                continue
+            payload = body[5:size-1]
+            if (payload == b'\n\r' or
+                    (len(payload) == 10 and payload.startswith(b'COM') and payload.endswith(b'\n\r')) or
+                    re.fullmatch(rb"[0-9a-fA-F]{8}: [0-9a-fA-F]{2} '.'\n\r", payload, re.DOTALL)):
+                result.append(payload)
+                body = body[size:]
+                break
+        else:
+            if not result:
+                payload = diagnostic_payload(body)
+                return [payload] if payload is not None else []
+            raise ValueError('Enveloppes diagnostic concaténées non reconnues')
+    if body and result:
+        raise ValueError('Octets résiduels après une réponse diagnostic')
+    return result
+
+
 def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
-              address=None, length=1):
+              address=None, length=1, batch_size=1):
     """One outstanding request, no retries, at most 50 Hz, version before reads."""
-    requests = requests_for(address, length)
+    requests = requests_for(address, length, batch_size)
     report = {'started_utc': datetime.now(timezone.utc).isoformat(),
               'probe_source_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
               'probe': 'comm_code_read' if address is not None else 'comm_version',
@@ -90,7 +123,8 @@ def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
               'responses': [], 'announcements': [], 'error': None,
               'capture_clock': 'host userspace time_ns, microsecond PCAP',
               'frames_tx': 0, 'frames_rx': 0, 'transactions': [],
-              'read_address': address, 'read_length': length if address is not None else 0}
+              'read_address': address, 'read_length': length if address is not None else 0,
+              'batch_size': batch_size}
     deadline = time.monotonic() + connect_timeout
     request_time = None
     next_send = 0.
@@ -98,6 +132,7 @@ def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
     transaction = None
     finished = False
     values = bytearray()
+    batch_values = {}
     received_sequences = set()
     path = output / 'traffic.pcap'
     with path.open('xb') as capture:
@@ -121,7 +156,9 @@ def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
                 if not finished and request_time is None and flow.phase == 'online' and now >= next_send:
                     flow.session.sequence += 1
                     target, body = requests[cursor]
+                    batch_values = {}
                     transaction = {'index': cursor, 'address': target, 'request_hex': body.hex(' '),
+                                   'length': min(batch_size, address+length-target) if target is not None else 0,
                                    'sequence': flow.session.sequence, 'ack': False, 'matched': False}
                     report['transactions'].append(transaction)
                     if cursor == 0:
@@ -156,11 +193,12 @@ def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
                         if cursor == 0:
                             report['ack_received'] = True
                 elif header['command_field'] == 0:
-                    payload = diagnostic_payload(bytes.fromhex(header['body_hex']))
-                    if payload is not None:
+                    payloads = diagnostic_payloads(bytes.fromhex(header['body_hex']))
+                    if payloads:
                         sequence = header['sequence_candidate']
                         duplicate = sequence in received_sequences
                         received_sequences.add(sequence)
+                    for payload in payloads:
                         report['responses'].append({'sequence': sequence, 'duplicate': duplicate,
                             'request_index': transaction['index'],
                             'delay_ms': round((time.monotonic()-(request_time or now))*1000, 3),
@@ -173,11 +211,17 @@ def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
                                     raise RuntimeError('Version comm différente de 1.37 ; arrêt')
                                 transaction['matched'] = payload == EXPECTED_VERSION
                             else:
-                                value = memory_reply(payload, target)
-                                if value is not None:
-                                    transaction['matched'] = True
-                                    values.append(value)
+                                for item in range(target, target+transaction['length']):
+                                    value = memory_reply(payload, item)
+                                    if value is not None:
+                                        if item in batch_values and batch_values[item] != value:
+                                            raise ValueError('Deux réponses différentes pour la même adresse')
+                                        batch_values[item] = value
+                                        break
+                                transaction['matched'] = len(batch_values) == transaction['length']
                 if not finished and request_time is not None and transaction['ack'] and transaction['matched']:
+                    if transaction['address'] is not None:
+                        values.extend(batch_values[item] for item in sorted(batch_values))
                     cursor += 1
                     next_send = (request_time or now) + .02
                     request_time = None
@@ -220,10 +264,11 @@ def main(argv=None):
     parser.add_argument('--output', type=Path)
     parser.add_argument('--read-code', type=lambda value: int(value, 0), metavar='ADDRESS')
     parser.add_argument('--length', type=int, default=1)
+    parser.add_argument('--batch-size', type=int, default=1, help='1..16 octets par requête')
     parser.add_argument('--send', action='store_true')
     args = parser.parse_args(argv)
     try:
-        requests = requests_for(args.read_code, args.length)
+        requests = requests_for(args.read_code, args.length, args.batch_size)
     except ValueError as exc:
         parser.error(str(exc))
     if not args.send:
@@ -251,7 +296,7 @@ def main(argv=None):
             rx.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 4*1024*1024)
             args.output.mkdir(mode=0o700, parents=True)
             result = run_probe(rx, tx, ConsoleSession(host, args.mac), args.output,
-                               address=args.read_code, length=args.length)
+                               address=args.read_code, length=args.length, batch_size=args.batch_size)
     print(json.dumps(result, indent=2, ensure_ascii=False))
     return int(result['error'] is not None)
 

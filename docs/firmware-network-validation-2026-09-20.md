@@ -1,5 +1,10 @@
 # Diagnostic réseau et premières lectures mémoire sur ProControl
 
+**Étape suivante réalisée :** les quatre segments connus de l'image `comm`
+ont ensuite été lus intégralement deux fois. Voir la
+[lecture complète et sa conservation](comm-firmware-readback-2026-09-20.md).
+Les résultats ci-dessous restent ceux des cinq premières expériences.
+
 Le 20 septembre 2026, entre **20:52 et 20:56 UTC**, la ProControl originale
 `00:a0:7e:a0:ad:9c` a répondu à des requêtes de diagnostic sur Ethernet
 `0x885f`. La version retournée est **`COMv1.37`**. Deux acquisitions de chacun
