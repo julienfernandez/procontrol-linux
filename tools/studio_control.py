@@ -293,6 +293,9 @@ class StudioController:
                     raise ValueError('État de surveillance invalide')
                 if values['enabled'] and not self.backend.available:
                     raise ValueError('Configurer le backend studio avant la reprise automatique')
+                # Preserve local keys edited since this web process started.
+                current=read_json(self.root/'studio.json',self.config)
+                if isinstance(current,dict):self.config.update(current)
                 self.config['automatic'] = values['enabled']
                 write_json(self.root/'studio.json', self.config)
                 self.log('Reprise automatique '+('activée' if values['enabled'] else 'désactivée'))

@@ -76,7 +76,7 @@ class FreshPointer:
         self.pending = None; self.seen.clear(); self.remainder = [0.0, 0.0]
 
     def feed(self, row, now):
-        if row.get('event') in ('started', 'console_state', 'stopped'):
+        if row.get('event') in ('started', 'console_state', 'stopped', 'mapping_guard'):
             self.reset()
         if row.get('event') == 'ethernet_rx':
             self.pending = row
@@ -86,7 +86,7 @@ class FreshPointer:
         h, self.pending = self.pending, None
         try:
             age = now - datetime.fromisoformat(h['utc']).timestamp()
-            if not 0 <= age <= 0.25 or h.get('command_field') != 0 or not h.get('body_sum16_match'):
+            if not 0 <= age <= 0.25 or h.get('command_field') != 0 or not h.get('body_sum16_match') or h.get('mapping_suppressed') or row.get('mapping_suppressed'):
                 return None
             key = (h['sequence_candidate'], h['body_hex'])
             if key in self.seen:
@@ -130,6 +130,7 @@ def worker(args):
         settings = load_settings(runtime.parent/'settings.json')
         parser = FreshPointer(args.gain); alive = True; next_status = 0
         daemon_identity = None
+        mapping_until = 0.
         state = {'pid': os.getpid(), 'started_utc': datetime.now(timezone.utc).isoformat(),
                  'gain': args.gain, 'mode': 'motion_clicks_alpha_keyboard', 'commands': 0, 'moves': 0,
                  'input_events': 0, 'settings_revision': settings['revision'],
@@ -153,11 +154,18 @@ def worker(args):
                     if data == b'stop': alive = False; continue
                     try:
                         request = json.loads(data)
-                        if request.get('command') != 'configure':raise ValueError('Commande inconnue')
-                        settings = validate_settings(request['settings'])
-                        parser.gain = settings['pointer_gain']; parser.remainder = [0.,0.]
-                        state['gain'] = parser.gain; state['settings_revision'] = settings['revision']; publish()
-                        reply = {'ok':True,'revision':settings['revision']}
+                        if request.get('command') == 'mapping_guard':
+                            inputs.release_all();parser.reset()
+                            if log is not None:log.seek(0,2)
+                            mapping_until=time.monotonic()+3 if request.get('active') else 0.
+                            state['mapping_isolated']=bool(mapping_until);publish()
+                            reply={'ok':True}
+                        elif request.get('command') == 'configure':
+                            settings = validate_settings(request['settings'])
+                            parser.gain = settings['pointer_gain']; parser.remainder = [0.,0.]
+                            state['gain'] = parser.gain; state['settings_revision'] = settings['revision']; publish()
+                            reply = {'ok':True,'revision':settings['revision']}
+                        else:raise ValueError('Commande inconnue')
                     except (ValueError,KeyError,TypeError) as exc:reply={'ok':False,'error':str(exc)}
                     if client:
                         try:control.sendto(json.dumps(reply).encode(),client)
@@ -190,7 +198,14 @@ def worker(args):
                 if line:
                     try: row = json.loads(line)
                     except ValueError: continue
-                    if row.get('event') == 'input_events' and state.get('console') == 'online':
+                    if row.get('event') == 'mapping_guard':
+                        inputs.release_all();parser.reset()
+                        age=time.time()-datetime.fromisoformat(row['utc']).timestamp()
+                        mapping_until=time.monotonic()+3 if row.get('active') and 0<=age<=.5 else 0.
+                    isolated=time.monotonic()<mapping_until
+                    state['mapping_isolated']=isolated
+                    if isolated or row.get('mapping_suppressed'):inputs.release_all()
+                    if row.get('event') == 'input_events' and state.get('console') == 'online' and not isolated and not row.get('mapping_suppressed'):
                         age = time.time() - datetime.fromisoformat(row['utc']).timestamp()
                         if 0 <= age <= 0.25:
                             try:
@@ -204,7 +219,7 @@ def worker(args):
                         state['console'] = 'waiting_daemon'
                         next_status = 0
                     motion = parser.feed(row, time.time())
-                    if motion is not None and state.get('console') == 'online':
+                    if motion is not None and state.get('console') == 'online' and not isolated:
                         state['commands'] += 1
                         if any(motion): pointer.move(*motion); state['moves'] += 1
                 else:

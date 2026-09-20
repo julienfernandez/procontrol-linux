@@ -127,6 +127,24 @@ class PointerLifecycleTests(unittest.TestCase):
         self.assertEqual(self.process.wait(timeout=5), 0)
         self.assertFalse(json.loads((self.runtime / 'pointer-status.json').read_text())['running'])
 
+    def test_mapping_guard_isolates_worker_releases_and_recovers_without_replay(self):
+        self.start();self.gesture(button=True)
+        self.wait(lambda s:s.get('moves')==1 and s.get('input_events')==1)
+        import surface_settings
+        response=surface_settings.rpc(self.runtime,'pointer.sock',{'command':'mapping_guard','active':True})
+        self.assertTrue(response['ok'])
+        self.assertIn(['release',None],self.injected())
+        for seq in range(10,20):self.gesture(seq=seq,button=True)
+        # Worker state publishes once a second; injected events would be recorded immediately.
+        current=self.wait(lambda s:s.get('mapping_isolated'))
+        self.wait(lambda s:s.get('updated_utc','')>current.get('updated_utc',''))
+        self.assertEqual(sum(row[0]=='move' for row in self.injected()),1)
+        self.assertEqual(sum(row[0]=='input' for row in self.injected()),1)
+        surface_settings.rpc(self.runtime,'pointer.sock',{'command':'mapping_guard','active':False})
+        self.gesture(seq=20,button=True)
+        self.wait(lambda s:s.get('moves')==2 and s.get('input_events')==2)
+        self.assertEqual(sum(row[0]=='move' for row in self.injected()),2)
+
     def test_rotation_gap_does_not_exit_or_replay_stale_events(self):
         initial = self.start()
         self.log.rename(self.runtime / 'events.jsonl.1')

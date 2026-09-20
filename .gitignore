@@ -31,3 +31,7 @@ dist/
 
 # Préparation locale et sessions de validation non publiées
 /work/
+
+# Calibration et presets personnels
+console-mapping.json
+.console-mapping-*

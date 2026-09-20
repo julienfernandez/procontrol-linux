@@ -89,6 +89,12 @@ class SupervisorTests(unittest.TestCase):
         self.fresh_session();self.assertTrue(self.c.backend.route_allowed())
         p=self.root/'run/status.json';os.utime(p,(time.time()-10,)*2)
         self.assertFalse(self.c.backend.route_allowed())
+    def test_automatic_toggle_preserves_new_launcher_settings(self):
+        config=json.loads((self.root/'studio.json').read_text());config['launch_link']=True
+        write_json(self.root/'studio.json',config)
+        self.c.request({'action':'automatic','enabled':False})
+        self.assertTrue(json.loads((self.root/'studio.json').read_text())['launch_link'])
+
     def test_no_arbitrary_command_or_path(self):
         for payload in ({'action':'stop'},{'action':'recover','command':'echo x'},{'action':'automatic','enabled':1}):
             with self.assertRaises(ValueError):self.c.request(payload)

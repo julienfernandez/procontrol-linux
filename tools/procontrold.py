@@ -21,6 +21,7 @@ import time
 
 from ardour_transport import ArdourTransport, message
 from surface_map import SurfaceMap
+from console_mapping import MappingRuntime, suspend_plugin_window
 from dsp_display_probe import DSPDisplayProbe
 from surface_feedback import SurfaceFeedback
 from surface_osc import ArdourSurface
@@ -30,7 +31,7 @@ from track_monitor import TrackMonitor
 from plugin_window import PluginWindowFollower
 from console_indicators import ConsoleIndicators
 from stereo_bridge import StereoBridge
-from surface_settings import load as load_settings, validate as validate_settings
+from surface_settings import load as load_settings, validate as validate_settings, rpc
 from audit_diginet import candidate_header
 from inspect_pcap import CaptureError, mac_address
 from procontrol_mapping import decode_body, mapping_tree
@@ -270,6 +271,7 @@ def worker(args):
                  'routing': routing.status(), 'stereo': stereo.status(), 'dsp': eq.status(),
                  'plugin_window': plugin_window.status(), 'track_monitor': monitor.status(),
                  'console_editing': indicators.status(),
+                 'mapping': {'active': mapping.config['name'], 'learning': bool(mapping.learning)},
                  'jog': osc.jog.status() if osc else None,
                  'resources': process_resources(),
                  'osc_reply_port': args.osc_reply_port, 'osc_error': osc_error,
@@ -302,6 +304,19 @@ def worker(args):
         plugin_window.reset()
         indicators.disconnect()
         osc = None; last_osc = None; next_osc = time.monotonic()+5
+    def mapping_reset():
+        if osc:
+            osc.jog.cancel()
+            touches=[('osc','/strip/gain/touch',[ch,0]) for ch in surface.touched]
+            if touches:osc.actions(routing.actions(touches))
+        window_actions=suspend_plugin_window(plugin_window)
+        if osc and window_actions:osc.actions(window_actions)
+        event('input_events',actions=[('release_all','',[])])
+    def pointer_guard(active):
+        response=rpc(runtime,'pointer.sock',{'command':'mapping_guard','active':active})
+        if not response.get('ok'):raise ValueError('Le pointeur n’a pas confirmé l’isolation')
+        event('mapping_guard',active=active)
+    mapping=MappingRuntime(runtime.parent,surface,feedback,routing,indicators,mapping_reset,pointer_guard)
     event('started', pid=os.getpid(), uid=os.geteuid(), interface=args.interface, peer=args.mac)
     publish()
     try:
@@ -323,6 +338,7 @@ def worker(args):
                         if osc_error is not None:
                             event('ardour_connected', reply_port=osc.socket.getsockname()[1])
                             osc_error = None
+                        mapping.feed(address,values,now)
                         indicators.feed(address, values, now)
                         plugin_window.feed(address, values)
                         routing.feed(address, values)
@@ -330,7 +346,8 @@ def worker(args):
                             event('osc_feedback', address=address, values=values)
                     if now - (last_osc if last_osc is not None else osc_started) >= OSC_TIMEOUT:
                         raise TimeoutError('Aucune réponse OSC depuis 20 secondes')
-                    deferred = indicators.tick(now) + routing.drain() + monitor.tick(now) + eq.tick(now) + plugin_window.update(eq, routing, now)
+                    deferred = indicators.tick(now)
+                    if not mapping.learning:deferred += routing.drain() + monitor.tick(now) + eq.tick(now) + plugin_window.update(eq, routing, now)
                     if deferred:
                         addresses = osc.actions(deferred)
                         counts['osc_sent'] += len(addresses)
@@ -343,8 +360,10 @@ def worker(args):
                         routing.begin_catalog(); osc.request_catalog()
                         routing.need_catalog = False; next_catalog = now+2
                     if now >= next_query:
-                        osc.socket.send(message('/transport_speed')); next_query = now+10
+                        osc.socket.send(message('/transport_speed')); next_query = now+1
                 except OSError as exc: osc_failed(exc)
+            if mapping.tick(now,flow.phase=="online"):
+                event("mapping_guard",active=True)
             display_probe.tick(now)
             stereo.poll()
             if now >= next_meter_render:
@@ -376,7 +395,9 @@ def worker(args):
                 else:
                     try:
                         request = json.loads(data)
-                        if request.get('command') == 'configure':
+                        if request.get('command') == 'mapping':
+                            reply=mapping.request(request)
+                        elif request.get('command') == 'configure':
                             new_settings = validate_settings(request['settings'])
                             stereo.configure(new_settings); settings = new_settings
                             surface.jog_gain = settings['jog_gain']; publish()
@@ -388,7 +409,7 @@ def worker(args):
                         elif request.get('command') == 'status':
                             publish();reply=status(runtime)
                         else:raise ValueError('Commande inconnue')
-                    except (ValueError,KeyError,TypeError) as exc:reply={'ok':False,'error':str(exc)}
+                    except (ValueError,KeyError,TypeError,OSError) as exc:reply={'ok':False,'error':str(exc)}
                     if client:
                         try:control.sendto(json.dumps(reply).encode(),client)
                         except OSError:pass
@@ -400,9 +421,10 @@ def worker(args):
                     if h is not None:
                         counts['rx'] += 1
                         if h['command_field'] == 0xa0: counts['ack_received'] += 1
-                        event('ethernet_rx', **h)
+                        event('ethernet_rx', mapping_suppressed=mapping.suppress_pointer(), **h)
                         feedback.acknowledge(h)
                         if connections != flow.connections:
+                            mapping.reconnect()
                             if osc: osc.jog.cancel()
                             event('input_events', actions=surface.reset_inputs())
                             indicators.reset_range()
@@ -415,11 +437,12 @@ def worker(args):
                         if h['command_field'] == 0 and frame[:6] == flow.session.host:
                             decoded = decode_body(bytes.fromhex(h['body_hex']))
                             counts['control_frames'] += 1
-                            event('controls', decoded=decoded)
+                            event('controls', mapping_suppressed=mapping.suppress_pointer(), decoded=decoded)
                             if flow.session.online_acked:
-                                actions = surface.route(h['sequence_candidate'], bytes.fromhex(h['body_hex']))
+                                actions = mapping.route(h['sequence_candidate'], bytes.fromhex(h['body_hex']))
                                 for action in actions: feedback.local(action)
-                                routed_actions = routing.actions(actions)
+                                routed_actions = routing.actions([a for a in actions if a[0]!="direct_osc"])
+                                routed_actions += [("osc",p,v) for k,p,v in actions if k=="direct_osc"]
                                 inputs = [a for a in actions if a[0] in ('key','text','button','release_all')]
                                 if inputs: event('input_events', actions=inputs)
                                 if actions: event('surface_actions', actions=actions)
@@ -455,6 +478,7 @@ def worker(args):
         raise
     finally:
         alive = False
+        mapping.cancel_probe();mapping.stop_learning('Gateway arrêtée')
         event('input_events', actions=[('release_all','',[])])
         if osc: osc.close()
         stereo.close()

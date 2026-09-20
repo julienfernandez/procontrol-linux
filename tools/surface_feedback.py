@@ -71,6 +71,11 @@ class SurfaceFeedback:
         return button_led(key[1],key[2],True) if key in self.pulses else self.desired[key]
 
     def queue_body(self,key,body):
+        hook=getattr(self,"mapping_hook",None)
+        if hook is not None:
+            body=hook(key,body)
+            if body is None:
+                self.queue.pop(key,None);return
         if self.sent.get(key)==body:
             self.queue.pop(key,None)
             return
@@ -120,7 +125,8 @@ class SurfaceFeedback:
         self.pending=None;self.error=None;self.sent.clear()
         self.pending_items.clear();self.confirmed.clear();self.last_motor_send=-1.
         self.desired[('led',0x18,2)]=button_led(0x18,2,self.mapper.editing.zoom_navigation)
-        self.queue=OrderedDict(self.desired)
+        self.queue=OrderedDict()
+        for key,body in self.desired.items():self.queue_body(key,body)
         self.local_motor.clear();self.motor_echo.clear()
         self.retry_after=0.;self.failures=0;self.needs_refresh=False
 
@@ -234,6 +240,7 @@ class SurfaceFeedback:
 
     def motor_blocked(self, key, now):
         if key[0] != 'motor':return False
+        if getattr(self,'mapping_motor_guard',lambda key:False)(key):return True
         channel=key[1]
         if self.is_local_echo(key):return False
         return (not self.active.get(channel,False) or channel in self.mapper.touched
@@ -277,7 +284,7 @@ class SurfaceFeedback:
                 # or all the LCDs/LEDs because a single ACK was lost.
                 for key in self.pending_items:
                     self.sent.pop(key,None);self.confirmed.pop(key,None)
-                    if key in self.desired:self.queue[key]=self.effective(key)
+                    if key in self.desired:self.queue_body(key,self.effective(key))
                 self.pending_items.clear()
                 delay=0. if self.failures<=2 else min(2.,.1*2**min(self.failures-3,5))
                 self.retry_after=now+delay
@@ -293,6 +300,7 @@ class SurfaceFeedback:
         for key in keys:
             if key[0]=='motor':
                 channel=key[1]
+                if getattr(self,'mapping_motor_guard',lambda key:False)(key):continue
                 if not self.is_local_echo(key):
                     if not self.active.get(channel,False):self.queue.pop(key);continue
                     if self.motor_blocked(key,now):continue

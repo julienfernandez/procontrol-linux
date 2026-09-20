@@ -14,6 +14,7 @@ import time
 from urllib.parse import urlsplit
 from surface_settings import load,save,validate,rpc
 from studio_control import StudioController
+from console_web import ConsoleController
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -21,6 +22,7 @@ class App:
     def __init__(self, root=ROOT):
         self.root=Path(root);self.runtime=self.root/'run';self.path=self.root/'settings.json';self.lock=threading.Lock()
         self.studio=StudioController(self.root)
+        self.console=ConsoleController(self.root)
     def state(self):
         data={}
         for name,file in [('daemon','status.json'),('pointer','pointer-status.json')]:
@@ -85,22 +87,42 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.allowed():return self.output(403,{'error':'Hôte non autorisé'})
         path=urlsplit(self.path).path
+        if path=='/api/console/model':return self.output(200,self.server.app.console.model())
+        if path=='/api/console/state':return self.output(200,self.server.app.console.state())
+        if path=='/api/console/events':
+            self.send_response(200);self.send_header('Content-Type','text/event-stream');self.send_header('Cache-Control','no-store');self.end_headers()
+            last=None;last_cursor=None
+            try:
+                # Bounded connection duration; EventSource reconnects automatically.
+                for _ in range(240):
+                    state=self.server.app.console.state()
+                    state=dict(state)
+                    events=state.get('events',[])
+                    if last_cursor is not None and events and events[0]['id']>last_cursor+1:state['gap']=True
+                    encoded=json.dumps(state,ensure_ascii=False)
+                    if encoded!=last:
+                        self.wfile.write(('data: '+encoded+'\n\n').encode());self.wfile.flush();last=encoded;last_cursor=state.get('cursor')
+                    time.sleep(.25)
+            except (BrokenPipeError,ConnectionResetError):pass
+            return
         if path=='/api/state':return self.output(200,self.server.app.state())
         if path=='/api/studio':return self.output(200,self.server.app.studio.state())
         if path=='/api/studio/logs':return self.output(200,self.server.app.studio.logs())
         files={'/':('index.html','text/html; charset=utf-8'),'/app.js':('app.js','text/javascript; charset=utf-8'),'/style.css':('style.css','text/css; charset=utf-8')}
+        files.update({'/mapping':('mapping.html','text/html; charset=utf-8'),'/mapping.js':('mapping.js','text/javascript; charset=utf-8'),'/mapping.css':('mapping.css','text/css; charset=utf-8')})
         if path not in files:return self.output(404,{'error':'Introuvable'})
         name,ctype=files[path];self.output(200,(self.server.app.root/'web'/name).read_bytes(),ctype)
     def do_POST(self):
         if not self.allowed(True):return self.output(403,{'error':'Origine non autorisée'})
         actions={'/api/settings':self.server.app.update,'/api/meter-test':self.server.app.meter_test,'/api/calibration':self.server.app.calibrate,'/api/studio/action':self.server.app.studio.request}
+        actions['/api/console/action']=self.server.app.console.request
         if self.path not in actions:return self.output(404,{'error':'Introuvable'})
         try:
             length=int(self.headers.get('Content-Length','0'))
             if not 0<length<=65536:raise ValueError('Requête trop grande ou vide')
             result=actions[self.path](json.loads(self.rfile.read(length)))
             self.output(200,result)
-        except (ValueError,TypeError) as exc:self.output(400,{'error':str(exc)})
+        except (ValueError,TypeError,KeyError) as exc:self.output(400,{'error':str(exc)})
         except OSError as exc:self.output(503,{'error':'Écriture impossible : '+str(exc)})
 
 def serve(root=ROOT,port=8765):
