@@ -329,6 +329,12 @@ class StudioController:
                     p.wait(timeout=3)
                 except subprocess.TimeoutExpired:
                     os.killpg(p.pid, signal.SIGKILL); p.wait()
+                # The leader may exit while a descendant ignores SIGTERM.
+                # Its original process group still needs to be reclaimed.
+                try:
+                    os.killpg(p.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
                 raise RuntimeError('Opération interrompue à l’arrêt de la supervision' if self.stopping.is_set()
                                    else 'Délai de préparation dépassé ; consulter le journal')
             rc = p.returncode

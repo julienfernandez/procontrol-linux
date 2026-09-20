@@ -3,9 +3,9 @@
   "scope": "Gateway studio supervision and post-reboot USB recovery",
   "software_checks": {
     "full_suite_before_final_api_test": 279,
-    "targeted_final_supervision_suite": 19,
+    "targeted_final_supervision_suite": 20,
     "backend_lifecycle_suite": 6,
-    "distinct_tests": 281,
+    "distinct_tests": 282,
     "syntax": "pass",
     "mapping_inventory": "current"
   },

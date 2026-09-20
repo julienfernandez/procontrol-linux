@@ -120,9 +120,16 @@ class SupervisorTests(unittest.TestCase):
             with patch.object(self.c.backend,'snapshot',return_value=snap(trigger,boot)):self.c.tick()
             self.assertEqual(self.c.state()['pcm_restarts'],expected);self.assertIsNone(self.c.pending)
     def test_shutdown_terminates_job_process_group(self):
+        self.assert_shutdown_group(False)
+    def test_shutdown_reaps_descendant_ignoring_sigterm(self):
+        self.assert_shutdown_group(True)
+    def assert_shutdown_group(self, ignore_sigterm):
         p=self.c.backend.path
         pidfile=self.data/'child.pid'
-        p.write_text("import subprocess,time,os\nfrom pathlib import Path\np=subprocess.Popen(['sleep','100'])\nPath('child.pid').write_text(str(p.pid))\ntime.sleep(100)\n")
+        child_code=("import signal,time,os\nfrom pathlib import Path\n"+
+                    ("signal.signal(signal.SIGTERM,signal.SIG_IGN)\n" if ignore_sigterm else '')+
+                    "Path('child.pid').write_text(str(os.getpid()))\ntime.sleep(100)\n")
+        p.write_text("import subprocess,time,sys\np=subprocess.Popen([sys.executable,'-c',"+repr(child_code)+"])\ntime.sleep(100)\n")
         errors=[]
         def run():
             try:self.c.run_command('prepare')
@@ -135,7 +142,15 @@ class SupervisorTests(unittest.TestCase):
             self.assertTrue(pidfile.exists());child=int(pidfile.read_text())
             self.c.stopping.set();t.join(4);self.assertFalse(t.is_alive());self.assertTrue(errors)
             stat=Path(f'/proc/{child}/stat')
-            self.assertTrue(not stat.exists() or stat.read_text().split()[2]=='Z')
+            deadline=time.monotonic()+1
+            while True:
+                try:
+                    state=stat.read_text().split()[2]
+                except (FileNotFoundError, ProcessLookupError):
+                    state=None
+                if state in (None,'Z') or time.monotonic()>=deadline:break
+                time.sleep(.01)
+            self.assertIn(state,(None,'Z'))
         finally:
             self.c.stopping.set();t.join(4)
     def test_shutdown_does_not_start_next_command(self):
