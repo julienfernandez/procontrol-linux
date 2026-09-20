@@ -10,6 +10,17 @@ ProControl ↔ Ethernet brut ↔ procontrold ↔ OSC ↔ Ardour
                                   ↳ réglages web locaux
 ```
 
+## Centre de contrôle USB du studio
+
+Le panneau local de la Gateway supervise maintenant MPC, USB, Ardour et Behringer,
+avec remise en service, reprise automatique et journaux. Voir le
+[guide du studio USB](docs/studio-control.md) pour la configuration et les limites.
+
+[![Centre de contrôle réel de la Gateway : état de la MPC, connexions USB, Ardour et sortie Behringer](docs/images/gateway-studio.png)](docs/images/gateway-studio.png)
+
+*Interface de la Gateway en fonctionnement, le 20 septembre 2026. Cliquer sur
+l’image pour l’ouvrir en grand.*
+
 ## Fonctions disponibles
 
 - Session Ethernet Online maintenue en arrière-plan, transport et jog.
@@ -170,9 +181,3 @@ chemins propres au laptop ; leurs fichiers ne sont pas tous distribués.
 
 Licence : **GPL-3.0-or-later**, voir [LICENSE](LICENSE). Les mentions des auteurs
 et licences des sources tierces sont conservées dans `vendor/`.
-
-## Centre de contrôle USB du studio
-
-Le panneau local de la Gateway supervise maintenant MPC, USB, Ardour et Behringer,
-avec remise en service, reprise automatique et journaux. Voir le
-[guide du studio USB](docs/studio-control.md) pour la configuration et les limites.
