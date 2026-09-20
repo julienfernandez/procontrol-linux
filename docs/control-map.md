@@ -12,7 +12,10 @@ inventaires, qui instancient uniquement SurfaceMap sans ses éditeurs de mode.
 
 ## Bibliothèque DSP — 20 septembre 2026
 
-EQ/DYN créent leur effet s’il manque. INSERTS par voie ouvre la chaîne puis une
+EQ/DYN créent leur effet s’il manque. **INS/SEND** par voie ouvre dans
+**DSP EDIT/ASSIGN** le même navigateur que **INSERTS/PARAM**, ciblé sur cette
+voie. Le code `01`, historiquement nommé Pan_Send dans la table tierce, est
+raccordé au navigateur ; `0a` reste un alias. Le navigateur ouvre la chaîne puis une
 bibliothèque de huit effets validés : EQ, compresseur, réverb, délai, phaser,
 Chaleur, Tube et Tape. Navigation et paramètres sur les huit rotatifs DSP.
 Voir [le parcours](curated-plugins.md) et [les nouveaux effets](warm-tape-plugins.md).

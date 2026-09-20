@@ -9,9 +9,12 @@ effets. Elle ne parcourt pas le catalogue VST/LV2 installé pour proposer des aj
   mono/stéréo et attend ses descripteurs avant de donner le contrôle aux rotatifs.
 - **DYN IN/EDIT** : même principe pour LSP Compressor. L'EQ neuf est plat et
   le compresseur neuf a un ratio de 1:1. Le second appui quitte l'édition.
-- **INSERTS** d'une voie (key `0x0a`, zones `0..7`) : ouvre ses effets. Si la
+- **INS/SEND** d'une voie (key `0x01`, zones `0..7`) : ouvre ses effets dans
+  **DSP EDIT/ASSIGN** et sélectionne directement cette piste. L'ancien code
+  INSERTS `0x0a` reste un alias. Le voyant INS/SEND suit la piste du navigateur.
+  Si la
   voie est vide, affiche directement la bibliothèque. Sinon, SELECT sur
-  **+ Effet**, ou un nouvel appui INSERTS, ouvre cette bibliothèque.
+  **+ Effet**, ou un nouvel appui INS/SEND, ouvre cette bibliothèque.
 - **INSERTS/PARAM** global et **WINDOWS PLUG-IN** : même navigateur pour la voie
   sélectionnée. Depuis une édition, retourne à la liste ; depuis la liste,
   passe à la bibliothèque ; depuis la bibliothèque, revient à la liste.

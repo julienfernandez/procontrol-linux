@@ -126,6 +126,54 @@ class PluginCatalogTests(unittest.TestCase):
         actions = self.action('90 00 4e')
         self.assertEqual(actions[0][2][:3], ['/session','109','comp'])
 
+    def test_ins_send_opens_dsp_browser_for_its_track_in_current_bank(self):
+        from surface_feedback import button_led
+        self.connected(); self.r.start = 8
+        # The observed main-unit INS/SEND code is 01, rather than the older
+        # reference INSERTS code 0a. Track 9 is physical strip 1 in bank 2.
+        self.assertEqual(self.action('90 01 40'), [('osc','/strip/select',[9,0])])
+        self.assertEqual(self.eq.mode, 'browse')
+        self.assertFalse(self.eq.create_armed)
+        self.assertEqual(self.action('90 01 00'), [])
+        self.assertEqual(self.eq.tick(), [('osc','/strip/plugin/list',[9])])
+        self.r.feed('/strip/plugin/list', [9,1,'LSP Compressor Stereo',1])
+        self.assertTrue(self.eq.usable())
+        self.assertEqual(self.f.desired['led',0,1], button_led(0,1,True))
+        self.assertEqual(self.f.desired['led',1,1], button_led(1,1,False))
+        self.assertEqual(self.f.desired['led',0x15,2], button_led(0x15,2,True))
+        self.assertEqual(self.action('90 01 40'), [])  # exact Ethernet retry
+        self.assertEqual(self.eq.mode, 'browse')
+        self.now += .01
+        self.action('90 01 40')  # next real press behaves like INSERTS/PARAM
+        self.assertEqual(self.eq.mode, 'library')
+        self.assertFalse(self.eq.create_pending)
+        self.eq.exit()
+        self.assertEqual(self.f.desired['led',0,1], button_led(0,1,False))
+
+    def test_ins_send_from_monitoring_opens_empty_tracks_library_without_inserting(self):
+        from track_monitor import TrackMonitor
+        from surface_feedback import button_led
+        self.connected(); monitor = TrackMonitor(self.r, self.f, lambda:self.now)
+        monitor.enter()
+        self.assertEqual(self.action('90 01 41'), [('osc','/strip/select',[2,0])])
+        self.assertFalse(monitor.active); self.assertTrue(self.eq.active)
+        self.eq.tick(); self.r.feed('/strip/plugin/list', [2])
+        self.assertEqual(self.eq.mode, 'library')
+        self.assertEqual(self.eq.tick(), [])
+        self.assertFalse(self.eq.create_armed); self.assertFalse(self.eq.create_pending)
+        self.assertEqual(self.f.desired['led',1,1], button_led(1,1,True))
+        self.now += .01; self.action('90 02 41')
+        self.assertEqual(self.f.desired['led',1,1], button_led(1,1,False))
+
+    def test_ins_send_switches_to_another_tracks_browser_and_clears_previous_lamp(self):
+        from surface_feedback import button_led
+        self.connected(); self.action('90 01 40'); self.load()
+        self.assertEqual(self.f.desired['led',0,1], button_led(0,1,True))
+        self.action('90 01 42')
+        self.assertEqual(self.eq.sid, 3); self.assertEqual(self.eq.mode, 'browse')
+        self.assertEqual(self.f.desired['led',0,1], button_led(0,1,False))
+        self.assertEqual(self.f.desired['led',2,1], button_led(2,1,True))
+
     def test_library_has_eight_choices_without_discovery(self):
         self.connected(); self.action('90 0a 40'); self.load()
         self.action('90 00 4f')  # third row = + Effet

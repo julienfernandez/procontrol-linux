@@ -14,6 +14,8 @@ from plugin_catalog import CATALOG, entry_for_name, profile_for_name, minimum_ve
 
 NAMES = {'LSP Parametric Equalizer x8 Mono', 'LSP Parametric Equalizer x8 Stereo'}
 COMPRESSORS = {'LSP Compressor Mono', 'LSP Compressor Stereo'}
+# INS/SEND on the main unit; retain the older reference INSERTS alias.
+INSERT_KEYS = (1, 10)
 FIELDS = {'type': 'Filter type', 'mode': 'Filter mode', 'slope': 'Filter slope',
           'mute': 'Filter mute', 'frequency': 'Frequency', 'width': 'Filter Width',
           'gain': 'Gain', 'q': 'Quality factor'}
@@ -56,7 +58,7 @@ class EQEditor:
                 return [('eq', 'enter', [zone + 1])] if down else []
             if zone < 8 and key == 3:
                 return [('eq', 'compressor', [zone + 1])] if down else []
-            if zone < 8 and key == 10:
+            if zone < 8 and key in INSERT_KEYS:
                 return [('eq', 'browse_track', [zone + 1])] if down else []
             if (zone, key) in ((0x15, 2), (0x19, 4)):
                 return [('eq', 'browse', [])] if down else []
@@ -230,7 +232,8 @@ class EQEditor:
         for ch in range(1, 9):
             self.feedback.put(('led', ch-1, 2), button_led(ch-1, 2, False))
             self.feedback.put(('led', ch-1, 3), button_led(ch-1, 3, False))
-            self.feedback.put(('led', ch-1, 10), button_led(ch-1, 10, False))
+            for key in INSERT_KEYS:
+                self.feedback.put(('led', ch-1, key), button_led(ch-1, key, False))
             self.feedback.put(('dsp', ch), dsp_text(ch, ''))
             for key in (0, 1, 2):
                 self.feedback.put(('led', 0x0c+ch, key), button_led(0x0c+ch, key, False))
@@ -458,7 +461,8 @@ class EQEditor:
             on = self.sid in slots and ch == slots.index(self.sid)+1 and blink
             self.feedback.put(('led',ch-1,2),button_led(ch-1,2,on))
             self.feedback.put(('led',ch-1,3),button_led(ch-1,3,False))
-            self.feedback.put(('led',ch-1,10),button_led(ch-1,10,False))
+            for key in INSERT_KEYS:
+                self.feedback.put(('led',ch-1,key),button_led(ch-1,key,False))
             text = self.knob_text(ch-1) if usable else ('EQ WAIT' if not self.error else 'EQ ERROR')
             self.feedback.put(('value',ch),scribble(ch,text,False))
             band = ch-1; enabled = usable and self.value('type',band) != 0 and not self.value('mute',band)
@@ -492,7 +496,7 @@ class EQEditor:
             self.feedback.put(('dsp',ch),dsp_text(ch,text))
             self.feedback.put(('value',ch),scribble(ch,text,False))
             target = self.sid in slots and ch == slots.index(self.sid)+1 and blink
-            for key, family in ((2,'eq'), (3,'comp'), (10,None)):
+            for key, family in ((2,'eq'), (3,'comp'), *((key,None) for key in INSERT_KEYS)):
                 self.feedback.put(('led',ch-1,key),button_led(ch-1,key,target and family is not None and self.family == family))
             for key in (0,1,2):
                 self.feedback.put(('led',0x0c+ch,key),button_led(0x0c+ch,key,False))
@@ -525,7 +529,8 @@ class EQEditor:
             target = self.sid in slots and ch == slots.index(self.sid)+1
             self.feedback.put(('led',ch-1,2),button_led(ch-1,2,False))
             self.feedback.put(('led',ch-1,3),button_led(ch-1,3,target and self.family=='comp' and self.mode=='params' and blink))
-            self.feedback.put(('led',ch-1,10),button_led(ch-1,10,target and self.mode in ('browse','library') and blink))
+            for key in INSERT_KEYS:
+                self.feedback.put(('led',ch-1,key),button_led(ch-1,key,target and self.mode in ('browse','library') and blink))
             index = (self.plugin_page if self.mode in ('browse','library') else self.page)*8+ch-1
             text = ''; value = ''; enabled = False; present = False
             if self.mode == 'browse' and index < len(self.plugins):
