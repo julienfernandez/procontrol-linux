@@ -1,5 +1,17 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ProControl — Réglages locaux</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head><body><main>
-<header><div><h1>ProControl</h1><p>Réglages locaux</p></div><div class="statuses" aria-live="polite"><span id="console">Console en attente</span><span id="ardour">Ardour en attente</span><span id="stereo">Stéréo en attente</span><span id="feedback">Retours en attente</span></div></header>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ProControl — Centre de contrôle</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head><body><main>
+<header><div><h1>ProControl</h1><p>Centre de contrôle du studio</p></div><div class="statuses" aria-live="polite"><span id="console">Console en attente</span><span id="ardour">Ardour en attente</span><span id="stereo">Stéréo en attente</span><span id="feedback">Retours en attente</span></div></header>
+<section id="studio" aria-labelledby="studioTitle">
+<div class="section-heading"><div><h2 id="studioTitle">Studio USB</h2><p>MPC → Ardour → Behringer</p></div><span id="studioSummary" class="studio-summary" role="status">Vérification en cours…</span></div>
+<p id="studioHint" class="notice">La Gateway vérifie les appareils et leurs connexions.</p>
+<div class="studio-actions"><button type="button" id="studioRecover">Remettre en service</button><button type="button" id="studioCheck" class="secondary">Vérifier maintenant</button><button type="button" id="studioRoute" class="secondary">Rétablir le routage studio</button></div>
+<p class="studio-help">La remise en service recrée l’USB et ses connexions. Le routage des 16 canaux et du Master vers la Behringer s’applique uniquement à la session studio configurée.</p>
+<label class="studio-auto"><input type="checkbox" id="studioAutomatic"> Reprendre automatiquement après un redémarrage de la MPC</label>
+<p id="studioJob" role="status"></p><p id="studioMessage" role="status"></p>
+<div id="studioComponents" class="studio-components"></div>
+<p id="studioAudioNote" class="studio-help"></p>
+<p id="studioChecked" class="studio-help"></p>
+<details id="studioLogs"><summary>Journaux et diagnostic</summary><div class="studio-actions"><button type="button" id="studioRefreshLogs" class="secondary">Actualiser les logs</button><button type="button" id="studioDownload" class="secondary">Télécharger le diagnostic</button></div><pre id="studioLogText">Ouvre ce volet pour lire les derniers événements.</pre></details>
+</section>
 <form id="settings"><section><h2>Sensibilité</h2><div class="sensitivity"><label for="mouse">Souris</label><input type="range" id="mouse" min="0.01" max="1" step="0.01"><input aria-label="Sensibilité souris" id="mouseNumber" type="number" min="0.01" max="1" step="0.01" required></div><div class="sensitivity"><label for="jog">Jog</label><input type="range" id="jog" min="0.05" max="10" step="0.05"><input aria-label="Sensibilité jog" id="jogNumber" type="number" min="0.05" max="10" step="0.05" required></div></section>
 <section><h2>Grands vumètres</h2><div class="table-wrap"><table><thead><tr><th>Vumètre</th><th>Source</th><th>Canal</th><th>Niveau</th></tr></thead><tbody id="meters"></tbody></table></div><p class="notice" id="calibration"></p>
 <details id="calibrate"><summary>Identifier les colonnes de la console</summary>

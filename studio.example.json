@@ -1,0 +1,6 @@
+{
+  "data_root": "/chemin/vers/mpc-one-usb-audio",
+  "host": "adresse-de-la-mpc",
+  "session": "/chemin/vers/studio-mpc-usb",
+  "automatic": false
+}

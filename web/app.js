@@ -51,3 +51,53 @@ async function calibrationRequest(path,body){const res=await fetch(path,{method:
 $('testMeter').addEventListener('click',async()=>{testedAddress=null;$('confirmMeter').disabled=true;$('testMeter').disabled=true;$('observed').value='';const address=Number($('candidate').value);try{await calibrationRequest('/api/meter-test',{address});testedAddress=address;$('calibrationResult').textContent=`Test envoyé pour l’adresse ${address}. Indique la colonne observée.`;$('confirmMeter').disabled=false}catch(e){$('calibrationResult').textContent=e.message}finally{$('testMeter').disabled=false}});
 $('confirmMeter').addEventListener('click',async()=>{if(testedAddress===null||$('observed').value===''){ $('calibrationResult').textContent='Choisis la colonne que tu as vue s’allumer.';return}if(dirty){$('calibrationResult').textContent='Enregistre tes réglages en cours avant de confirmer la colonne.';return}
 $('confirmMeter').disabled=true;try{const result=await calibrationRequest('/api/calibration',{revision:saved.revision,column:Number($('observed').value),address:testedAddress,confirmed:true});loadValues(result.saved);$('calibrationResult').textContent=Object.values(result.applied).every(x=>x.ok)?'Colonne enregistrée et appliquée.':'Colonne enregistrée ; application en attente.';testedAddress=null;await refresh()}catch(e){$('calibrationResult').textContent=e.message;$('confirmMeter').disabled=false}});
+
+let studioState=null,studioRequestPending=false,studioLoading=false;
+const studioStates={ok:'Vérifié',warning:'À vérifier',error:'Indisponible',unknown:'Inconnu'};
+function renderStudio(s){
+ studioState=s;const busy=['queued','running'].includes(s.job?.state);const stale=s.stale||!s.supervising;
+ const bad=(s.components??[]).filter(c=>c.state!=='ok');
+ $('studioSummary').textContent=stale?'État en attente':busy?'Remise en service en cours':bad.length?`${bad.length} point(s) à vérifier`:'Connexions vérifiées';
+ $('studioSummary').className=`studio-summary ${stale?'unknown':busy?'warning':bad.length?'warning':'ok'}`;
+ $('studioHint').textContent=stale?'Le diagnostic est en attente ou trop ancien. Les derniers voyants ne prouvent pas l’état actuel.':!s.configured?'Le backend du studio doit être configuré sur ce PC.':s.pcm_running===false?'Sur la MPC : Preferences → Audio Device → UAC2_Gadget 0. La sélection sur son écran reste nécessaire après un redémarrage.':'Les voyants vérifient les connexions et l’ouverture audio. La qualité sonore se confirme à l’écoute.';
+ $('studioRecover').disabled=studioRequestPending||busy||!s.configured||!s.supervising;
+ $('studioRoute').disabled=studioRequestPending||busy||!s.route_allowed||stale;
+ $('studioCheck').disabled=studioRequestPending||busy||!s.supervising;
+ $('studioAutomatic').disabled=studioRequestPending||!s.configured||!s.supervising;
+ if(!studioRequestPending)$('studioAutomatic').checked=!!s.automatic;
+ const names={queued:'En attente',running:'En cours',succeeded:'Terminée',failed:'Échec',interrupted:'Interrompue'};
+ const action=s.job?.action==='route'?'Routage':'Remise en service';
+ $('studioJob').textContent=s.job?.state?`${action}${s.job.automatic?' automatique':''} : ${names[s.job.state]??s.job.state}${s.job.error?' — '+s.job.error:''}`:'';
+ $('studioJob').className=['failed','interrupted'].includes(s.job?.state)?'error':'';
+ $('studioComponents').replaceChildren(...(s.components??[]).map(c=>{
+  const row=document.createElement('div');row.className='studio-component';
+  const title=document.createElement('strong');title.textContent=c.label;
+  const badge=document.createElement('span');badge.className='studio-badge '+(stale?'unknown':c.state);badge.textContent=stale?'État ancien':studioStates[c.state]??c.state;
+  const detail=document.createElement('p');detail.textContent=c.detail;row.append(title,badge,detail);return row;
+ }));
+ const monitoring=(s.monitoring??[]).map(t=>`Voie ${t.slot} : ${t.pending?'en attente':t.mode??'inconnu'}`).join(' · ');
+ $('studioAudioNote').textContent=`Reprises PCM observées : ${s.pcm_restarts??0}. Les sélections manuelles peuvent aussi modifier ce compteur ; ce n’est pas un total de coupures. ${monitoring} Pour entendre la MPC, vérifier IN et le bouton MUTE de la piste dans Ardour.`;
+ $('studioChecked').textContent=s.checked_at?`Dernière vérification : ${new Date(s.checked_at*1000).toLocaleTimeString('fr-FR')}. Surveillance toutes les 10 secondes.${s.error?' Diagnostic : '+s.error:''}`:'Premier diagnostic en cours…';
+}
+async function refreshStudio(){
+ if(studioLoading)return;studioLoading=true;
+ try{const res=await fetch('/api/studio');if(!res.ok)throw Error('Supervision indisponible');renderStudio(await res.json());}
+ catch(e){if(studioState)renderStudio({...studioState,stale:true,supervising:false});$('studioSummary').textContent='Gateway déconnectée';}
+ finally{studioLoading=false;}
+}
+async function studioAction(action,extra={}){
+ studioRequestPending=true;if(studioState)renderStudio(studioState);$('studioMessage').textContent='';
+ try{const res=await fetch('/api/studio/action',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...extra})});const s=await res.json();if(!res.ok)throw Error(s.error);renderStudio(s);if(action==='check')$('studioMessage').textContent='Vérification demandée.';}
+ catch(e){$('studioMessage').textContent=e.message;}
+ finally{studioRequestPending=false;await refreshStudio();}
+}
+async function studioLogs(){const res=await fetch('/api/studio/logs');if(!res.ok)throw Error('Journaux indisponibles');return await res.json();}
+async function refreshStudioLogs(){try{const logs=await studioLogs();$('studioLogText').textContent=Object.entries(logs).map(([name,text])=>`── ${name} ──\n${text}`).join('\n\n');}catch(e){$('studioLogText').textContent=e.message;}}
+$('studioRecover').addEventListener('click',()=>studioAction('recover'));
+$('studioRoute').addEventListener('click',()=>studioAction('route'));
+$('studioCheck').addEventListener('click',()=>studioAction('check'));
+$('studioAutomatic').addEventListener('change',()=>studioAction('automatic',{enabled:$('studioAutomatic').checked}));
+$('studioLogs').addEventListener('toggle',()=>{if($('studioLogs').open)refreshStudioLogs();});
+$('studioRefreshLogs').addEventListener('click',refreshStudioLogs);
+$('studioDownload').addEventListener('click',async()=>{try{const logs=await studioLogs();const data=JSON.stringify({exported_at:new Date().toISOString(),studio:studioState,logs},null,2);const url=URL.createObjectURL(new Blob([data],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='procontrol-studio-diagnostic.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){$('studioMessage').textContent=e.message;}});
+refreshStudio();setInterval(refreshStudio,2000);

@@ -1,0 +1,80 @@
+{
+  "date": "2026-09-20",
+  "scope": "Gateway studio supervision and post-reboot USB recovery",
+  "software_checks": {
+    "full_suite_before_final_api_test": 279,
+    "targeted_final_supervision_suite": 18,
+    "backend_lifecycle_suite": 6,
+    "distinct_tests": 280,
+    "syntax": "pass",
+    "mapping_inventory": "current"
+  },
+  "browser": {
+    "engine": "Playwright Chromium",
+    "browser_plugin": "not available; Playwright fallback",
+    "url": "http://127.0.0.1:8765",
+    "viewports": [
+      [
+        1440,
+        1100
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "console_errors": [],
+    "horizontal_overflow": false,
+    "interactions": [
+      "check",
+      "recover",
+      "logs",
+      "download",
+      "automatic recovery enable"
+    ],
+    "simulated_states": [
+      "stale",
+      "MPC PCM closed",
+      "web unavailable"
+    ]
+  },
+  "live": {
+    "mpc_pcm_owner_verified": true,
+    "period": 128,
+    "buffer": 768,
+    "channels": 16,
+    "rate": 44100,
+    "format": "S16_LE",
+    "graph": {
+      "usb": true,
+      "behringer": true,
+      "keepalive": {
+        "playback": {
+          "channels": 16,
+          "wrong": 0,
+          "present": true
+        },
+        "capture": {
+          "channels": 16,
+          "wrong": 0,
+          "present": true
+        }
+      },
+      "tracks": 16,
+      "master": 2,
+      "master_other": 0
+    },
+    "automatic": true,
+    "pcm_trigger_unchanged_after_web_recovery": {
+      "playback": true,
+      "capture": true
+    },
+    "ardour_restarted": false,
+    "console_daemon_restarted": false
+  },
+  "limits": [
+    "Automatic recovery after another complete MPC reboot tested by model only; initial actual reboot recovered manually through same backend",
+    "Audio device selection on MPC screen still required",
+    "No claim of clean listening or long-duration stability"
+  ]
+}

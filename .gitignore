@@ -8,6 +8,7 @@ run/
 # Fichiers locaux et sauvegardes de travail
 backups/
 settings.json
+studio.json
 /ProControl.desktop
 /ProControl-Restart.desktop
 .env

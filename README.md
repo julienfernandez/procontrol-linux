@@ -170,3 +170,9 @@ chemins propres au laptop ; leurs fichiers ne sont pas tous distribués.
 
 Licence : **GPL-3.0-or-later**, voir [LICENSE](LICENSE). Les mentions des auteurs
 et licences des sources tierces sont conservées dans `vendor/`.
+
+## Centre de contrôle USB du studio
+
+Le panneau local de la Gateway supervise maintenant MPC, USB, Ardour et Behringer,
+avec remise en service, reprise automatique et journaux. Voir le
+[guide du studio USB](docs/studio-control.md) pour la configuration et les limites.

@@ -13,12 +13,14 @@ import threading
 import time
 from urllib.parse import urlsplit
 from surface_settings import load,save,validate,rpc
+from studio_control import StudioController
 
 ROOT=Path(__file__).resolve().parents[1]
 
 class App:
     def __init__(self, root=ROOT):
         self.root=Path(root);self.runtime=self.root/'run';self.path=self.root/'settings.json';self.lock=threading.Lock()
+        self.studio=StudioController(self.root)
     def state(self):
         data={}
         for name,file in [('daemon','status.json'),('pointer','pointer-status.json')]:
@@ -84,12 +86,14 @@ class Handler(BaseHTTPRequestHandler):
         if not self.allowed():return self.output(403,{'error':'Hôte non autorisé'})
         path=urlsplit(self.path).path
         if path=='/api/state':return self.output(200,self.server.app.state())
+        if path=='/api/studio':return self.output(200,self.server.app.studio.state())
+        if path=='/api/studio/logs':return self.output(200,self.server.app.studio.logs())
         files={'/':('index.html','text/html; charset=utf-8'),'/app.js':('app.js','text/javascript; charset=utf-8'),'/style.css':('style.css','text/css; charset=utf-8')}
         if path not in files:return self.output(404,{'error':'Introuvable'})
         name,ctype=files[path];self.output(200,(self.server.app.root/'web'/name).read_bytes(),ctype)
     def do_POST(self):
         if not self.allowed(True):return self.output(403,{'error':'Origine non autorisée'})
-        actions={'/api/settings':self.server.app.update,'/api/meter-test':self.server.app.meter_test,'/api/calibration':self.server.app.calibrate}
+        actions={'/api/settings':self.server.app.update,'/api/meter-test':self.server.app.meter_test,'/api/calibration':self.server.app.calibrate,'/api/studio/action':self.server.app.studio.request}
         if self.path not in actions:return self.output(404,{'error':'Introuvable'})
         try:
             length=int(self.headers.get('Content-Length','0'))
@@ -118,7 +122,12 @@ def main():
     p.add_argument('--port',type=int,default=8765);args=p.parse_args();state=process_status()
     if args.action=='status':print(json.dumps(state));return
     if args.action=='stop':
-        if state['running']:os.kill(state['pid'],signal.SIGTERM)
+        if state['running']:
+            os.kill(state['pid'],signal.SIGTERM)
+            for _ in range(250):
+                if not process_status()['running']:break
+                time.sleep(.1)
+            else:raise RuntimeError('Arrêt web encore en cours ; aucune seconde instance lancée')
         return
     if args.action=='start':
         if state['running']:print(json.dumps(state));return
@@ -132,10 +141,15 @@ def main():
             if child.poll() is not None:raise RuntimeError((ROOT/'run/web.log').read_text()[-1000:])
         raise RuntimeError('Serveur sans état publié')
     server=serve(port=args.port)
+    server.app.studio.start()
+    def stop_server(signum,frame):
+        threading.Thread(target=server.shutdown,daemon=True).start()
+    signal.signal(signal.SIGTERM,stop_server)
     (ROOT/'run/web.pid').write_text(str(os.getpid()))
     print(f'ProControl : http://127.0.0.1:{args.port}',flush=True)
     try:server.serve_forever()
     except KeyboardInterrupt:pass
-    finally:server.server_close();(ROOT/'run/web.pid').unlink(missing_ok=True)
+    finally:
+        server.app.studio.close();server.server_close();(ROOT/'run/web.pid').unlink(missing_ok=True)
 
 if __name__=='__main__':main()
