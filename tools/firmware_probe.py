@@ -4,7 +4,7 @@
 Par défaut : aperçu hors ligne. Requête de version comm V, puis lecture
 optionnelle de 1..256 octets dans les segments de code connus du firmware 1.37.
 La cible fader autorise uniquement la version V, sans lecture mémoire.
-États RAM nommés et fenêtres du tampon RX série comm identifiés séparément.
+Champs comm nommés (RAM, démarrage, réglages) et fenêtres RX identifiés séparément.
 Aucun interpréteur libre, accès MMIO, écriture des octets ciblés ou effacement.
 La passerelle doit être arrêtée avant --send et relancée après l'expérience.
 """
@@ -38,14 +38,20 @@ PROFILES = {'comm': (PREFIX, EXPECTED_VERSION),
             'fader': (FADER_PREFIX, FADER_VERSION)}
 CODE_SEGMENTS = ((0x20000, 0x20008), (0x20064, 0x20080),
                  (0x20100, 0x20110), (0x20400, 0x2fce4))
-# Exact RAM fields identified in comm 1.37, not an arbitrary RAM address mode.
+# Exact fields identified in comm 1.37; no arbitrary memory address mode.
+# Preservation ranges: docs/preservation-layout-2026-09-21.md (static analysis).
 STATE_FIELDS = {'fader-version': (0x5094a, 10),
                 'fader-errors': (0x509ba, 4),
                 'fader-version-valid': (0x509c2, 4),
                 'fader-tx-ring': (0x6c10e, 24),
                 'fader-rx-ring': (0x6bf0e, 24),
                 'fader-touch-state': (0x508ea, 16),
-                'fader-mode': (0x5095c, 1)}
+                'fader-mode': (0x5095c, 1),
+                'comm-boot-vectors': (0x00000, 8),
+                'comm-application-checksum': (0x30000, 2),
+                'comm-network-settings': (0x34000, 10),
+                'comm-utility-settings': (0x3c000, 88),
+                'comm-utility-mirror': (0x40000, 88)}
 RX_BUFFER_START = 0x6bf26
 RX_BUFFER_SIZE = 488
 
@@ -61,7 +67,7 @@ def read_selection(address, length, batch_size, target, state, ring_offset=None)
         return address, length
     if (state not in STATE_FIELDS or target != 'comm' or address is not None
             or length != 1):
-        raise ValueError('État RAM nommé : cible comm seule, sans adresse ni longueur personnalisées')
+        raise ValueError('Champ nommé : cible comm seule, sans adresse ni longueur personnalisées')
     return STATE_FIELDS[state]
 
 
@@ -330,7 +336,7 @@ def main(argv=None):
                         help='comm : version/lecture de code ; fader : version seulement')
     parser.add_argument('--read-code', type=lambda value: int(value, 0), metavar='ADDRESS')
     parser.add_argument('--read-state', choices=tuple(STATE_FIELDS),
-                        help='Champ RAM comm 1.37 précisément identifié ; snapshot non atomique')
+                        help='Champ comm 1.37 précisément identifié ; RAM ou plage persistante bornée')
     parser.add_argument('--read-ring-offset', type=lambda value: int(value, 0),
                         help='Offset 0..487 dans le tampon RX série comm ; au plus 256 octets sans bouclage')
     parser.add_argument('--length', type=int, default=1)
