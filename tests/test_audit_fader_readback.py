@@ -23,7 +23,7 @@ def serial(data,address=0x8000):
         f"{address+i:08X}: {v:02X} '".encode()+bytes([v])+b"'\n\r" for i,v in enumerate(data))
 
 
-def fixture(root,plan=None,values=None):
+def fixture(root,plan=None,values=None,epoch_ns=1700000000000000000):
     """Synthetic PCAP evidence; no hardware dump or live parser used."""
     host=Session(HOST,PEER);peer=Session(PEER,HOST)
     def write_capture(folder,transactions):
@@ -34,7 +34,7 @@ def fixture(root,plan=None,values=None):
         path=folder/'traffic.pcap'
         with path.open('wb') as f:
             write_header(f)
-            for i,frame in enumerate(frames):write_packet(f,1700000000000000000+i*1000000,frame)
+            for i,frame in enumerate(frames):write_packet(f,epoch_ns+i*1000000,frame)
         return audit.sha(path.read_bytes())
     def save(folder,result):
         (folder/'result.json').write_text(json.dumps(result))

@@ -35,6 +35,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Audit complet d'une archive fader et contrôle des blocs déjà terminés](fader-archive-verification.md),
+  [deux instantanés partiels reconstruits depuis les captures](fader-archive-audit-2026-09-21.json).
+
 - [Faux touchers dus aux lectures fader et retour à l'état neutre](fader-touch-recovery-2026-09-21.md),
   [quatre essais, captures et préparation de l'archive complète](fader-touch-recovery-2026-09-21.json).
 

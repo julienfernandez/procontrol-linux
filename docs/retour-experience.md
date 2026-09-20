@@ -55,6 +55,12 @@ et la calibration n'ont pas été modifiés pendant ces recherches.
   borné aux vecteurs ; le nouveau lecteur ajoute des relâchements vérifiés à
   chaque bloc. Voir la [lecture brute](fader-raw-readback-2026-09-20.md) et la
   [neutralisation des faux touchers](fader-touch-recovery-2026-09-21.md).
+- La concordance des octets lus, la couverture de toutes les adresses prévues
+  et deux acquisitions distinctes sont trois propriétés à vérifier séparément.
+  Un préfixe conforme n'est pas une archive complète. Figer et conserver les
+  octets du manifeste utilisé pendant une campagne longue : son hash seul ne
+  suffit pas lorsque le collecteur remplace ce fichier après chaque bloc.
+  Voir le [vérificateur d'archive fader](fader-archive-verification.md).
 
 Sources : [protocole](protocol.md), [captures Linux](capture-linux.md),
 [afficheurs](displays.md), [premières lectures mémoire](firmware-network-validation-2026-09-20.md).
@@ -111,6 +117,7 @@ Sources : [session](session-reference.md), [helper sans root](rootless-launch.md
 | Première requête fader acquittée sans réponse | Conserver l'échec ; vérifier ensuite `COM` dans la même session. Succès reproduit, cause initiale encore ouverte | [Diagnostic réel des faders](fader-network-validation-2026-09-20.md) |
 | Lecture fader contenant `00` ou un bit 7 positionné | Réponse directe filtrée, mais octets conservés dans RX et lus via `comm`. Ne pas multiplier les retries ; le compteur d'erreurs ne compte pas des paquets perdus | [Expérience et limite tactile](fader-raw-readback-2026-09-20.md) |
 | Supposer qu'un moniteur possède les commandes habituelles de dump | Relire la table et l'aide du processeur exact : `D` règle un paramètre et `A/M` agissent sur les faders ; seule la famille `U/Q/q` sert ici aux lectures | [Commandes et preuve tactile](fader-touch-recovery-2026-09-21.md) |
+| Audit d'un préfixe avec seulement le hash du manifeste évolutif | Conserver une copie exacte avant la lecture des preuves ; le premier instantané a été récupéré et vérifié par son hash, puis le CLI corrigé | [Instantanés et couverture](fader-archive-verification.md) |
 
 ## Ce que l'on conserve et où
 

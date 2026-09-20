@@ -1,5 +1,10 @@
 # Lecture des faders : faux événements tactiles et retour à l'état neutre
 
+**Suite :** un [vérificateur de l'archive complète](fader-archive-verification.md)
+contrôle désormais aussi la couverture, les deux passages et les instantanés
+partiels, sans analyser le bloc en cours d'écriture. Le résultat complet de la
+campagne reste à établir.
+
 Expériences du **21 septembre 2026, heure de Paris** (20 septembre à
 22:10 UTC). Les octets `c0` et `d0` lus dans le programme fader provoquent
 respectivement un événement de toucher et de relâchement dans le relais
