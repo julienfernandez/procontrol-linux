@@ -44,8 +44,10 @@ class PreservationFieldsTests(unittest.TestCase):
                 self.assertEqual(probe.main(['--read-state',name,'--batch-size','16']),0)
             self.assertFalse(json.loads(output.getvalue())['network_opened'])
 
-    def fixture(self,folder,name):
-        address,length=RANGES[name];data=bytes((i*71+247)%256 for i in range(length))
+    def fixture(self,folder,name,data=None):
+        address,length=RANGES[name]
+        if data is None:data=bytes((i*71+247)%256 for i in range(length))
+        assert len(data)==length
         host=Session(HOST,PEER);peer=Session(PEER,HOST);prefix=bytes.fromhex('f0 13 00 70 00')
         frames=[host.frame(0,1,2,body=prefix+b'V\xf7'),peer.frame(0xa0,ack=2),
                 peer.frame(0,1,10,body=prefix+b'COMv1.37\n\r\xf7')]
