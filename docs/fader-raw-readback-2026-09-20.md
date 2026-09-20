@@ -1,5 +1,9 @@
 # Premiers octets du firmware des faders récupérés via le tampon série
 
+**Étape suivante :** le risque de faux toucher est ensuite
+[observé puis neutralisé par des lectures de relâchement](fader-touch-recovery-2026-09-21.md).
+Les conclusions ci-dessous décrivent la première étape, limitée aux vecteurs.
+
 Le 20 septembre 2026, les **huit octets à `0x8000–0x8007`** ont été lus sur
 la ProControl trois fois : `00 04 53 84 00 00 a4 70`. Ils correspondent aux
 vecteurs du segment constructeur `CODE 27`. La troisième lecture traverse

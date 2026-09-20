@@ -3,7 +3,7 @@
 Ce document est le point d'entrée du retour d'expérience conservé dans Git.
 Il répond à la demande de conserver les découvertes, les erreurs, les méthodes
 et les preuves dans le projet lui-même, pour permettre sa reprise et sa
-transmission. État consolidé le **20 septembre 2026**.
+transmission. État consolidé le **21 septembre 2026**.
 
 Les rapports datés font foi pour leurs expériences respectives. Un ancien PID,
 nombre de tests ou réglage décrit un instantané. Pour connaître le fonctionnement
@@ -19,6 +19,7 @@ actuel, consulter la [carte fonctionnelle](control-map.md), les
 | Programme de communication installé | Les 63 768 octets adressés par l'image `comm` ont été lus deux fois et comparés au constructeur ; audit indépendant des 504 PCAP | [Lecture complète](comm-firmware-readback-2026-09-20.md), [manifeste de preuves](comm-firmware-readback-2026-09-20.json) |
 | Relais vers le processeur des faders | Quatre réponses directes `FDRv1.37` ; cache et files série lus dans la RAM de `comm`. Premier essai incomplet conservé ; programme des faders non acquis | [Validation réseau](fader-network-validation-2026-09-20.md), [preuves](fader-network-validation-2026-09-20.json), [analyse statique](fader-diagnostic-analysis-2026-09-20.md) |
 | Premiers octets installés des faders | Huit octets de vecteurs `0x8000–0x8007` lus trois fois via les données conservées dans RX, identiques au constructeur ; audit de 55 PCAP, bouclage réel inclus. Programme complet encore non acquis | [Lecture brute et effets du filtre](fader-raw-readback-2026-09-20.md), [empreintes et résultats](fader-raw-readback-2026-09-20.json) |
+| Effets tactiles des lectures fader | Paire `c0/d0` observée sur le réseau, huit lectures `d0–d7` vérifiées et cache tactile neutre après deux lectures d'un bloc de code ; outil de double acquisition préparé, résultat complet encore attendu | [Neutralisation et table de commandes](fader-touch-recovery-2026-09-21.md), [preuves](fader-touch-recovery-2026-09-21.json) |
 | Sauvegarde restaurable de toute l'unité | Encore ouverte : démarrage, trous mémoire, EEPROM, calibration, programme installé des faders et restauration matérielle restent à établir | [Périmètre exact de la conservation](comm-firmware-readback-2026-09-20.md#périmètre-réel-de-la-sauvegarde) |
 
 La concordance du programme `comm` donne une base solide pour interpréter ce
@@ -50,8 +51,10 @@ et la calibration n'ont pas été modifiés pendant ces recherches.
   la copie ; ne pas appeler un snapshot RAM non atomique une image figée.
 - Une commande de lecture peut modifier des pointeurs volatils et des compteurs,
   voire produire des événements mal interprétés. Pour les faders, distinguer
-  valeurs récupérées, erreurs du filtre et état tactile ; le pilote reste borné
-  aux huit octets étudiés des vecteurs. Voir la [lecture brute](fader-raw-readback-2026-09-20.md).
+  valeurs récupérées, erreurs du filtre et état tactile. Le premier pilote reste
+  borné aux vecteurs ; le nouveau lecteur ajoute des relâchements vérifiés à
+  chaque bloc. Voir la [lecture brute](fader-raw-readback-2026-09-20.md) et la
+  [neutralisation des faux touchers](fader-touch-recovery-2026-09-21.md).
 
 Sources : [protocole](protocol.md), [captures Linux](capture-linux.md),
 [afficheurs](displays.md), [premières lectures mémoire](firmware-network-validation-2026-09-20.md).
@@ -107,6 +110,7 @@ Sources : [session](session-reference.md), [helper sans root](rootless-launch.md
 | Première lecture inversée d'une branche du filtre série des faders | Le filtre rejette le bit 7 positionné ; il ne le requiert pas. Relire les deux branches avant d'inventer un encodage | [Correction et conséquence](fader-diagnostic-analysis-2026-09-20.md#filtre-des-réponses-et-correction-dinterprétation) |
 | Première requête fader acquittée sans réponse | Conserver l'échec ; vérifier ensuite `COM` dans la même session. Succès reproduit, cause initiale encore ouverte | [Diagnostic réel des faders](fader-network-validation-2026-09-20.md) |
 | Lecture fader contenant `00` ou un bit 7 positionné | Réponse directe filtrée, mais octets conservés dans RX et lus via `comm`. Ne pas multiplier les retries ; le compteur d'erreurs ne compte pas des paquets perdus | [Expérience et limite tactile](fader-raw-readback-2026-09-20.md) |
+| Supposer qu'un moniteur possède les commandes habituelles de dump | Relire la table et l'aide du processeur exact : `D` règle un paramètre et `A/M` agissent sur les faders ; seule la famille `U/Q/q` sert ici aux lectures | [Commandes et preuve tactile](fader-touch-recovery-2026-09-21.md) |
 
 ## Ce que l'on conserve et où
 

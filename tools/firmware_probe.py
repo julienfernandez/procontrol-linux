@@ -60,8 +60,8 @@ def read_selection(address, length, batch_size, target, state, ring_offset=None)
     if state is None:
         return address, length
     if (state not in STATE_FIELDS or target != 'comm' or address is not None
-            or length != 1 or batch_size != 1):
-        raise ValueError('État RAM nommé : cible comm seule, sans adresse, longueur ni lot personnalisés')
+            or length != 1):
+        raise ValueError('État RAM nommé : cible comm seule, sans adresse ni longueur personnalisées')
     return STATE_FIELDS[state]
 
 

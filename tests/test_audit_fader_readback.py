@@ -23,7 +23,7 @@ def serial(data,address=0x8000):
         f"{address+i:08X}: {v:02X} '".encode()+bytes([v])+b"'\n\r" for i,v in enumerate(data))
 
 
-def fixture(root):
+def fixture(root,plan=None,values=None):
     """Synthetic PCAP evidence; no hardware dump or live parser used."""
     host=Session(HOST,PEER);peer=Session(PEER,HOST)
     def write_capture(folder,transactions):
@@ -46,6 +46,7 @@ def fixture(root):
                 'pcap_sha256':write_capture(folder,[(prefix+b'V\xf7',prefix+value+b'\xf7')])}
         return result
     manifest={'complete':True,'error':None,'address':0x8000,'length':8,'steps':[]}
+    if plan is not None:manifest['plan']=plan
     def record(name,result):
         manifest['steps'].append({'name':name,'result_sha256':save(root/name,result)})
     gate=version(root/'versions','fader')
@@ -64,7 +65,12 @@ def fixture(root):
                      'read_address':address,'read_length':len(data),'read_bytes_hex':data.hex(),
                      'memory_sha256':audit.sha(data),'error':None,
                      'pcap_sha256':write_capture(folder,transactions)})
-    data=bytes([0,4,0x53,0x84,0,0,0xa4,0x70]);raw=serial(data)
+    data=bytes([0,4,0x53,0x84,0,0,0xa4,0x70]) if values is None else values
+    if plan is None:raw=serial(data)
+    else:
+        raw=b'';cursor=0
+        for address,length in plan:
+            raw+=serial(data[cursor:cursor+length],address);cursor+=length
     for side in ('before','after'):
         memory('touch-'+side,0x508ea,bytes(16),'fader-touch-state')
         memory('mode-'+side,0x5095c,b'\0','fader-mode')
@@ -76,10 +82,15 @@ def fixture(root):
         fields={'producer':pointer,'base':base,'consumer':pointer,'size':512,'unknown':0,'overflows':0}
         manifest[name.replace('-','_')]=fields
         memory(name,0x6bf0e,struct.pack('>6I',*fields.values()),'fader-rx-ring')
-    memory('rx-data-0',base+480,raw[:8],offset=480)
-    memory('rx-data-1',base,raw[8:],offset=0)
+    cursor=0;offset=480;index=0
+    while cursor<len(raw):
+        count=min(256,488-offset,len(raw)-cursor)
+        memory(f'rx-data-{index}',base+offset,raw[cursor:cursor+count],offset=offset)
+        cursor+=count;offset=(offset+count)%488;index+=1
     folder=root/'request';folder.mkdir()
-    record('request',{'error':None,'pcap_sha256':write_capture(folder,[(FADER+b'U00008000'+b'Q'*8+b'\xf7',None)])})
+    command=(b'U00008000'+b'Q'*8 if plan is None else
+             b''.join(f'U{a:08X}'.encode()+(b'q' if n==1 else b'Q'*n) for a,n in plan))
+    record('request',{'error':None,'pcap_sha256':write_capture(folder,[(FADER+command+b'\xf7',None)])})
     record('fader-version-after',version(root/'fader-version-after','fader'))
     for filename,content in [('serial.bin',raw),('memory.bin',data)]:(root/filename).write_bytes(content)
     manifest.update(serial_sha256=audit.sha(raw),memory_sha256=audit.sha(data),read_bytes_hex=data.hex())

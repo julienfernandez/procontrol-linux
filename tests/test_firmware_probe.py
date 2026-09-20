@@ -144,13 +144,19 @@ class FirmwareProbeTests(unittest.TestCase):
             self.assertEqual([a for a, _ in plan[1:]], list(range(address, address+length)))
             self.assertTrue(all(body.endswith(b'm\xf7') for _, body in plan[1:]))
         for args in ({'target': 'fader'}, {'address': 0x8000071b}, {'length': 10},
-                     {'batch_size': 2}):
+                     {'batch_size': 17}):
             with self.assertRaises(ValueError):
                 requests_for(state='fader-version', **args)
         with self.assertRaises(ValueError):
             requests_for(state='anything')
         with self.assertRaises(ValueError):
             requests_for(address=0x5094a, length=10)
+
+    def test_named_state_batches_keep_the_exact_named_bounds(self):
+        plan=requests_for(state='fader-rx-ring',batch_size=16)
+        self.assertEqual(plan[1],(0x6bf0e,PREFIX+b'A0006BF0E'+b'M'*16+b'\xf7'))
+        self.assertEqual(plan[2],(0x6bf1e,PREFIX+b'A0006BF1E'+b'M'*8+b'\xf7'))
+        self.assertEqual(len(plan),3)
 
     def test_rx_windows_cannot_cross_buffer_or_select_another_processor(self):
         plan = requests_for(ring_offset=480,length=8,batch_size=16)

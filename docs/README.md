@@ -35,6 +35,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Faux touchers dus aux lectures fader et retour à l'état neutre](fader-touch-recovery-2026-09-21.md),
+  [quatre essais, captures et préparation de l'archive complète](fader-touch-recovery-2026-09-21.json).
+
 - [Huit octets des faders récupérés malgré le filtre série, avec trois répétitions](fader-raw-readback-2026-09-20.md),
   [55 captures, bouclage du tampon et preuves](fader-raw-readback-2026-09-20.json).
 
