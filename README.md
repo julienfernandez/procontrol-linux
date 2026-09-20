@@ -136,7 +136,9 @@ python3 tools/mapping_inventory.py --check
 python3 -m compileall -q tools tests
 ```
 
-256 tests passent sur la machine de développement après l’ajout de la navigation et des voyants du 20 septembre. Les tests du helper natif
+Les résultats datés et leur périmètre sont conservés dans les
+[rapports de validation](docs/README.md#vérifications-récentes) ; la CI est liée
+au commit effectivement vérifié. Les tests du helper natif
 peuvent être ignorés s'il n'est pas installé ; certaines vérifications de
 capture nécessitent les utilitaires Linux `ip` et `flock`. Les tests de
 capture emploient un faux dumpcap et n'accèdent pas à la console réelle.
@@ -172,6 +174,7 @@ l'atteinte mécanique d'une position.
 - [Protocole et observations](docs/protocol.md)
 - [Guide des captures Linux](docs/capture-linux.md)
 - [Fiche d'expérience](docs/experiment-template.md)
+- [Mémoire technique, découvertes et retour d'expérience](docs/retour-experience.md)
 - [Sources ReaControl24](vendor/reacontrol24/README.md)
 - [Correctif du fork lazlooose](vendor/reacontrol24-lazlooose/README.md)
 

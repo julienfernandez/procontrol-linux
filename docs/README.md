@@ -4,6 +4,13 @@ Les guides ci-dessous décrivent les fonctions actuelles. Les rapports datés
 conservent les observations de leur essai : leurs anciens compteurs de tests,
 PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel.
 
+## Conserver et transmettre
+
+- [Mémoire technique et retour d'expérience](retour-experience.md) : état des
+  connaissances, enseignements, impasses, archives et règle de continuité.
+- [Fiche d'expérience](experiment-template.md) pour conserver méthode, preuves,
+  résultats négatifs et limites dès la prochaine étape.
+
 ## Utiliser la console
 
 - [Atelier visuel ProControl — Mapping, apprentissage et presets](console-mapping.md).
@@ -27,6 +34,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
   [provenance des références](research.md).
 
 ## Vérifications récentes
+
+- [Relais diagnostic vers les faders : analyse statique et filtre de réponses](fader-diagnostic-analysis-2026-09-20.md),
+  [provenance et archive complémentaire](fader-diagnostic-analysis-2026-09-20.json).
 
 - [Deux lectures complètes des segments du firmware comm](comm-firmware-readback-2026-09-20.md),
   [empreintes des 504 captures et résultats](comm-firmware-readback-2026-09-20.json).

@@ -1,5 +1,22 @@
 # Collaboration ProControl
 
+## Conservation du retour d'expérience
+
+- À la demande explicite de l'utilisateur, conserver les connaissances dans
+  ce dépôt : [mémoire technique](docs/retour-experience.md) et rapports datés
+  reliés depuis [l'index](docs/README.md). Ne pas laisser une découverte, une
+  limite importante ou une correction d'interprétation uniquement dans le chat.
+- Documenter méthode, versions, provenance, empreintes, résultats négatifs,
+  état avant/après et prochaine vérification utile. Distinguer analyse statique,
+  observation réseau, confirmation physique, test logiciel et endurance.
+- Utiliser [la fiche d'expérience](docs/experiment-template.md). Préserver les
+  résultats historiques, puis ajouter un renvoi lorsqu'une étape les complète.
+- Le dépôt GitHub est **public**, vérifié le 20 septembre 2026. Versionner
+  conclusions, outils, tests, procédures et manifestes ; préserver les exclusions
+  des binaires constructeur, PCAP bruts, sessions, réglages privés et sauvegardes.
+  Indiquer les archives locales et leurs empreintes sans les présenter comme
+  des copies sur support indépendant. Une empreinte ne remplace pas son fichier.
+
 ## État actuel et continuité
 
 - Répondre en français. Donner des retours visibles sur le travail et les résultats.
@@ -386,7 +403,8 @@ un geste immédiat ni interpréter la capture de repos comme un test du correcti
 
 ## Versionnement Git
 
-Dépôt du projet : julienfernandez/procontrol-linux sur GitHub, visibilité privée.
+Dépôt du projet : julienfernandez/procontrol-linux sur GitHub, initialement privé ;
+visibilité publique vérifiée le 20 septembre 2026.
 Branche principale main ; premier instantané expérimental v0.1.0.
 .gitignore exclut run, captures brutes, backups, settings.json, raccourcis
 desktop locaux et images de référence tierces. Garder ces exclusions lors

@@ -1,0 +1,434 @@
+{
+  "recorded_utc": "2026-09-20T21:28:28.052973+00:00",
+  "scope": "Static analysis only; no Ethernet traffic sent; fader installed image unverified",
+  "git_base": "023b8f936d6e20a7fa61ba7c4e517f8e4c824c3e",
+  "disassembler": "GNU objdump (GNU Binutils for Ubuntu) 2.42",
+  "views": [
+    {
+      "view": "comm-network-route.txt",
+      "resource_id": 26,
+      "base": "0x20400",
+      "start_address": "0x2a63c",
+      "stop_address_exclusive": "0x2a678",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x20400",
+        "--start-address=0x2a63c",
+        "--stop-address=0x2a678",
+        "work/firmware-research-20260920/extracted/CODE-26-00020400.bin"
+      ],
+      "bytes": 1017,
+      "sha256": "a70e6b01a56a8c9269724c3f95ce64bb725aed1e985999b45b651bd282c3cfb8"
+    },
+    {
+      "view": "comm-serial-tx.txt",
+      "resource_id": 26,
+      "base": "0x20400",
+      "start_address": "0x2ada0",
+      "stop_address_exclusive": "0x2adea",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x20400",
+        "--start-address=0x2ada0",
+        "--stop-address=0x2adea",
+        "work/firmware-research-20260920/extracted/CODE-26-00020400.bin"
+      ],
+      "bytes": 996,
+      "sha256": "1458e33b3eab9b6f7227d0b070a7a70fa0c9072cc6f0131bfabdf06aab73b01c"
+    },
+    {
+      "view": "comm-response.txt",
+      "resource_id": 26,
+      "base": "0x20400",
+      "start_address": "0x21fce",
+      "stop_address_exclusive": "0x22032",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x20400",
+        "--start-address=0x21fce",
+        "--stop-address=0x22032",
+        "work/firmware-research-20260920/extracted/CODE-26-00020400.bin"
+      ],
+      "bytes": 1186,
+      "sha256": "98d1873338c4a518653cf088eff29bae54cd19e4ea2a5581db9e57a868082d5e"
+    },
+    {
+      "view": "comm-validator.txt",
+      "resource_id": 26,
+      "base": "0x20400",
+      "start_address": "0x23bbe",
+      "stop_address_exclusive": "0x23c98",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x20400",
+        "--start-address=0x23bbe",
+        "--stop-address=0x23c98",
+        "work/firmware-research-20260920/extracted/CODE-26-00020400.bin"
+      ],
+      "bytes": 3135,
+      "sha256": "5366dbf1ef51dd89203d386759f659161f096beec47168ccf1f23713cf09301b"
+    },
+    {
+      "view": "comm-fader-receiver.txt",
+      "resource_id": 26,
+      "base": "0x20400",
+      "start_address": "0x23d00",
+      "stop_address_exclusive": "0x24150",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x20400",
+        "--start-address=0x23d00",
+        "--stop-address=0x24150",
+        "work/firmware-research-20260920/extracted/CODE-26-00020400.bin"
+      ],
+      "bytes": 13382,
+      "sha256": "a603c13f2055ac2e95db4da24b163eb94efecb442a288a44e388514f7eee59e4"
+    },
+    {
+      "view": "comm-copy.txt",
+      "resource_id": 26,
+      "base": "0x20400",
+      "start_address": "0x2a8d2",
+      "stop_address_exclusive": "0x2a940",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x20400",
+        "--start-address=0x2a8d2",
+        "--stop-address=0x2a940",
+        "work/firmware-research-20260920/extracted/CODE-26-00020400.bin"
+      ],
+      "bytes": 1829,
+      "sha256": "bddafdba8433c5b7835f356db6e37e98204fbdb5c2cb68fe7d2ca3e3f8cdf600"
+    },
+    {
+      "view": "comm-ring.txt",
+      "resource_id": 26,
+      "base": "0x20400",
+      "start_address": "0x2ab76",
+      "stop_address_exclusive": "0x2ac3c",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x20400",
+        "--start-address=0x2ab76",
+        "--stop-address=0x2ac3c",
+        "work/firmware-research-20260920/extracted/CODE-26-00020400.bin"
+      ],
+      "bytes": 3089,
+      "sha256": "438b39a99e3803ce18892384caad0bb5b644999c8949e4cbea717254957ddd50"
+    },
+    {
+      "view": "fader-interpreter.txt",
+      "resource_id": 27,
+      "base": "0x8400",
+      "start_address": "0x91c2",
+      "stop_address_exclusive": "0x9812",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x8400",
+        "--start-address=0x91c2",
+        "--stop-address=0x9812",
+        "work/firmware-research-20260920/extracted/CODE-27-00008400.bin"
+      ],
+      "bytes": 21064,
+      "sha256": "902db97086aa735af4acd9e0738d3d5f4b98040db4ce0b5d61e53456fe9968d7"
+    },
+    {
+      "view": "fader-memory.txt",
+      "resource_id": 27,
+      "base": "0x8400",
+      "start_address": "0x90d8",
+      "stop_address_exclusive": "0x9152",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x8400",
+        "--start-address=0x90d8",
+        "--stop-address=0x9152",
+        "work/firmware-research-20260920/extracted/CODE-27-00008400.bin"
+      ],
+      "bytes": 1723,
+      "sha256": "81f0a5a368023ec5f965daec7d279fbb30f33b0888da630926c54538d86e6c4d"
+    },
+    {
+      "view": "fader-framing.txt",
+      "resource_id": 27,
+      "base": "0x8400",
+      "start_address": "0x89ae",
+      "stop_address_exclusive": "0x8a1e",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x8400",
+        "--start-address=0x89ae",
+        "--stop-address=0x8a1e",
+        "work/firmware-research-20260920/extracted/CODE-27-00008400.bin"
+      ],
+      "bytes": 1496,
+      "sha256": "7539348c74672745457521f1f8838826a2c01def348e79dd3a1dbf83ce120988"
+    },
+    {
+      "view": "fader-txqueue.txt",
+      "resource_id": 27,
+      "base": "0x8400",
+      "start_address": "0xa11c",
+      "stop_address_exclusive": "0xa162",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x8400",
+        "--start-address=0xa11c",
+        "--stop-address=0xa162",
+        "work/firmware-research-20260920/extracted/CODE-27-00008400.bin"
+      ],
+      "bytes": 1189,
+      "sha256": "a2c2b413fff0602046e9c3421cb30f4884d408af1fa528012133d9aee30dbdbe"
+    },
+    {
+      "view": "fader-rxqueue.txt",
+      "resource_id": 27,
+      "base": "0x8400",
+      "start_address": "0xa162",
+      "stop_address_exclusive": "0xa1a4",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x8400",
+        "--start-address=0xa162",
+        "--stop-address=0xa1a4",
+        "work/firmware-research-20260920/extracted/CODE-27-00008400.bin"
+      ],
+      "bytes": 1110,
+      "sha256": "6e9df86907a034affe3c26a7443588c8feba110d14d87b70d542351ddd539e48"
+    },
+    {
+      "view": "fader-serial.txt",
+      "resource_id": 27,
+      "base": "0x8400",
+      "start_address": "0xa2ea",
+      "stop_address_exclusive": "0xa470",
+      "argv": [
+        "m68k-linux-gnu-objdump",
+        "-D",
+        "-b",
+        "binary",
+        "-m",
+        "m68k:68020",
+        "--adjust-vma=0x8400",
+        "--start-address=0xa2ea",
+        "--stop-address=0xa470",
+        "work/firmware-research-20260920/extracted/CODE-27-00008400.bin"
+      ],
+      "bytes": 4977,
+      "sha256": "20adeb9aefee093db688e03feee0b3bf82af7a6dee229223ddc6b27e9fc32c8b"
+    }
+  ],
+  "images": [
+    {
+      "path": "work/firmware-research-20260920/Procontrol.dll.rsr",
+      "bytes": 181758,
+      "sha256": "0603a032f3abf4af6e266ba05486d186e031a5e2448da86d0aacc2b1e1eb1a53"
+    },
+    {
+      "path": "work/firmware-research-20260920/extracted/manifest.json",
+      "bytes": 38587,
+      "sha256": "552aacda933766e9abe98079680f1bdd698367e9dda57d483a42e59e940de0e5"
+    },
+    {
+      "path": "work/firmware-research-20260920/extracted/CODE-26-00020400.bin",
+      "bytes": 63716,
+      "sha256": "e2945b200be72745afb10a3bc68300b4dc3b5adba90b3a8157cec37f051e1af8"
+    },
+    {
+      "path": "work/firmware-research-20260920/extracted/CODE-27-00008400.bin",
+      "bytes": 11494,
+      "sha256": "2479230a850da18b33b1dcf7292dbb12af6421aceabc047b2ae07d5582f23e05"
+    }
+  ],
+  "findings": {
+    "outbound_selector": "f0 13 00 70 01",
+    "reply_selector": "f0 13 00 70 01",
+    "fader_version_handler": "0x9374",
+    "fader_version_length": 10,
+    "fader_version_source": "0x4412e",
+    "comm_reply_validator": "0x23bbe",
+    "max_serial_packet_bytes_including_header": 126,
+    "payload_accepted_min": 1,
+    "payload_accepted_max": 127,
+    "rejected_payload_values": "0x00 and 0x80 through 0xff",
+    "correction": "Initial interpretation of bit-7 branch was reversed; final reading rejects bit 7 set. Ring copies do not strip it.",
+    "memory_read_limitation": "Static inference: raw-character field can cause rejection of fader memory replies; not tested on hardware.",
+    "fader_commands_sent": [],
+    "fader_memory_acquired_bytes": 0,
+    "unknown": [
+      "Installed fader firmware version and bytes",
+      "Exact physical CPU model",
+      "Live response framing",
+      "Recovery after invalid serial payload",
+      "Persistent calibration and restoration"
+    ]
+  },
+  "private_preservation": {
+    "directory": "~/Documents/OpenProControl-preservation/2026-09-20-comm-1.37",
+    "archive": "procontrol-fader-static-1.37-evidence.tar.gz",
+    "bytes": 117955,
+    "sha256": "ba3b02f7c8f3a8df9b48552bb4b2fbd7fde21036a5d00a0680246492b4afff55",
+    "payload_files_verified_after_compression": 19,
+    "file_manifest": {
+      "schema": 1,
+      "files": [
+        {
+          "path": "analysis/README.txt",
+          "bytes": 424,
+          "sha256": "da82926d3242ebcda71299b0cecfb7ee11f6730188212810b95fba8e99f6e38b"
+        },
+        {
+          "path": "analysis/analysis-inputs.json",
+          "bytes": 7985,
+          "sha256": "41697473d1545b8f76ece9700bd94ba53ca211f3193e2d5fb414ef69d40a7d38"
+        },
+        {
+          "path": "analysis/comm-copy.txt",
+          "bytes": 1829,
+          "sha256": "bddafdba8433c5b7835f356db6e37e98204fbdb5c2cb68fe7d2ca3e3f8cdf600"
+        },
+        {
+          "path": "analysis/comm-fader-receiver.txt",
+          "bytes": 13382,
+          "sha256": "a603c13f2055ac2e95db4da24b163eb94efecb442a288a44e388514f7eee59e4"
+        },
+        {
+          "path": "analysis/comm-network-route.txt",
+          "bytes": 1017,
+          "sha256": "a70e6b01a56a8c9269724c3f95ce64bb725aed1e985999b45b651bd282c3cfb8"
+        },
+        {
+          "path": "analysis/comm-response.txt",
+          "bytes": 1186,
+          "sha256": "98d1873338c4a518653cf088eff29bae54cd19e4ea2a5581db9e57a868082d5e"
+        },
+        {
+          "path": "analysis/comm-ring.txt",
+          "bytes": 3089,
+          "sha256": "438b39a99e3803ce18892384caad0bb5b644999c8949e4cbea717254957ddd50"
+        },
+        {
+          "path": "analysis/comm-serial-tx.txt",
+          "bytes": 996,
+          "sha256": "1458e33b3eab9b6f7227d0b070a7a70fa0c9072cc6f0131bfabdf06aab73b01c"
+        },
+        {
+          "path": "analysis/comm-validator.txt",
+          "bytes": 3135,
+          "sha256": "5366dbf1ef51dd89203d386759f659161f096beec47168ccf1f23713cf09301b"
+        },
+        {
+          "path": "analysis/fader-framing.txt",
+          "bytes": 1496,
+          "sha256": "7539348c74672745457521f1f8838826a2c01def348e79dd3a1dbf83ce120988"
+        },
+        {
+          "path": "analysis/fader-interpreter.txt",
+          "bytes": 21064,
+          "sha256": "902db97086aa735af4acd9e0738d3d5f4b98040db4ce0b5d61e53456fe9968d7"
+        },
+        {
+          "path": "analysis/fader-memory.txt",
+          "bytes": 1723,
+          "sha256": "81f0a5a368023ec5f965daec7d279fbb30f33b0888da630926c54538d86e6c4d"
+        },
+        {
+          "path": "analysis/fader-rxqueue.txt",
+          "bytes": 1110,
+          "sha256": "6e9df86907a034affe3c26a7443588c8feba110d14d87b70d542351ddd539e48"
+        },
+        {
+          "path": "analysis/fader-serial.txt",
+          "bytes": 4977,
+          "sha256": "20adeb9aefee093db688e03feee0b3bf82af7a6dee229223ddc6b27e9fc32c8b"
+        },
+        {
+          "path": "analysis/fader-txqueue.txt",
+          "bytes": 1189,
+          "sha256": "a2c2b413fff0602046e9c3421cb30f4884d408af1fa528012133d9aee30dbdbe"
+        },
+        {
+          "path": "inputs/CODE-26-00020400.bin",
+          "bytes": 63716,
+          "sha256": "e2945b200be72745afb10a3bc68300b4dc3b5adba90b3a8157cec37f051e1af8"
+        },
+        {
+          "path": "inputs/CODE-27-00008400.bin",
+          "bytes": 11494,
+          "sha256": "2479230a850da18b33b1dcf7292dbb12af6421aceabc047b2ae07d5582f23e05"
+        },
+        {
+          "path": "inputs/Procontrol.dll.rsr",
+          "bytes": 181758,
+          "sha256": "0603a032f3abf4af6e266ba05486d186e031a5e2448da86d0aacc2b1e1eb1a53"
+        },
+        {
+          "path": "inputs/manifest.json",
+          "bytes": 38587,
+          "sha256": "552aacda933766e9abe98079680f1bdd698367e9dda57d483a42e59e940de0e5"
+        }
+      ]
+    },
+    "independent_storage": false
+  }
+}

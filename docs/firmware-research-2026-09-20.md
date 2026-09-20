@@ -5,6 +5,11 @@ zones de mémoire ont été lues sur la console. Voir la
 [validation matérielle séparée](firmware-network-validation-2026-09-20.md).
 Le carnet ci-dessous conserve les faits et limites de l'étape initiale.
 
+Pour l'état consolidé, consulter la [mémoire technique](retour-experience.md).
+Le relais des faders fait l'objet d'une
+[analyse statique complémentaire](fader-diagnostic-analysis-2026-09-20.md),
+notamment du filtre qui limite les réponses mémoire arbitraires.
+
 Date : 20 septembre 2026. Objectif utilisateur : comprendre le logiciel interne
 de la Digidesign ProControl originale, améliorer son contrôle et préserver les
 connaissances nécessaires à sa réutilisation durable. Cette recherche reste

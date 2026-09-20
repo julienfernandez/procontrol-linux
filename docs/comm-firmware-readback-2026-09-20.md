@@ -186,6 +186,11 @@ l'ACK. Le lecteur réel n'a pas été modifié pour imposer ce faux ordre.
 
 ## Suite de la recherche
 
+Le relais série des faders et son filtre de réponses ont depuis été examinés
+dans une [étape statique séparée](fader-diagnostic-analysis-2026-09-20.md).
+L'état consolidé et les règles de conservation sont dans la
+[mémoire technique](retour-experience.md).
+
 La lecture de l'image `comm` est maintenant établie sur toutes ses adresses
 connues. Restent le chemin vers le processeur des faders, la cartographie du
 démarrage et des mémoires persistantes, la sauvegarde des réglages propres à
