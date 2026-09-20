@@ -4,16 +4,15 @@ from collections import deque
 import time
 from procontrol_mapping import mapping_tree, split_commands, decode_command
 from procontrol_pointer import decode_pointer
+from console_editing import ConsoleEditing
 
 # Coordonnées physiques (zone, numéro), conservées même quand le libellé tiers est incomplet.
-# OSC directs : sources Ardour 8.4 osc.cc ; actions : /etc/ardour8/ardour.keys.
+# OSC directs : sources Ardour ; edition : console_editing.py (Ardour 9.8).
 OSC_BUTTONS = {
     (0x1c,0x06):'/goto_start', (0x1c,0x07):'/goto_end',
     (0x1c,0x0d):'/rewind', (0x1c,0x0e):'/ffwd',
     (0x1c,0x0f):'/transport_stop', (0x1c,0x10):'/transport_play',
-    (0x1c,0x11):'/rec_enable_toggle', (0x1c,0x09):'/loop_toggle',
-    (0x1c,0x02):'/toggle_punch_in', (0x1c,0x03):'/toggle_punch_out',
-    (0x19,0x06):'/undo', (0x19,0x07):'/save_state',
+    (0x1c,0x11):'/rec_enable_toggle',
     (0x08,0x00):'/refresh', (0x08,0x02):'/add_marker',
     (0x08,0x04):'/prev_marker', (0x08,0x06):'/next_marker',
     (0x08,0x01):'/rec_enable_toggle', (0x08,0x14):'/cancel_all_solos',
@@ -21,24 +20,11 @@ OSC_BUTTONS = {
     (0x16,0x07):'/toggle_monitor_mute',
 }
 ACTION_BUTTONS = {
-    (0x19,0x00):'Common/show-mixer', (0x19,0x01):'Common/show-editor',
     (0x19,0x02):'Common/toggle-meterbridge', (0x19,0x05):'Window/toggle-locations',
-    (0x1b,0x04):'Editor/editor-cut', (0x1b,0x05):'Editor/editor-copy',
-    (0x1b,0x06):'Editor/editor-paste', (0x1b,0x07):'Editor/editor-delete',
-    (0x1b,0x08):'Editor/split-region',
-    (0x1b,0x0d):'MouseMode/set-mouse-mode-timefx',
-    (0x1b,0x0e):'MouseMode/set-mouse-mode-range',
-    (0x1b,0x0f):'MouseMode/set-mouse-mode-object',
-    (0x1b,0x10):'MouseMode/set-mouse-mode-draw',
-    (0x17,0x30):'Main/Escape',
-    (0x08,0x05):'Common/show-editor',
+    (0x17,0x30):'Main/Escape', (0x08,0x05):'Common/show-editor',
     (0x15,0x09):'Mixer/ab-plugins',
-    (0x1b,0x09):'Editor/set-loop-from-edit-range',
-    (0x1c,0x00):'Region/play-selected-regions',
-    (0x1c,0x01):'Transport/PlayPreroll',
     (0x1c,0x05):'Transport/ToggleExternalSync',
-    (0x1c,0x08):'Transport/ToggleExternalSync',
-    (0x1c,0x0b):'Transport/TogglePunch',
+    (0x1c,0x08):'Transport/ToggleExternalSync', (0x1c,0x0b):'Transport/TogglePunch',
 }
 NUMPAD = {**{i:str(i) for i in range(10)}, 10:'BackSpace', 11:'equal',
           12:'slash',13:'asterisk',14:'minus',15:'plus',16:'period',17:'Return'}
@@ -84,6 +70,7 @@ class SurfaceMap:
         self.touched=set(); self.fader_moved={}; self.clock_mode='smpte'; self.jog_mode=0
         self.last_unknown=[]
         self.auto_held=set()
+        self.editing=ConsoleEditing(self)
 
     def reset_inputs(self):
         if getattr(self,'monitor',None) is not None:self.monitor.disconnect()
@@ -91,6 +78,7 @@ class SurfaceMap:
         self.seen.clear(); self.alpha=False; self.caps=False; self.modifiers.clear()
         self.held_keys.clear(); self.buttons=0; self.touched.clear()
         self.auto_held.clear()
+        self.editing.reset()
         return [('release_all','',[]),led(0x17,0x21,False)]
 
     def invalidate_selected(self, plugin_only=False):
@@ -122,6 +110,8 @@ class SurfaceMap:
         return actions
 
     def command(self,c,now):
+        editing=self.editing.command(c)
+        if editing is not None:return editing
         if getattr(self,'monitor',None) is not None:
             result=self.monitor.command(c)
             if result is not None:return result
@@ -144,7 +134,8 @@ class SurfaceMap:
             delta=c[2]-64
             if not delta:return []
             if c[1]==0x5c:
-                return [osc('/jog',float(delta)*self.jog_gain)]
+                fine = .1 if self.jog_mode == 0 and self.modifiers & {'Shift_L','Shift_R'} else 1.
+                return [osc('/jog',float(delta)*self.jog_gain*fine)]
             # Local capture dsp-encoders-take2-20260914: top to bottom 4d..54.
             # Dedicated DSP controls always address the selected plugin page.
             if len(c)==3 and 0x4d<=c[1]<=0x54:
@@ -227,8 +218,8 @@ class SurfaceMap:
         if not on:return []
         if z==8 and n in (0,2,4,6) and self.modifiers:
             return [osc('/access_action',{0:'Editor/zoom-to-session',
-                2:'Editor/zoom-to-selection',4:'Editor/temporal-zoom-out',
-                6:'Editor/temporal-zoom-in'}[n])]
+                2:'Editor/zoom-to-selection',4:'EditorEditing/temporal-zoom-out',
+                6:'EditorEditing/temporal-zoom-in'}[n])]
         if z==8 and n in (0x18,0x1a,0x1c,0x1d):
             self.automation_target={0x18:'gain',0x1a:'pan',0x1c:'mute',0x1d:'trimdB'}[n]
             return [led(z,k,k==n) for k in (0x18,0x1a,0x1c,0x1d)]
@@ -237,19 +228,12 @@ class SurfaceMap:
             return [osc('/select/expand',1),('mode','encoders',['plugin'])]
         if physical in OSC_BUTTONS:
             path=OSC_BUTTONS[physical]
-            if physical==(0x19,6) and self.modifiers:path='/redo'
             return [osc(path,1.0)]
         if physical in ACTION_BUTTONS:return [osc('/access_action',ACTION_BUTTONS[physical])]
         if z==0x1b and n in (0x0a,0x0c):
             if self.nudge:return [osc('/select/previous' if n==0x0a else '/select/next',1.0)]
             direction=-1 if n==0x0a else 1
             return [('bank','delta',[direction])]
-        if z==0x1b and n==0x0b:
-            self.nudge=not self.nudge;return [led(z,n,self.nudge)]
-        if z==0x1b and n in (0,1,2,3):
-            # Correspondances Ardour explicites : ripple, slide, verrouillage, grille.
-            return [osc('/access_action',{0:'Editor/set-edit-ripple',1:'Editor/set-edit-slide',
-                                         2:'Editor/set-edit-lock',3:'Editor/cycle-snap-mode'}[n])]
         if z==0x1c and n in (0x12,0x13):
             mode=2 if n==0x12 else 3;self.jog_mode=0 if self.jog_mode==mode else mode
             return [osc('/jog/mode',float(self.jog_mode)),led(0x1c,0x12,self.jog_mode==2),led(0x1c,0x13,self.jog_mode==3)]

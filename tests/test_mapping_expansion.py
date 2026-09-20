@@ -20,7 +20,7 @@ class MappingExpansionTests(unittest.TestCase):
         self.assertEqual(m.command(bytes.fromhex('90 02 48'),0)[0][1],'/add_marker')
     def test_new_actions_once_despite_retry_and_release(self):
         m=SurfaceMap();body=bytes.fromhex('90 01 5c')
-        self.assertEqual(m.route(1,body),[('osc','/access_action',['Transport/PlayPreroll'])])
+        self.assertEqual(m.route(1,body),[('osc','/jump_bars',[-1.0])])
         self.assertEqual(m.route(1,body),[])
         self.assertEqual(m.route(2,bytes.fromhex('90 01 1c')),[])
     def test_previous_parameter_page_and_plugin_mode(self):

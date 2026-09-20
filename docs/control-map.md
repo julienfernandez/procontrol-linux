@@ -1,3 +1,5 @@
+> Mise à jour du 20/09/2026 : pour les touches d’édition, IN/OUT, boucles, UNDO/SAVE et le jog fin, suivre le [guide d’édition Ardour 9.8](console-editing.md). Il remplace les anciens mappings d’édition ci-dessous.
+
 # Carte fonctionnelle ProControl → Ardour / Linux
 
 ## Écoute IN / DISK — 20 septembre 2026

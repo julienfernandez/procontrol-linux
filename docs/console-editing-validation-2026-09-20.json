@@ -1,0 +1,276 @@
+{
+  "ardour": "9.8.0",
+  "backend": "Dummy",
+  "isolated_display": ":97",
+  "osc_port": 3901,
+  "physical_console_test": false,
+  "results": [
+    {
+      "check": "IN OUT CAPTURE: exact 2s to 6s loop",
+      "passed": true,
+      "evidence": {
+        "start": "a564480000",
+        "end": "a1693440000",
+        "flags": "IsAutoLoop"
+      }
+    },
+    {
+      "check": "delete changes only selected playlist",
+      "passed": true,
+      "evidence": {
+        "before": 2,
+        "after": 4
+      }
+    },
+    {
+      "check": "undo delete",
+      "passed": true,
+      "evidence": null
+    },
+    {
+      "check": "redo delete",
+      "passed": true,
+      "evidence": null
+    },
+    {
+      "check": "cut changes only selected playlist",
+      "passed": true,
+      "evidence": {
+        "before": 2,
+        "after": 4
+      }
+    },
+    {
+      "check": "undo cut",
+      "passed": true,
+      "evidence": null
+    },
+    {
+      "check": "copy preserves original",
+      "passed": true,
+      "evidence": null
+    },
+    {
+      "check": "paste at playhead",
+      "passed": true,
+      "evidence": {
+        "regions": [
+          {
+            "length_at_position": "a1128960000@a5644800000",
+            "source_start": "a551372800"
+          },
+          {
+            "length_at_position": "a1128960000@a5644800000",
+            "source_start": "a564480000"
+          },
+          {
+            "length_at_position": "a2539417600@a13107200",
+            "source_start": "a0"
+          },
+          {
+            "length_at_position": "a4518604800@a0",
+            "source_start": "a0"
+          }
+        ]
+      }
+    },
+    {
+      "check": "duplicate range",
+      "passed": true,
+      "evidence": {
+        "regions": [
+          {
+            "length_at_position": "a1128960000@a1693440000",
+            "source_start": "a551372800"
+          },
+          {
+            "length_at_position": "a1128960000@a1693440000",
+            "source_start": "a564480000"
+          },
+          {
+            "length_at_position": "a2539417600@a13107200",
+            "source_start": "a0"
+          },
+          {
+            "length_at_position": "a4518604800@a0",
+            "source_start": "a0"
+          }
+        ]
+      }
+    },
+    {
+      "check": "separate at range boundaries",
+      "passed": true,
+      "evidence": {
+        "regions": [
+          {
+            "length_at_position": "a1128960000@a564480000",
+            "source_start": "a551372800"
+          },
+          {
+            "length_at_position": "a1128960000@a564480000",
+            "source_start": "a564480000"
+          },
+          {
+            "length_at_position": "a2825158400@a1693440000",
+            "source_start": "a1693440000"
+          },
+          {
+            "length_at_position": "a551366400@a13107200",
+            "source_start": "a0"
+          },
+          {
+            "length_at_position": "a564473600@a0",
+            "source_start": "a0"
+          },
+          {
+            "length_at_position": "a859078400@a1693440000",
+            "source_start": "a1680332800"
+          }
+        ]
+      }
+    },
+    {
+      "check": "SHIFT SEPARATE: single cut at playhead despite old range",
+      "passed": true,
+      "evidence": {
+        "regions": [
+          {
+            "length_at_position": "a2244812800@a13107200",
+            "source_start": "a0"
+          },
+          {
+            "length_at_position": "a2257920000@a0",
+            "source_start": "a0"
+          },
+          {
+            "length_at_position": "a2260684800@a2257920000",
+            "source_start": "a2257920000"
+          },
+          {
+            "length_at_position": "a294604800@a2257920000",
+            "source_start": "a2244812800"
+          }
+        ]
+      }
+    },
+    {
+      "check": "trim range",
+      "passed": true,
+      "evidence": {
+        "regions": [
+          {
+            "length_at_position": "a1128960000@a564480000",
+            "source_start": "a551372800"
+          },
+          {
+            "length_at_position": "a1128960000@a564480000",
+            "source_start": "a564480000"
+          }
+        ]
+      }
+    },
+    {
+      "check": "GRAB SPOT: align regions to playhead",
+      "passed": true,
+      "evidence": {
+        "regions": [
+          {
+            "length_at_position": "a2539417600@a5657907200",
+            "source_start": "a0"
+          },
+          {
+            "length_at_position": "a4518604800@a5644800000",
+            "source_start": "a0"
+          }
+        ]
+      }
+    },
+    {
+      "check": "NUDGE moves selected regions by Ardour distance",
+      "passed": true,
+      "evidence": {
+        "regions": [
+          {
+            "length_at_position": "a2539417600@a1424307200",
+            "source_start": "a0"
+          },
+          {
+            "length_at_position": "a4518604800@a1411200000",
+            "source_start": "a0"
+          }
+        ]
+      }
+    },
+    {
+      "check": "loop really rolls and wraps",
+      "passed": true,
+      "evidence": {
+        "speed": 1.0,
+        "frame_after_4s": 114552,
+        "loop_feedback": 1.0
+      }
+    },
+    {
+      "check": "second LOOP disables loop",
+      "passed": true,
+      "evidence": null
+    },
+    {
+      "check": "SHIFT IN OUT move loop boundaries",
+      "passed": true,
+      "evidence": {
+        "start": "a1128960000",
+        "end": "a2257920000",
+        "flags": "IsAutoLoop"
+      }
+    },
+    {
+      "check": "POST jumps one measure at 120 BPM",
+      "passed": true,
+      "evidence": null
+    },
+    {
+      "check": "SHIFT POST jumps four measures",
+      "passed": true,
+      "evidence": null
+    },
+    {
+      "check": "PRE jumps back one measure",
+      "passed": true,
+      "evidence": null
+    }
+  ],
+  "automated_tests": {
+    "count": 236,
+    "result": "passed"
+  },
+  "limitations": [
+    "Physical button identities use the ProControl reference, except already captured controls. The navigation cross remains unmapped pending controlled gestures.",
+    "Dummy backend; no listening or MPC/audio synchronization test.",
+    "Immediate jog followed by a mark can capture the previous GUI position; wait for the displayed cursor to settle.",
+    "Loop-is-mode preference requires PLAY after enabling the loop."
+  ],
+  "immediate_jog_mark_probe": [
+    {
+      "start": 2.0696598639455783,
+      "expected": 2.2
+    },
+    {
+      "start": 2.0,
+      "expected": 2.2
+    },
+    {
+      "start": 2.023219954648526,
+      "expected": 2.2
+    },
+    {
+      "start": 2.0,
+      "expected": 2.2
+    },
+    {
+      "start": 2.023219954648526,
+      "expected": 2.2
+    }
+  ]
+}
