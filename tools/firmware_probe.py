@@ -3,6 +3,8 @@
 
 Par défaut : aperçu hors ligne. Requête de version comm V, puis lecture
 optionnelle de 1..256 octets dans les segments de code connus du firmware 1.37.
+La cible fader autorise uniquement la version V, sans lecture mémoire.
+Cinq états RAM nommés du relais comm peuvent être lus séparément.
 Aucun interpréteur libre, accès MMIO, écriture des octets ciblés ou effacement.
 La passerelle doit être arrêtée avant --send et relancée après l'expérience.
 """
@@ -30,23 +32,48 @@ ROOT = Path(__file__).resolve().parents[1]
 VERSION_REQUEST = bytes.fromhex('f0 13 00 70 00 56 f7')
 PREFIX = bytes.fromhex('f0 13 00 70 00')
 EXPECTED_VERSION = b'COMv1.37\n\r'
+FADER_PREFIX = bytes.fromhex('f0 13 00 70 01')
+FADER_VERSION = b'FDRv1.37\n\r'
+PROFILES = {'comm': (PREFIX, EXPECTED_VERSION),
+            'fader': (FADER_PREFIX, FADER_VERSION)}
 CODE_SEGMENTS = ((0x20000, 0x20008), (0x20064, 0x20080),
                  (0x20100, 0x20110), (0x20400, 0x2fce4))
+# Exact RAM fields identified in comm 1.37, not an arbitrary RAM address mode.
+STATE_FIELDS = {'fader-version': (0x5094a, 10),
+                'fader-errors': (0x509ba, 4),
+                'fader-version-valid': (0x509c2, 4),
+                'fader-tx-ring': (0x6c10e, 24),
+                'fader-rx-ring': (0x6bf0e, 24)}
 
 
-def requests_for(address=None, length=1, batch_size=1):
+def read_selection(address, length, batch_size, target, state):
+    if state is None:
+        return address, length
+    if (state not in STATE_FIELDS or target != 'comm' or address is not None
+            or length != 1 or batch_size != 1):
+        raise ValueError('État RAM nommé : cible comm seule, sans adresse, longueur ni lot personnalisés')
+    return STATE_FIELDS[state]
+
+
+def requests_for(address=None, length=1, batch_size=1, target='comm', state=None):
     """Absolute address per byte: an absent/duplicate reply cannot shift reads."""
-    result = [(None, VERSION_REQUEST)]
+    if target not in PROFILES:
+        raise ValueError('Cible diagnostic inconnue')
+    if target == 'fader' and (address is not None or length != 1 or batch_size != 1):
+        raise ValueError('Cible fader limitée à la version ; lecture mémoire non validée')
+    address, length = read_selection(address, length, batch_size, target, state)
+    prefix, _ = PROFILES[target]
+    result = [(None, prefix + b'V\xf7')]
     if not 1 <= batch_size <= 16:
         raise ValueError('Lot limité à 1..16 octets')
     if address is not None:
-        if (not 1 <= length <= 256 or not any(
+        if state is None and (not 1 <= length <= 256 or not any(
                 lo <= address and address+length <= hi for lo, hi in CODE_SEGMENTS)):
             raise ValueError('Lecture limitée à 1..256 octets dans un segment comm 1.37 connu')
-        for target in range(address, address+length, batch_size):
-            size = min(batch_size, address+length-target)
+        for read_target in range(address, address+length, batch_size):
+            size = min(batch_size, address+length-read_target)
             reads = b'm' if batch_size == 1 else b'M'*size
-            result.append((target, PREFIX + f'A{target:08X}'.encode('ascii') + reads + b'\xf7'))
+            result.append((read_target, PREFIX + f'A{read_target:08X}'.encode('ascii') + reads + b'\xf7'))
     return result
 
 
@@ -73,16 +100,17 @@ def exclusive_console(runtime):
         yield
 
 
-def diagnostic_payload(body):
+def diagnostic_payload(body, target='comm'):
     # Deliberately require one whole envelope; preserve unexpected bodies in
     # the PCAP instead of interpreting the existing MIDI-like splitter as a
     # complete grammar (memory replies may contain bytes with their high bit).
-    if body.startswith(PREFIX) and body.endswith(b'\xf7'):
-        return body[len(PREFIX):-1]
+    prefix, _ = PROFILES[target]
+    if body.startswith(prefix) and body.endswith(b'\xf7'):
+        return body[len(prefix):-1]
     return None
 
 
-def diagnostic_payloads(body):
+def diagnostic_payloads(body, target='comm'):
     """Recognized response sizes, never a split on f7 inside a literal byte.
 
     A batch can place multiple complete envelopes in one DigiNet body. Reject
@@ -90,20 +118,21 @@ def diagnostic_payloads(body):
     Unknown standalone envelopes remain available to the version gate/log.
     """
     result = []
-    while body.startswith(PREFIX):
+    prefix, expected_version = PROFILES[target]
+    while body.startswith(prefix):
         for size in (8, 16, 24):
             if len(body) < size or body[size-1] != 0xf7:
                 continue
             payload = body[5:size-1]
             if (payload == b'\n\r' or
-                    (len(payload) == 10 and payload.startswith(b'COM') and payload.endswith(b'\n\r')) or
+                    (len(payload) == 10 and payload.startswith(expected_version[:3]) and payload.endswith(b'\n\r')) or
                     re.fullmatch(rb"[0-9a-fA-F]{8}: [0-9a-fA-F]{2} '.'\n\r", payload, re.DOTALL)):
                 result.append(payload)
                 body = body[size:]
                 break
         else:
             if not result:
-                payload = diagnostic_payload(body)
+                payload = diagnostic_payload(body, target)
                 return [payload] if payload is not None else []
             raise ValueError('Enveloppes diagnostic concaténées non reconnues')
     if body and result:
@@ -112,13 +141,17 @@ def diagnostic_payloads(body):
 
 
 def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
-              address=None, length=1, batch_size=1):
+              address=None, length=1, batch_size=1, target='comm', state=None):
     """One outstanding request, no retries, at most 50 Hz, version before reads."""
-    requests = requests_for(address, length, batch_size)
+    requests = requests_for(address, length, batch_size, target, state)
+    address, length = read_selection(address, length, batch_size, target, state)
+    _, expected_version = PROFILES[target]
     report = {'started_utc': datetime.now(timezone.utc).isoformat(),
               'probe_source_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-              'probe': 'comm_code_read' if address is not None else 'comm_version',
-              'request_hex': VERSION_REQUEST.hex(' '),
+              'probe': ('comm_state_read' if state else 'comm_code_read') if address is not None else f'{target}_version',
+              'read_state': state,
+              'target': target, 'expected_version_hex': expected_version.hex(' '),
+              'request_hex': requests[0][1].hex(' '),
               'request_sequence': None, 'ack_received': False,
               'responses': [], 'announcements': [], 'error': None,
               'capture_clock': 'host userspace time_ns, microsecond PCAP',
@@ -155,10 +188,10 @@ def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
                     raise RuntimeError('Session perdue après la requête ; aucun nouvel essai')
                 if not finished and request_time is None and flow.phase == 'online' and now >= next_send:
                     flow.session.sequence += 1
-                    target, body = requests[cursor]
+                    read_target, body = requests[cursor]
                     batch_values = {}
-                    transaction = {'index': cursor, 'address': target, 'request_hex': body.hex(' '),
-                                   'length': min(batch_size, address+length-target) if target is not None else 0,
+                    transaction = {'index': cursor, 'address': read_target, 'request_hex': body.hex(' '),
+                                   'length': min(batch_size, address+length-read_target) if read_target is not None else 0,
                                    'sequence': flow.session.sequence, 'ack': False, 'matched': False}
                     report['transactions'].append(transaction)
                     if cursor == 0:
@@ -193,7 +226,7 @@ def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
                         if cursor == 0:
                             report['ack_received'] = True
                 elif header['command_field'] == 0:
-                    payloads = diagnostic_payloads(bytes.fromhex(header['body_hex']))
+                    payloads = diagnostic_payloads(bytes.fromhex(header['body_hex']), target)
                     if payloads:
                         sequence = header['sequence_candidate']
                         duplicate = sequence in received_sequences
@@ -205,13 +238,13 @@ def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
                             'payload_hex': payload.hex(' '),
                             'payload_ascii': payload.decode('ascii', errors='backslashreplace')})
                         if not duplicate and not transaction['matched']:
-                            target = transaction['address']
-                            if target is None:
-                                if payload.startswith(b'COM') and payload != EXPECTED_VERSION:
-                                    raise RuntimeError('Version comm différente de 1.37 ; arrêt')
-                                transaction['matched'] = payload == EXPECTED_VERSION
+                            read_target = transaction['address']
+                            if read_target is None:
+                                if payload.startswith(expected_version[:3]) and payload != expected_version:
+                                    raise RuntimeError(f'Version {target} différente de 1.37 ; arrêt')
+                                transaction['matched'] = payload == expected_version
                             else:
-                                for item in range(target, target+transaction['length']):
+                                for item in range(read_target, read_target+transaction['length']):
                                     value = memory_reply(payload, item)
                                     if value is not None:
                                         if item in batch_values and batch_values[item] != value:
@@ -257,21 +290,46 @@ def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
     return report
 
 
+def run_fader_version(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.):
+    """Confirm comm in the same session before the one fader version request."""
+    prerequisite = output/'comm-version'
+    prerequisite.mkdir(mode=0o700)
+    comm = run_probe(rx, tx, flow, prerequisite, connect_timeout, reply_timeout)
+    if comm['error']:
+        result = {'probe': 'fader_version', 'target': 'fader',
+                  'error': 'Version comm non validée ; aucune requête fader envoyée',
+                  'transactions': [], 'responses': [], 'fader_request_sent': False}
+    else:
+        result = run_probe(rx, tx, flow, output, connect_timeout, reply_timeout, target='fader')
+        result['fader_request_sent'] = bool(result['transactions'])
+    result['comm_prerequisite'] = {'result': 'comm-version/result.json',
+        'result_sha256': hashlib.sha256((prerequisite/'result.json').read_bytes()).hexdigest(),
+        'error': comm['error']}
+    (output/'result.json').write_text(json.dumps(result, indent=2, ensure_ascii=False)+'\n')
+    return result
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--interface', default='enp0s25')
     parser.add_argument('--mac', type=mac_address, default='00:a0:7e:a0:ad:9c')
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--target', choices=tuple(PROFILES), default='comm',
+                        help='comm : version/lecture de code ; fader : version seulement')
     parser.add_argument('--read-code', type=lambda value: int(value, 0), metavar='ADDRESS')
+    parser.add_argument('--read-state', choices=tuple(STATE_FIELDS),
+                        help='Champ RAM comm 1.37 précisément identifié ; snapshot non atomique')
     parser.add_argument('--length', type=int, default=1)
     parser.add_argument('--batch-size', type=int, default=1, help='1..16 octets par requête')
     parser.add_argument('--send', action='store_true')
     args = parser.parse_args(argv)
     try:
-        requests = requests_for(args.read_code, args.length, args.batch_size)
+        requests = requests_for(args.read_code, args.length, args.batch_size, args.target, args.read_state)
     except ValueError as exc:
         parser.error(str(exc))
     if not args.send:
+        if args.target == 'fader':
+            requests = [(None, VERSION_REQUEST)] + requests
         print(json.dumps({'requests_hex': [body.hex(' ') for _, body in requests],
                           'network_opened': False, 'exclusive_lock': str(ROOT/'run/daemon.lock')}))
         return 0
@@ -295,8 +353,13 @@ def main(argv=None):
             rx.bind((args.interface, 0)); tx.bind((args.interface, 0))
             rx.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 4*1024*1024)
             args.output.mkdir(mode=0o700, parents=True)
-            result = run_probe(rx, tx, ConsoleSession(host, args.mac), args.output,
-                               address=args.read_code, length=args.length, batch_size=args.batch_size)
+            flow = ConsoleSession(host, args.mac)
+            if args.target == 'fader':
+                result = run_fader_version(rx, tx, flow, args.output)
+            else:
+                result = run_probe(rx, tx, flow, args.output,
+                                   address=args.read_code, length=args.length, batch_size=args.batch_size,
+                                   target=args.target, state=args.read_state)
     print(json.dumps(result, indent=2, ensure_ascii=False))
     return int(result['error'] is not None)
 

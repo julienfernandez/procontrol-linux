@@ -1,5 +1,10 @@
 # Relais diagnostic vers le processeur des faders
 
+**Étape suivante réalisée :** quatre réponses directes `FDRv1.37` ont été
+capturées, après un premier essai incomplet. Voir la
+[validation réseau et les snapshots du relais](fader-network-validation-2026-09-20.md).
+Le présent rapport conserve les conclusions de l'étape statique.
+
 Analyse statique du 20 septembre 2026, après la
 [double lecture complète de `comm`](comm-firmware-readback-2026-09-20.md).
 **Aucune requête `70 01`, aucun déplacement moteur ni aucune écriture de

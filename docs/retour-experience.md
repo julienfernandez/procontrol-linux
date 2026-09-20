@@ -17,7 +17,7 @@ actuel, consulter la [carte fonctionnelle](control-map.md), les
 | Firmware constructeur | Deux ressources `comm` et `fader` 1.37 extraites, contrôlées et reproductibles ; analyse statique | [Origine, extraction et adresses](firmware-research-2026-09-20.md), [empreintes](firmware-research-2026-09-20.json) |
 | Diagnostic du processeur principal | Version `COMv1.37` et premières lectures confirmées sur la console, avec captures et répétitions | [Cinq expériences réseau](firmware-network-validation-2026-09-20.md), [preuves](firmware-network-validation-2026-09-20.json) |
 | Programme de communication installé | Les 63 768 octets adressés par l'image `comm` ont été lus deux fois et comparés au constructeur ; audit indépendant des 504 PCAP | [Lecture complète](comm-firmware-readback-2026-09-20.md), [manifeste de preuves](comm-firmware-readback-2026-09-20.json) |
-| Relais vers le processeur des faders | Chemins aller/retour retrouvés dans le code ; filtre des réponses identifié ; aucune nouvelle requête `70 01` envoyée dans cette étude | [Analyse des faders](fader-diagnostic-analysis-2026-09-20.md), [provenance](fader-diagnostic-analysis-2026-09-20.json) |
+| Relais vers le processeur des faders | Quatre réponses directes `FDRv1.37` ; cache et files série lus dans la RAM de `comm`. Premier essai incomplet conservé ; programme des faders non acquis | [Validation réseau](fader-network-validation-2026-09-20.md), [preuves](fader-network-validation-2026-09-20.json), [analyse statique](fader-diagnostic-analysis-2026-09-20.md) |
 | Sauvegarde restaurable de toute l'unité | Encore ouverte : démarrage, trous mémoire, EEPROM, calibration, programme installé des faders et restauration matérielle restent à établir | [Périmètre exact de la conservation](comm-firmware-readback-2026-09-20.md#périmètre-réel-de-la-sauvegarde) |
 
 La concordance du programme `comm` donne une base solide pour interpréter ce
@@ -96,6 +96,7 @@ Sources : [session](session-reference.md), [helper sans root](rootless-launch.md
 | Faux appareil de test supposant un ordre ACK/requête | Corriger le modèle du test ; ne pas imposer au protocole réel un ordre non observé | [Retour d'expérience des tests](comm-firmware-readback-2026-09-20.md#conservation-et-tests) |
 | Clone d'un bundle sans HEAD distant | Donner explicitement `--branch main` ; vérifier le commit après restauration | [Reprise Git hors ligne](comm-firmware-readback-2026-09-20.md#conservation-et-tests) |
 | Première lecture inversée d'une branche du filtre série des faders | Le filtre rejette le bit 7 positionné ; il ne le requiert pas. Relire les deux branches avant d'inventer un encodage | [Correction et conséquence](fader-diagnostic-analysis-2026-09-20.md#filtre-des-réponses-et-correction-dinterprétation) |
+| Première requête fader acquittée sans réponse | Conserver l'échec ; vérifier ensuite `COM` dans la même session. Succès reproduit, cause initiale encore ouverte | [Diagnostic réel des faders](fader-network-validation-2026-09-20.md) |
 
 ## Ce que l'on conserve et où
 

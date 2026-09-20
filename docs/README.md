@@ -35,6 +35,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Version des faders confirmée sur le réseau et observation des files série](fader-network-validation-2026-09-20.md),
+  [21 captures, snapshots RAM et audit indépendant](fader-network-validation-2026-09-20.json).
+
 - [Relais diagnostic vers les faders : analyse statique et filtre de réponses](fader-diagnostic-analysis-2026-09-20.md),
   [provenance et archive complémentaire](fader-diagnostic-analysis-2026-09-20.json).
 
