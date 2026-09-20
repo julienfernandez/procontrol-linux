@@ -103,9 +103,9 @@ class ConsoleEditingTests(unittest.TestCase):
         m.modifiers={'Alt_L'}
         self.assertIn('EditorEditing/snap-off',names(press(m,0x1b,3)))
 
-    def test_unknown_navigation_is_not_guessed(self):
+    def test_uncaptured_navigation_code_is_not_guessed(self):
         m=SurfaceMap()
-        self.assertIsNone(m.command(bytes.fromhex('90 00 58'),0))
+        self.assertIsNone(m.command(bytes.fromhex('90 05 58'),0))
 
 
 if __name__=='__main__':unittest.main()

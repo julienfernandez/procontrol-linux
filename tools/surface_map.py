@@ -5,6 +5,7 @@ import time
 from procontrol_mapping import mapping_tree, split_commands, decode_command
 from procontrol_pointer import decode_pointer
 from console_editing import ConsoleEditing
+from navigation_controls import navigation_button
 
 # Coordonnées physiques (zone, numéro), conservées même quand le libellé tiers est incomplet.
 # OSC directs : sources Ardour ; edition : console_editing.py (Ardour 9.8).
@@ -33,6 +34,8 @@ ALPHA_EXTRA = {0x1b:'Shift_R',0x1f:'BackSpace',0x20:'space'}
 
 
 def button_info(command):
+    navigation=navigation_button(command)
+    if navigation is not None:return navigation
     if len(command) != 3 or command[0] != 0x90 or command[2] & 0x80:
         return None
     key, zone = command[1], command[2] & 0x3f
@@ -68,7 +71,7 @@ class SurfaceMap:
         self.encoder_mode='pan'; self.send_index=1; self.plugin_index=1
         self.master_mode=False; self.jog_gain=1.; self.automation_target='gain'
         self.touched=set(); self.fader_moved={}; self.clock_mode='smpte'; self.jog_mode=0
-        self.last_unknown=[]
+        self.last_unknown=[]; self.last_button_presses=[]
         self.auto_held=set()
         self.editing=ConsoleEditing(self)
 
@@ -79,6 +82,7 @@ class SurfaceMap:
         self.held_keys.clear(); self.buttons=0; self.touched.clear()
         self.auto_held.clear()
         self.editing.reset()
+        self.last_button_presses=[]
         return [('release_all','',[]),led(0x17,0x21,False)]
 
     def invalidate_selected(self, plugin_only=False):
@@ -99,6 +103,7 @@ class SurfaceMap:
         return osc(path,*([ssid] if ssid is not None else []),value)
 
     def route(self,sequence,body,now=None):
+        self.last_button_presses=[]
         token=(sequence,body)
         if token in self.seen:return []
         self.seen.append(token); now=time.monotonic() if now is None else now
@@ -106,7 +111,10 @@ class SurfaceMap:
         for command in split_commands(body):
             result=self.command(command,now)
             if result is None:self.last_unknown.append(command.hex(' '))
-            else:actions.extend(result)
+            else:
+                actions.extend(result)
+                if result and len(command)==3 and command[0]==0x90 and 64<=command[2]<128:
+                    self.last_button_presses.append((command[2]&63,command[1]))
         return actions
 
     def command(self,c,now):

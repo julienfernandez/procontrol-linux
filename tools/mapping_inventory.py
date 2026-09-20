@@ -11,9 +11,10 @@ from surface_feedback import SurfaceFeedback
 from surface_map import SurfaceMap
 from surface_routing import SurfaceRouting
 from track_monitor import TrackMonitor
+from navigation_controls import NAVIGATION_KEYS
 
 ROOT = Path(__file__).resolve().parents[1]
-MODES = ('normal', 'modifier', 'alpha', 'monitor', 'eq', 'browse', 'library', 'params', 'nudge')
+MODES = ('normal', 'modifier', 'alpha', 'monitor', 'eq', 'browse', 'library', 'params', 'nudge', 'zoom')
 
 
 def mapper_for(mode):
@@ -25,6 +26,7 @@ def mapper_for(mode):
     monitor = TrackMonitor(routing, feedback, lambda: 0.)
     mapper.alpha = mode == 'alpha'
     mapper.nudge = mode == 'nudge'
+    mapper.editing.zoom_navigation = mode == 'zoom'
     if mode == 'modifier':
         mapper.modifiers.add('Shift_L')
     if mode == 'monitor':
@@ -40,6 +42,7 @@ def inventory():
     groups = [(z, f'Channel {z+1}', tree[0]['Children']) for z in range(8)]
     groups += [(z, g.get('Address', 'Numeric keypad'), g.get('Children', {}))
                for z, g in tree[8]['Children'].items()]
+    groups.append((0x18, 'Navigation', {key: {'Address': label} for key, label in NAVIGATION_KEYS.items()}))
     rows = []
     for zone, group, children in groups:
         for key, node in children.items():
@@ -50,7 +53,7 @@ def inventory():
             rows.append(dict(zone=zone, button=key, group=group,
                              label=node.get('Address', 'Unknown'),
                              mapped=any(value is not None for value in states.values()),
-                             actions=states, provenance='ReaControl24 ' + SOURCE_COMMIT,
+                             actions=states, provenance=('docs/navigation-buttons-confirmed.json' if zone==0x18 else 'ReaControl24 ' + SOURCE_COMMIT),
                              physical_validation='not asserted by inventory'))
     return rows
 
@@ -61,11 +64,11 @@ def documents():
     normal = sum(row['actions']['normal'] is not None for row in rows)
     lines = ['# Inventaire logiciel des boutons', '',
              'Généré par `python3 tools/mapping_inventory.py` ; vérifier sans modifier avec `--check`.', '',
-             'La table de référence contient des adresses candidates, pas une liste de boutons physiquement validés.',
+             'La table de référence est complétée par les cinq touches de navigation capturées ; ce total ne mesure pas la validation physique de toutes les fonctions.',
              f'{len(rows)} entrées ; {normal} prises en charge en mode normal ; '
              f'{len(rows)-len(missing)} dans au moins un mode ; {len(missing)} sans gestionnaire.', '',
              'Modes inspectés : normal, Shift, ALPHA, monitoring, EQ, chaîne de plugins,',
-             'bibliothèque, paramètres et NUDGE. Les éditeurs de mode du daemon sont installés',
+             'bibliothèque, paramètres, NUDGE et zoom. Les éditeurs de mode du daemon sont installés',
              'dans un contexte neuf pour chaque touche. Aucun message réseau n’est envoyé.', '',
              'Dans [le JSON](mapping-coverage.json), `null` signifie sans gestionnaire ; `[]`',
              'signifie touche consommée, éventuellement pour changer un état local ou bloquer',
@@ -80,8 +83,8 @@ def documents():
               'faders et commandes absentes de la table nécessitent un inventaire séparé.',
               'La table tierce ne décrit notamment que la première rangée DSP ; les huit',
               'rangées et les rotatifs ont leurs [captures dédiées](dsp-buttons-2026-09-14.md).',
-              'Les cinq touches de navigation autour de ZOOM/SEL restent à identifier',
-              'par capture contrôlée ; ne pas leur attribuer des codes d’après leur position.',
+              'Les cinq touches de navigation autour de ZOOM/SEL sont identifiées par la',
+              '[capture contrôlée](navigation-buttons-confirmed.json) du 20 septembre.',
               'Le [guide fonctionnel](control-map.md) décrit les usages actuels.']
     # One button per line keeps nine contexts from producing tens of thousands
     # of repeated array-layout lines in the versioned machine-readable report.

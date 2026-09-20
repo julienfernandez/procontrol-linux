@@ -40,11 +40,21 @@ class SurfaceFeedback:
     SEND_INTERVAL = 0.002
     ACK_TIMEOUT = 0.100
     MOTOR_INTERVAL = 0.020
+    PULSE_SECONDS = 0.350
+    PULSE_MAX_WAIT = 1.0
+    # Momentary commands only. Transport, REC, mute/solo, monitor and DSP LEDs
+    # remain authoritative state indicators and are never flashed here.
+    PULSE_BUTTONS = ({(0x18, n) for n in (0, 1, 3, 4)} |
+                     {(8, n) for n in (0, 2, 4, 6)} |
+                     {(0x19, n) for n in (0, 1, 2, 3, 5, 6, 7)} |
+                     {(0x1b, n) for n in range(17) if n != 11} |
+                     {(0x1c, n) for n in (0, 1, 2, 3, 4, 6, 7, 10)} |
+                     {(0x17, n) for n in (0x28, 0x29, 0x30)})
     def __init__(self,mapper):
         self.mapper=mapper;self.queue=OrderedDict();self.sent={};self.active={}
         self.pending=None;self.last_send=0.;self.error=None;self.counts={'sent':0,'acked':0,'timeouts':0,'recoveries':0}
         self.desired={};self.retry_after=0.;self.failures=0;self.needs_refresh=False
-        self.urgent_burst=0
+        self.urgent_burst=0; self.pulses={}
         self.local_motor={};self.motor_echo=set()
         self.clock_mode='smpte';self.last_clock={};self.initialized=False
         self.eq=None;self.monitor=None;self.mix_values={}
@@ -53,12 +63,43 @@ class SurfaceFeedback:
 
     def put(self,key,body):
         self.desired[key]=body
+        if key in self.pulses and body==button_led(key[1],key[2],True):
+            self.pulses.pop(key)  # a real state update takes ownership
+        self.queue_body(key,self.effective(key))
+
+    def effective(self,key):
+        return button_led(key[1],key[2],True) if key in self.pulses else self.desired[key]
+
+    def queue_body(self,key,body):
         if self.sent.get(key)==body:
             self.queue.pop(key,None)
             return
         self.queue[key]=body
 
+    def pulse_buttons(self,buttons,now=None):
+        """Receipt of forwarded commands; not an Ardour execution acknowledgement."""
+        now=time.monotonic() if now is None else now
+        for zone,number in buttons:
+            if (zone,number) not in self.PULSE_BUTTONS:continue
+            key=('led',zone,number);on=button_led(zone,number,True)
+            if self.desired.get(key)==on:continue
+            self.desired.setdefault(key,button_led(zone,number,False))
+            # Extend an existing pulse after another accepted press; do not
+            # stack timers or queue old on/off edges during a burst.
+            sent=self.sent.get(key)==on
+            self.pulses[key]={'expires':now+self.PULSE_SECONDS if sent else None,
+                              'latest_start':now+self.PULSE_MAX_WAIT}
+            self.queue_body(key,on)
+
+    def expire_pulses(self,now):
+        for key,pulse in list(self.pulses.items()):
+            deadline=pulse['expires'] if pulse['expires'] is not None else pulse['latest_start']
+            if now>=deadline:
+                self.pulses.pop(key)
+                self.queue_body(key,self.desired[key])
+
     def initialize(self):
+        self.pulses.clear()
         self.pending=None;self.error=None;self.sent.clear();self.queue.clear();self.active.clear()
         self.desired.clear();self.retry_after=0.;self.failures=0;self.needs_refresh=False
         self.pending_items.clear();self.confirmed.clear();self.last_motor_send=-1.
@@ -69,13 +110,16 @@ class SurfaceFeedback:
         self.put(('clock_mode',),bytes.fromhex('f0 13 00 20 09 20 f7'))
         self.put(('clock',),clock_command('00000000'))
         self.put(('led',0x17,0x21),button_led(0x17,0x21,False))
+        self.put(('led',0x18,2),button_led(0x18,2,False))
         self.put(('led',0x17,0x24),button_led(0x17,0x24,True))
         self.initialized=True
 
     def resync(self):
         """Replay current output after console reconnect, retaining motor guards."""
+        self.pulses.clear()
         self.pending=None;self.error=None;self.sent.clear()
         self.pending_items.clear();self.confirmed.clear();self.last_motor_send=-1.
+        self.desired[('led',0x18,2)]=button_led(0x18,2,self.mapper.editing.zoom_navigation)
         self.queue=OrderedDict(self.desired)
         self.local_motor.clear();self.motor_echo.clear()
         self.retry_after=0.;self.failures=0;self.needs_refresh=False
@@ -193,6 +237,9 @@ class SurfaceFeedback:
                 or now-self.mapper.fader_moved.get(channel,-100)<0.3)
 
     def wait_timeout(self, now, maximum=0.05):
+        if self.pulses:
+            due=min(p['expires'] if p['expires'] is not None else p['latest_start'] for p in self.pulses.values())
+            maximum=min(maximum,max(0.,due-now))
         if self.pending:
             return min(maximum,max(0.,self.pending[1]+self.ACK_TIMEOUT-now))
         deadlines=[]
@@ -211,10 +258,11 @@ class SurfaceFeedback:
                     last_ack_ms=self.last_ack_ms,max_ack_ms=self.max_ack_ms,
                     motor_batches=self.motor_batches,motor_targets=self.motor_targets,
                     queued_motors=sum(k[0]=='motor' for k in self.queue),
-                    motor_hz=1/self.MOTOR_INTERVAL,ack_timeout_ms=self.ACK_TIMEOUT*1000)
+                    motor_hz=1/self.MOTOR_INTERVAL,ack_timeout_ms=self.ACK_TIMEOUT*1000,button_pulses=len(self.pulses))
 
     def next_frame(self,session,now=None):
         now=time.monotonic() if now is None else now
+        self.expire_pulses(now)
         if not session.online_acked:return None
         if self.pending:
             if now-self.pending[1]>=self.ACK_TIMEOUT:
@@ -226,7 +274,7 @@ class SurfaceFeedback:
                 # or all the LCDs/LEDs because a single ACK was lost.
                 for key in self.pending_items:
                     self.sent.pop(key,None);self.confirmed.pop(key,None)
-                    if key in self.desired:self.queue[key]=self.desired[key]
+                    if key in self.desired:self.queue[key]=self.effective(key)
                 self.pending_items.clear()
                 delay=0. if self.failures<=2 else min(2.,.1*2**min(self.failures-3,5))
                 self.retry_after=now+delay
@@ -256,6 +304,9 @@ class SurfaceFeedback:
                 self.last_motor_send=now
                 self.motor_batches+=1;self.motor_targets+=len(selected)
             self.pending_items={k:self.queue.pop(k) for k in selected}
+            for k in selected:
+                if k in self.pulses and self.pulses[k]['expires'] is None:
+                    self.pulses[k]['expires']=now+self.PULSE_SECONDS
             body=b''.join(self.pending_items.values())
             session.sequence+=1
             frame=session.frame(0,count=len(selected),sequence=session.sequence,body=body)

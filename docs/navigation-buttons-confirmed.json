@@ -1,0 +1,353 @@
+{
+  "capture": "captures/20260920T184056Z-navigation-identification-q6LHjl/traffic.pcap",
+  "sha256": "87f12062d41aea2269d68ea61bbc04a80f81526fb6e43049e2396c32dcfecbd5",
+  "captured_frames": 297,
+  "dropped": 0,
+  "user_confirmed_order": [
+    "Previous",
+    "Previous",
+    "Previous",
+    "Zoom/SEL",
+    "Zoom/SEL",
+    "Zoom/SEL",
+    "Next",
+    "Next",
+    "Next",
+    "Up",
+    "Up",
+    "Up",
+    "Down",
+    "Down",
+    "Down"
+  ],
+  "direction": "console_to_host",
+  "buttons": [
+    {
+      "label": "Previous",
+      "zone": 24,
+      "key": 1,
+      "press_hex": "90 01 58",
+      "release_hex": "90 01 18",
+      "press_frames": [
+        214,
+        218,
+        222
+      ],
+      "release_frames": [
+        216,
+        220,
+        224
+      ]
+    },
+    {
+      "label": "Zoom/SEL",
+      "zone": 24,
+      "key": 2,
+      "press_hex": "90 02 58",
+      "release_hex": "90 02 18",
+      "press_frames": [
+        228,
+        232,
+        236
+      ],
+      "release_frames": [
+        230,
+        234,
+        238
+      ]
+    },
+    {
+      "label": "Next",
+      "zone": 24,
+      "key": 3,
+      "press_hex": "90 03 58",
+      "release_hex": "90 03 18",
+      "press_frames": [
+        241,
+        245,
+        249
+      ],
+      "release_frames": [
+        243,
+        247,
+        252
+      ]
+    },
+    {
+      "label": "Up",
+      "zone": 24,
+      "key": 0,
+      "press_hex": "90 00 58",
+      "release_hex": "90 00 18",
+      "press_frames": [
+        254,
+        258,
+        262
+      ],
+      "release_frames": [
+        256,
+        260,
+        264
+      ]
+    },
+    {
+      "label": "Down",
+      "zone": 24,
+      "key": 4,
+      "press_hex": "90 04 58",
+      "release_hex": "90 04 18",
+      "press_frames": [
+        266,
+        272,
+        276
+      ],
+      "release_frames": [
+        268,
+        274,
+        278
+      ]
+    }
+  ],
+  "events": [
+    {
+      "frame": 214,
+      "utc": "2026-09-20T18:43:49.200515000Z",
+      "hex": "90 01 58",
+      "zone": 24,
+      "key": 1,
+      "pressed": true
+    },
+    {
+      "frame": 216,
+      "utc": "2026-09-20T18:43:49.430055000Z",
+      "hex": "90 01 18",
+      "zone": 24,
+      "key": 1,
+      "pressed": false
+    },
+    {
+      "frame": 218,
+      "utc": "2026-09-20T18:43:50.253632000Z",
+      "hex": "90 01 58",
+      "zone": 24,
+      "key": 1,
+      "pressed": true
+    },
+    {
+      "frame": 220,
+      "utc": "2026-09-20T18:43:50.528432000Z",
+      "hex": "90 01 18",
+      "zone": 24,
+      "key": 1,
+      "pressed": false
+    },
+    {
+      "frame": 222,
+      "utc": "2026-09-20T18:43:51.147585000Z",
+      "hex": "90 01 58",
+      "zone": 24,
+      "key": 1,
+      "pressed": true
+    },
+    {
+      "frame": 224,
+      "utc": "2026-09-20T18:43:51.417170000Z",
+      "hex": "90 01 18",
+      "zone": 24,
+      "key": 1,
+      "pressed": false
+    },
+    {
+      "frame": 228,
+      "utc": "2026-09-20T18:43:53.933329000Z",
+      "hex": "90 02 58",
+      "zone": 24,
+      "key": 2,
+      "pressed": true
+    },
+    {
+      "frame": 230,
+      "utc": "2026-09-20T18:43:54.133181000Z",
+      "hex": "90 02 18",
+      "zone": 24,
+      "key": 2,
+      "pressed": false
+    },
+    {
+      "frame": 232,
+      "utc": "2026-09-20T18:43:54.961736000Z",
+      "hex": "90 02 58",
+      "zone": 24,
+      "key": 2,
+      "pressed": true
+    },
+    {
+      "frame": 234,
+      "utc": "2026-09-20T18:43:55.181513000Z",
+      "hex": "90 02 18",
+      "zone": 24,
+      "key": 2,
+      "pressed": false
+    },
+    {
+      "frame": 236,
+      "utc": "2026-09-20T18:43:55.770814000Z",
+      "hex": "90 02 58",
+      "zone": 24,
+      "key": 2,
+      "pressed": true
+    },
+    {
+      "frame": 238,
+      "utc": "2026-09-20T18:43:56.010260000Z",
+      "hex": "90 02 18",
+      "zone": 24,
+      "key": 2,
+      "pressed": false
+    },
+    {
+      "frame": 241,
+      "utc": "2026-09-20T18:43:57.363102000Z",
+      "hex": "90 03 58",
+      "zone": 24,
+      "key": 3,
+      "pressed": true
+    },
+    {
+      "frame": 243,
+      "utc": "2026-09-20T18:43:57.562685000Z",
+      "hex": "90 03 18",
+      "zone": 24,
+      "key": 3,
+      "pressed": false
+    },
+    {
+      "frame": 245,
+      "utc": "2026-09-20T18:43:58.101892000Z",
+      "hex": "90 03 58",
+      "zone": 24,
+      "key": 3,
+      "pressed": true
+    },
+    {
+      "frame": 247,
+      "utc": "2026-09-20T18:43:58.301577000Z",
+      "hex": "90 03 18",
+      "zone": 24,
+      "key": 3,
+      "pressed": false
+    },
+    {
+      "frame": 249,
+      "utc": "2026-09-20T18:43:58.771434000Z",
+      "hex": "90 03 58",
+      "zone": 24,
+      "key": 3,
+      "pressed": true
+    },
+    {
+      "frame": 252,
+      "utc": "2026-09-20T18:43:58.975864000Z",
+      "hex": "90 03 18",
+      "zone": 24,
+      "key": 3,
+      "pressed": false
+    },
+    {
+      "frame": 254,
+      "utc": "2026-09-20T18:43:59.929547000Z",
+      "hex": "90 00 58",
+      "zone": 24,
+      "key": 0,
+      "pressed": true
+    },
+    {
+      "frame": 256,
+      "utc": "2026-09-20T18:44:00.138753000Z",
+      "hex": "90 00 18",
+      "zone": 24,
+      "key": 0,
+      "pressed": false
+    },
+    {
+      "frame": 258,
+      "utc": "2026-09-20T18:44:00.688563000Z",
+      "hex": "90 00 58",
+      "zone": 24,
+      "key": 0,
+      "pressed": true
+    },
+    {
+      "frame": 260,
+      "utc": "2026-09-20T18:44:00.883027000Z",
+      "hex": "90 00 18",
+      "zone": 24,
+      "key": 0,
+      "pressed": false
+    },
+    {
+      "frame": 262,
+      "utc": "2026-09-20T18:44:01.402318000Z",
+      "hex": "90 00 58",
+      "zone": 24,
+      "key": 0,
+      "pressed": true
+    },
+    {
+      "frame": 264,
+      "utc": "2026-09-20T18:44:01.587227000Z",
+      "hex": "90 00 18",
+      "zone": 24,
+      "key": 0,
+      "pressed": false
+    },
+    {
+      "frame": 266,
+      "utc": "2026-09-20T18:44:02.674970000Z",
+      "hex": "90 04 58",
+      "zone": 24,
+      "key": 4,
+      "pressed": true
+    },
+    {
+      "frame": 268,
+      "utc": "2026-09-20T18:44:02.860084000Z",
+      "hex": "90 04 18",
+      "zone": 24,
+      "key": 4,
+      "pressed": false
+    },
+    {
+      "frame": 272,
+      "utc": "2026-09-20T18:44:03.269439000Z",
+      "hex": "90 04 58",
+      "zone": 24,
+      "key": 4,
+      "pressed": true
+    },
+    {
+      "frame": 274,
+      "utc": "2026-09-20T18:44:03.484358000Z",
+      "hex": "90 04 18",
+      "zone": 24,
+      "key": 4,
+      "pressed": false
+    },
+    {
+      "frame": 276,
+      "utc": "2026-09-20T18:44:03.903891000Z",
+      "hex": "90 04 58",
+      "zone": 24,
+      "key": 4,
+      "pressed": true
+    },
+    {
+      "frame": 278,
+      "utc": "2026-09-20T18:44:04.127998000Z",
+      "hex": "90 04 18",
+      "zone": 24,
+      "key": 4,
+      "pressed": false
+    }
+  ]
+}

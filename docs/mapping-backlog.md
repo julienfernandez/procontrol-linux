@@ -2,11 +2,11 @@
 
 Généré par `python3 tools/mapping_inventory.py` ; vérifier sans modifier avec `--check`.
 
-La table de référence contient des adresses candidates, pas une liste de boutons physiquement validés.
-284 entrées ; 233 prises en charge en mode normal ; 245 dans au moins un mode ; 39 sans gestionnaire.
+La table de référence est complétée par les cinq touches de navigation capturées ; ce total ne mesure pas la validation physique de toutes les fonctions.
+289 entrées ; 238 prises en charge en mode normal ; 250 dans au moins un mode ; 39 sans gestionnaire.
 
 Modes inspectés : normal, Shift, ALPHA, monitoring, EQ, chaîne de plugins,
-bibliothèque, paramètres et NUDGE. Les éditeurs de mode du daemon sont installés
+bibliothèque, paramètres, NUDGE et zoom. Les éditeurs de mode du daemon sont installés
 dans un contexte neuf pour chaque touche. Aucun message réseau n’est envoyé.
 
 Dans [le JSON](mapping-coverage.json), `null` signifie sans gestionnaire ; `[]`
@@ -63,6 +63,6 @@ Les contrôles analogiques peuvent ne pas émettre en Ethernet. Les encodeurs,
 faders et commandes absentes de la table nécessitent un inventaire séparé.
 La table tierce ne décrit notamment que la première rangée DSP ; les huit
 rangées et les rotatifs ont leurs [captures dédiées](dsp-buttons-2026-09-14.md).
-Les cinq touches de navigation autour de ZOOM/SEL restent à identifier
-par capture contrôlée ; ne pas leur attribuer des codes d’après leur position.
+Les cinq touches de navigation autour de ZOOM/SEL sont identifiées par la
+[capture contrôlée](navigation-buttons-confirmed.json) du 20 septembre.
 Le [guide fonctionnel](control-map.md) décrit les usages actuels.

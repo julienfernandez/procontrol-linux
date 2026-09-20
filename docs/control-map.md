@@ -35,8 +35,10 @@ s’afficher avant de poser IN ou OUT : le curseur d’Ardour est asynchrone.
 | COUNTER MODE | SMPTE ↔ mesures/temps ; ne change pas la synchronisation |
 
 Avec la préférence Ardour « Loop is a mode », LOOP active le mode ; PLAY démarre
-la lecture. Les cinq touches autour de ZOOM/SEL attendent encore une capture
-contrôlée : aucune adresse n’est déduite de la photo.
+la lecture. Les cinq touches autour de ZOOM/SEL sont maintenant identifiées par quinze
+appuis/relâchements réels. Centre éteint : UP/DOWN changent de voie et
+PREVIOUS/NEXT déplacent le curseur aux limites des régions. Centre allumé :
+zoom horizontal et hauteur des pistes. Voir [les essais et voyants](console-test-workflow.md).
 
 ## Tranches, écoute et DSP
 

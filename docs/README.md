@@ -6,6 +6,7 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Utiliser la console
 
+- [Essais asynchrones, navigation et voyants](console-test-workflow.md).
 - [Carte fonctionnelle](control-map.md) et [édition, cuts, sélection et boucles](console-editing.md).
 - [Écoute IN / DISK / AUTO](track-monitoring.md) et [automation du gain](automation-modes.md).
 - [Bibliothèque de huit effets](curated-plugins.md), [EQ / compresseur](eq-plugin-workflow.md),

@@ -1,5 +1,16 @@
 # Historique des versions
 
+## 20 septembre 2026 — navigation et retours des touches
+
+- Identification physique de PREVIOUS, ZOOM/SEL, NEXT, UP et DOWN : quinze
+  appuis/relâchements capturés, dans l’ordre confirmé par l’utilisateur.
+- Correction du faux décodage « piste 25 », navigation voie/limite de région
+  et mode zoom horizontal/hauteur, avec voyant de mode.
+- Impulsion de 350 ms pour les commandes ponctuelles transmises, dont
+  UNDO/REDO et SAVE ; expiration, retries, états persistants et reconnexion protégés.
+- [Parcours d’essai asynchrone](docs/console-test-workflow.md) par lots de dix minutes,
+  clôturés plus tôt à la confirmation utilisateur.
+
 ## 20 septembre 2026 — revue, documentation et contrôles automatiques
 
 - Intégration des correctifs jog/JACK/Link et de reconnexion du pointeur déjà

@@ -1,5 +1,9 @@
 # Éditer depuis la ProControl — Ardour 9.8
 
+Les cinq touches PREVIOUS / ZOOM/SEL / NEXT / UP / DOWN sont maintenant
+identifiées. Leur mode navigation/zoom et les impulsions lumineuses des
+commandes ponctuelles sont décrits dans [le parcours d’essai](console-test-workflow.md).
+
 ## Première boucle, sans souris
 
 1. Appuyer sur **WINDOWS / EDIT**, puis **SELECT** sur la tranche voulue.
@@ -84,16 +88,17 @@ ne suivent plus la dernière position de la souris sur une autre forme d'onde.
 Le trackpad et les boutons de souris de la console restent utilisables pour les
 outils graphiques, notamment le dessin et l'étirement temporel.
 
-## Zoom et navigation restant à identifier
+## Zoom et navigation
 
-Raccourcis déjà adressés : SHIFT + F1 = vue de toute la session,
-SHIFT + F2 = zoom sur la sélection, SHIFT + F3/F4 = zoom arrière/avant.
+SHIFT + F1 cadre toute la session ; SHIFT + F2 cadre la sélection ;
+SHIFT + F3/F4 dézoome/zoome. La croix PREVIOUS / ZOOM/SEL / NEXT / UP / DOWN
+est aussi raccordée depuis sa capture physique du 20 septembre.
 
-La croix HAUT / PREVIOUS / ZOOM-SEL / NEXT / BAS émet dans la zone `0x18`, absente
-de la table ProControl de référence. Les cinq numéros sont observés, mais leur
-correspondance physique n'est pas établie. Aucun ordre n'est inventé. La séquence
-contrôlée demandée est HAUT → GAUCHE → CENTRE → DROITE → BAS. Tant qu'elle n'est pas
-reçue, cette croix reste non mappée ; les raccourcis de zoom ci-dessus fonctionnent.
+ZOOM/SEL éteint : UP/DOWN sélectionnent la voie précédente/suivante ;
+PREVIOUS/NEXT placent le curseur à la limite de région précédente/suivante.
+ZOOM/SEL allumé : UP/DOWN changent la hauteur des pistes sélectionnées ;
+PREVIOUS/NEXT règlent le zoom horizontal. SHIFT + centre cadre la sélection,
+ALT + centre cadre la session. [Procédure et retour lumineux](console-test-workflow.md).
 
 ## Implémentation et validation
 

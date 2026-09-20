@@ -422,6 +422,7 @@ def worker(args):
                                     try:
                                         addresses = osc.actions(routed_actions)
                                         if addresses:
+                                            feedback.pulse_buttons(surface.last_button_presses)
                                             counts['osc_sent'] += len(addresses)
                                             last_action = {'utc': utc(), 'address': addresses[-1]}
                                             event('osc_sent', addresses=addresses)

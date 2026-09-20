@@ -5,6 +5,7 @@
 import ast
 from functools import lru_cache
 from pathlib import Path
+from navigation_controls import navigation_button
 
 SOURCE_COMMIT = 'b6268cbb75ee6dc1ad773ca0e8a11fa87cf4a069'
 TABLE_PATH = Path(__file__).resolve().parents[1] / 'vendor/reacontrol24/procontrolmap.py'
@@ -50,6 +51,12 @@ def decode_command(command):
         return {**result, 'status': 'malformed', 'reason': 'truncated controller'}
     if command[0] == 0xf0 and (len(command) < 5 or command[-1] != 0xf7):
         return {**result, 'status': 'malformed', 'reason': 'unterminated sysex'}
+    navigation=navigation_button(command)
+    if navigation is not None:
+        return {**result, 'status':'mapped_local', 'address':'/button/command/Navigation/'+navigation['label'],
+                'value':int(navigation['pressed'])}
+    if command[0]==0x90 and command[2]&63==0x18:
+        return {**result, 'partial_address':'/button/command/Navigation'}
     lookup = mapping_tree()
     key = command[0]
     addresses, attributes = [], {}

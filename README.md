@@ -13,6 +13,8 @@ ProControl ↔ Ethernet brut ↔ procontrold ↔ OSC ↔ Ardour
 ## Fonctions disponibles
 
 - Session Ethernet Online maintenue en arrière-plan, transport et jog.
+- Touches de navigation identifiées, mode zoom et bref retour lumineux des
+  commandes ponctuelles ; [essais à son rythme](docs/console-test-workflow.md).
 - Édition depuis la console : cuts, copie, suppression, duplication, calage,
   sélection IN/OUT, boucles, UNDO/REDO et SAVE ; [guide pratique](docs/console-editing.md).
 - Huit faders motorisés bidirectionnels avec gestion du toucher, banques,
@@ -123,7 +125,7 @@ python3 tools/mapping_inventory.py --check
 python3 -m compileall -q tools tests
 ```
 
-241 tests passent sur la machine de développement lors de la revue du 20 septembre. Les tests du helper natif
+250 tests passent sur la machine de développement après l’ajout de la navigation et des voyants du 20 septembre. Les tests du helper natif
 peuvent être ignorés s'il n'est pas installé ; certaines vérifications de
 capture nécessitent les utilitaires Linux `ip` et `flock`. Les tests de
 capture emploient un faux dumpcap et n'accèdent pas à la console réelle.

@@ -11,16 +11,19 @@ def actions(*names):
 
 
 class ConsoleEditing:
-    BUTTONS = ({(0x19, n) for n in (0, 1, 3, 6, 7)} |
+    BUTTONS = ({(0x18, n) for n in range(5)} |
+               {(0x19, n) for n in (0, 1, 3, 6, 7)} |
                {(0x1b, n) for n in range(17)} |
                {(0x1c, n) for n in (0, 1, 2, 3, 4, 9, 10)})
 
     def __init__(self, mapper):
         self.mapper = mapper
         self.held = set()
+        self.zoom_navigation = False
 
     def reset(self):
         self.held.clear()
+        self.zoom_navigation = False
 
     def editor(self, *names):
         # Edits must never follow a stale mouse pointer over another waveform.
@@ -52,6 +55,29 @@ class ConsoleEditing:
         shift = bool(self.mapper.modifiers & {'Shift_L', 'Shift_R'})
         ctrl = bool(self.mapper.modifiers & {'Control_L', 'Control_R'})
         alt = bool(self.mapper.modifiers & {'Alt_L', 'Alt_R'})
+
+        if z == 0x18:
+            for name in ('eq', 'monitor'):
+                mode = getattr(self.mapper, name, None)
+                if mode is not None and mode.active:
+                    mode.exit()
+            if n == 2:
+                if shift:
+                    return self.editor('Editor/zoom-to-selection')
+                if alt:
+                    return self.editor('Editor/zoom-to-session')
+                self.zoom_navigation = not self.zoom_navigation
+                return [('led', '24:2', [int(self.zoom_navigation)])]
+            if self.zoom_navigation:
+                return self.editor({0: 'Editor/expand-tracks', 4: 'Editor/shrink-tracks',
+                                    1: 'EditorEditing/temporal-zoom-out',
+                                    3: 'EditorEditing/temporal-zoom-in'}[n])
+            if n in (0, 4):
+                # The routing layer tracks pending OSC selection so an immediate
+                # INPUT/OUTPUT press cannot act on the previous strip.
+                return self.editor() + [('osc', '/select/previous' if n == 0 else '/select/next', [1.0])]
+            return self.editor('Editor/playhead-to-previous-region-boundary' if n == 1
+                               else 'Editor/playhead-to-next-region-boundary')
 
         if z == 0x19:
             if n == 0:
