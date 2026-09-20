@@ -86,6 +86,14 @@ la déduplication, les délais de flash, la perte d’ACK, les changements d’�
 pendant une impulsion et son annulation à la reconnexion.
 
 Après déploiement : passerelle Online, Ardour répondant et pointeur actif.
-L’identification physique des cinq touches est confirmée ; la seconde fenêtre
-d’essai visuel a été ouverte pour dix minutes. L’envoi des commandes et les ACK
-ne suffisent pas à déclarer le flash visible ni le zoom physiquement validé.
+L’identification physique des cinq touches est confirmée. La seconde capture
+de dix minutes est clôturée : 68 appuis de navigation, 1 489 trames, aucune
+perte ni troncature. Les 81 messages de voyants observés sont acquittés ; les
+appuis rapprochés prolongent bien une seule impulsion.
+
+L’utilisateur confirme la hauteur des pistes, puis le fonctionnement du zoom
+horizontal après clarification de PREVIOUS/NEXT en mode ZOOM/SEL. Aucun changement
+de mapping n’a été nécessaire. Les résultats et exemples de trames figurent dans
+[le compte rendu de cet essai](navigation-live-validation-2026-09-20.json).
+Le rendu visuel des flashes et les essais physiques SAVE/UNDO restent à confirmer ;
+aucun appui SAVE n’est présent dans cette seconde capture.

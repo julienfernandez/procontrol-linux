@@ -84,7 +84,7 @@ restent indépendants. Voir [l’ordonnancement](jog-motor-scheduling.md) et le
 
 ## Ce que l’inventaire ne prouve pas
 
-[L’inventaire généré](mapping-backlog.md) inspecte neuf contextes logiciels ; son
+[L’inventaire généré](mapping-backlog.md) inspecte dix contextes logiciels ; son
 [JSON](mapping-coverage.json) détaille les actions. Une touche reconnue peut
 changer un mode local ou être volontairement consommée sans action. Les commandes
 absentes de la table, encodeurs et contrôles audio analogiques ont une validation

@@ -8,6 +8,8 @@
   et mode zoom horizontal/hauteur, avec voyant de mode.
 - Impulsion de 350 ms pour les commandes ponctuelles transmises, dont
   UNDO/REDO et SAVE ; expiration, retries, états persistants et reconnexion protégés.
+- Zoom horizontal et hauteur des pistes confirmés à l’usage ; seconde capture
+  de dix minutes clôturée sans perte, retours lumineux acquittés.
 - [Parcours d’essai asynchrone](docs/console-test-workflow.md) par lots de dix minutes,
   clôturés plus tôt à la confirmation utilisateur.
 

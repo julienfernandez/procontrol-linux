@@ -1,0 +1,83 @@
+{
+  "date": "2026-09-20",
+  "implementation_commit": "87ff02ba25240f6cb3fb35196c67d5ae66b0e574",
+  "capture": {
+    "file": "captures/20260920T185103Z-navigation-lights-test-kY3WLz/traffic.pcap",
+    "sha256": "b4b75e69127f76a24b3bfd036eb993944b074d9c1990bb9da7137c1db1923564",
+    "duration_requested_seconds": 600,
+    "frames": 1489,
+    "dropped": 0,
+    "truncated": 0,
+    "first_frame_utc": "2026-09-20T18:51:06.819654000Z",
+    "last_frame_utc": "2026-09-20T19:01:00.375976000Z"
+  },
+  "physical_inputs": {
+    "presses": {
+      "ZOOM/SEL": 7,
+      "UP": 20,
+      "NEXT": 12,
+      "PREVIOUS": 17,
+      "DOWN": 12
+    },
+    "total_presses": 68,
+    "release_count": 68,
+    "save_pressed": false
+  },
+  "led_messages": {
+    "sent": 81,
+    "acknowledged": 81,
+    "ack_ms_min": 0.944,
+    "ack_ms_max": 1.074,
+    "note": "ZOOM/SEL is persistent mode feedback. Repeated arrow presses extend one pulse. ACK does not prove visible illumination."
+  },
+  "pulse_examples": [
+    {
+      "label": "UP",
+      "on_frame": 930,
+      "off_frame": 950,
+      "milliseconds": 1209.224
+    },
+    {
+      "label": "UP",
+      "on_frame": 995,
+      "off_frame": 999,
+      "milliseconds": 350.754
+    },
+    {
+      "label": "NEXT",
+      "on_frame": 1010,
+      "off_frame": 1014,
+      "milliseconds": 349.876
+    },
+    {
+      "label": "DOWN",
+      "on_frame": 1126,
+      "off_frame": 1132,
+      "milliseconds": 350.117
+    }
+  ],
+  "user_confirmation": {
+    "track_height": "confirmed by user",
+    "horizontal_zoom": "user initially asked how, then confirmed understanding and working zoom",
+    "messages": [
+      "Je viens tester, c’est pas mal. Alors j’arrive à élargir en hauteur",
+      "C’est good je viens de comprendre merci pour le zoom"
+    ],
+    "message_times": "Not used as timestamps of physical gestures."
+  },
+  "pending": [
+    "Explicit visual confirmation of momentary button lights",
+    "Physical SAVE and UNDO validation",
+    "Full edit sequence on a disposable session"
+  ],
+  "runtime_after_capture": {
+    "gateway_pid": 572425,
+    "console": "online",
+    "ardour": "responding",
+    "feedback_sent": 780,
+    "feedback_acked": 780,
+    "feedback_timeouts": 0,
+    "feedback_recoveries": 0
+  },
+  "scope": "Passive capture with free physical navigation gestures. No software mapping change after the user clarification. Not an audio or endurance test."
+}
