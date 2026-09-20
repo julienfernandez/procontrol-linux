@@ -18,6 +18,7 @@ actuel, consulter la [carte fonctionnelle](control-map.md), les
 | Diagnostic du processeur principal | Version `COMv1.37` et premières lectures confirmées sur la console, avec captures et répétitions | [Cinq expériences réseau](firmware-network-validation-2026-09-20.md), [preuves](firmware-network-validation-2026-09-20.json) |
 | Programme de communication installé | Les 63 768 octets adressés par l'image `comm` ont été lus deux fois et comparés au constructeur ; audit indépendant des 504 PCAP | [Lecture complète](comm-firmware-readback-2026-09-20.md), [manifeste de preuves](comm-firmware-readback-2026-09-20.json) |
 | Relais vers le processeur des faders | Quatre réponses directes `FDRv1.37` ; cache et files série lus dans la RAM de `comm`. Premier essai incomplet conservé ; programme des faders non acquis | [Validation réseau](fader-network-validation-2026-09-20.md), [preuves](fader-network-validation-2026-09-20.json), [analyse statique](fader-diagnostic-analysis-2026-09-20.md) |
+| Premiers octets installés des faders | Huit octets de vecteurs `0x8000–0x8007` lus trois fois via les données conservées dans RX, identiques au constructeur ; audit de 55 PCAP, bouclage réel inclus. Programme complet encore non acquis | [Lecture brute et effets du filtre](fader-raw-readback-2026-09-20.md), [empreintes et résultats](fader-raw-readback-2026-09-20.json) |
 | Sauvegarde restaurable de toute l'unité | Encore ouverte : démarrage, trous mémoire, EEPROM, calibration, programme installé des faders et restauration matérielle restent à établir | [Périmètre exact de la conservation](comm-firmware-readback-2026-09-20.md#périmètre-réel-de-la-sauvegarde) |
 
 La concordance du programme `comm` donne une base solide pour interpréter ce
@@ -43,6 +44,14 @@ et la calibration n'ont pas été modifiés pendant ces recherches.
   Découper par lignes, par statut MIDI ou au premier `f7` détruit l'information.
   Le lecteur spécialisé vérifie le format complet, l'adresse et les deux
   représentations de la valeur.
+- Un parseur qui refuse une réponse peut laisser ses octets dans un tampon
+  circulaire. La consommation avance les pointeurs sans forcément effacer les
+  données. Vérifier les bornes, le bouclage et la stabilité du producteur pendant
+  la copie ; ne pas appeler un snapshot RAM non atomique une image figée.
+- Une commande de lecture peut modifier des pointeurs volatils et des compteurs,
+  voire produire des événements mal interprétés. Pour les faders, distinguer
+  valeurs récupérées, erreurs du filtre et état tactile ; le pilote reste borné
+  aux huit octets étudiés des vecteurs. Voir la [lecture brute](fader-raw-readback-2026-09-20.md).
 
 Sources : [protocole](protocol.md), [captures Linux](capture-linux.md),
 [afficheurs](displays.md), [premières lectures mémoire](firmware-network-validation-2026-09-20.md).
@@ -97,6 +106,7 @@ Sources : [session](session-reference.md), [helper sans root](rootless-launch.md
 | Clone d'un bundle sans HEAD distant | Donner explicitement `--branch main` ; vérifier le commit après restauration | [Reprise Git hors ligne](comm-firmware-readback-2026-09-20.md#conservation-et-tests) |
 | Première lecture inversée d'une branche du filtre série des faders | Le filtre rejette le bit 7 positionné ; il ne le requiert pas. Relire les deux branches avant d'inventer un encodage | [Correction et conséquence](fader-diagnostic-analysis-2026-09-20.md#filtre-des-réponses-et-correction-dinterprétation) |
 | Première requête fader acquittée sans réponse | Conserver l'échec ; vérifier ensuite `COM` dans la même session. Succès reproduit, cause initiale encore ouverte | [Diagnostic réel des faders](fader-network-validation-2026-09-20.md) |
+| Lecture fader contenant `00` ou un bit 7 positionné | Réponse directe filtrée, mais octets conservés dans RX et lus via `comm`. Ne pas multiplier les retries ; le compteur d'erreurs ne compte pas des paquets perdus | [Expérience et limite tactile](fader-raw-readback-2026-09-20.md) |
 
 ## Ce que l'on conserve et où
 
@@ -119,6 +129,9 @@ Le dossier de conservation utilisé le 20 septembre est :
 
 Il contient l'archive privée des preuves `comm`, son manifeste, un bundle Git
 au commit `b9172cb` et le complément d'analyse des faders décrit dans son rapport.
+Les étapes suivantes ajoutent des archives distinctes pour les versions réseau
+et la lecture des vecteurs fader, ainsi que de nouveaux bundles identifiés par
+leur commit. Leurs rapports datés donnent les inventaires et empreintes.
 Le bundle `b9172cb` reste un instantané : il n'inclut pas les ajouts ultérieurs.
 Pour préserver une nouvelle révision du dépôt après commit :
 

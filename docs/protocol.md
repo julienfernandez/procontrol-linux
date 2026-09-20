@@ -1,5 +1,17 @@
 # Carnet du protocole
 
+## Diagnostic interne documenté le 20 septembre 2026
+
+Le diagnostic `f0 13 00 70 00` du processeur principal est maintenant confirmé
+par la [lecture répétée des 63 768 octets comm](comm-firmware-readback-2026-09-20.md).
+Le sélecteur `70 01` atteint les faders, avec réponse
+[`FDRv1.37`](fader-network-validation-2026-09-20.md). Les syntaxes mémoire sont
+`A/M/m` pour comm et `U/Q/q` pour fader. Le relais série filtre certains octets
+des réponses fader ; les [huit octets de vecteurs récupérés via son tampon RX](fader-raw-readback-2026-09-20.md)
+ont néanmoins été comparés au constructeur trois fois, avec audit des captures.
+Ces rapports précisent les adresses, empreintes, effets volatils et limites ;
+ils n'établissent pas une sauvegarde restaurable de toute la console.
+
 ## Statut des preuves
 
 **Rapport utilisateur** : ProControl originale fonctionnelle aux diagnostics,

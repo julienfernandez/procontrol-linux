@@ -5,6 +5,10 @@ capturées, après un premier essai incomplet. Voir la
 [validation réseau et les snapshots du relais](fader-network-validation-2026-09-20.md).
 Le présent rapport conserve les conclusions de l'étape statique.
 
+**Complément expérimental :** les huit octets des vecteurs fader sont ensuite
+[récupérés dans le tampon RX malgré ce filtre](fader-raw-readback-2026-09-20.md),
+avec trois répétitions et un bouclage réel. L'image complète reste à acquérir.
+
 Analyse statique du 20 septembre 2026, après la
 [double lecture complète de `comm`](comm-firmware-readback-2026-09-20.md).
 **Aucune requête `70 01`, aucun déplacement moteur ni aucune écriture de

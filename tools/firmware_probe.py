@@ -4,7 +4,7 @@
 Par défaut : aperçu hors ligne. Requête de version comm V, puis lecture
 optionnelle de 1..256 octets dans les segments de code connus du firmware 1.37.
 La cible fader autorise uniquement la version V, sans lecture mémoire.
-Cinq états RAM nommés du relais comm peuvent être lus séparément.
+États RAM nommés et fenêtres du tampon RX série comm identifiés séparément.
 Aucun interpréteur libre, accès MMIO, écriture des octets ciblés ou effacement.
 La passerelle doit être arrêtée avant --send et relancée après l'expérience.
 """
@@ -43,10 +43,20 @@ STATE_FIELDS = {'fader-version': (0x5094a, 10),
                 'fader-errors': (0x509ba, 4),
                 'fader-version-valid': (0x509c2, 4),
                 'fader-tx-ring': (0x6c10e, 24),
-                'fader-rx-ring': (0x6bf0e, 24)}
+                'fader-rx-ring': (0x6bf0e, 24),
+                'fader-touch-state': (0x508ea, 16),
+                'fader-mode': (0x5095c, 1)}
+RX_BUFFER_START = 0x6bf26
+RX_BUFFER_SIZE = 488
 
 
-def read_selection(address, length, batch_size, target, state):
+def read_selection(address, length, batch_size, target, state, ring_offset=None):
+    if ring_offset is not None:
+        if (target != 'comm' or state is not None or address is not None
+                or not 1 <= length <= 256 or not 0 <= ring_offset < RX_BUFFER_SIZE
+                or ring_offset+length > RX_BUFFER_SIZE):
+            raise ValueError('Fenêtre RX limitée au tampon RAM comm connu, sans adresse libre')
+        return RX_BUFFER_START+ring_offset, length
     if state is None:
         return address, length
     if (state not in STATE_FIELDS or target != 'comm' or address is not None
@@ -55,19 +65,19 @@ def read_selection(address, length, batch_size, target, state):
     return STATE_FIELDS[state]
 
 
-def requests_for(address=None, length=1, batch_size=1, target='comm', state=None):
+def requests_for(address=None, length=1, batch_size=1, target='comm', state=None, ring_offset=None):
     """Absolute address per byte: an absent/duplicate reply cannot shift reads."""
     if target not in PROFILES:
         raise ValueError('Cible diagnostic inconnue')
     if target == 'fader' and (address is not None or length != 1 or batch_size != 1):
         raise ValueError('Cible fader limitée à la version ; lecture mémoire non validée')
-    address, length = read_selection(address, length, batch_size, target, state)
+    address, length = read_selection(address, length, batch_size, target, state, ring_offset)
     prefix, _ = PROFILES[target]
     result = [(None, prefix + b'V\xf7')]
     if not 1 <= batch_size <= 16:
         raise ValueError('Lot limité à 1..16 octets')
     if address is not None:
-        if state is None and (not 1 <= length <= 256 or not any(
+        if state is None and ring_offset is None and (not 1 <= length <= 256 or not any(
                 lo <= address and address+length <= hi for lo, hi in CODE_SEGMENTS)):
             raise ValueError('Lecture limitée à 1..256 octets dans un segment comm 1.37 connu')
         for read_target in range(address, address+length, batch_size):
@@ -141,15 +151,17 @@ def diagnostic_payloads(body, target='comm'):
 
 
 def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
-              address=None, length=1, batch_size=1, target='comm', state=None):
+              address=None, length=1, batch_size=1, target='comm', state=None, ring_offset=None):
     """One outstanding request, no retries, at most 50 Hz, version before reads."""
-    requests = requests_for(address, length, batch_size, target, state)
-    address, length = read_selection(address, length, batch_size, target, state)
+    requests = requests_for(address, length, batch_size, target, state, ring_offset)
+    address, length = read_selection(address, length, batch_size, target, state, ring_offset)
     _, expected_version = PROFILES[target]
     report = {'started_utc': datetime.now(timezone.utc).isoformat(),
               'probe_source_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-              'probe': ('comm_state_read' if state else 'comm_code_read') if address is not None else f'{target}_version',
+              'probe': ('comm_rx_buffer_read' if ring_offset is not None else
+                        ('comm_state_read' if state else 'comm_code_read')) if address is not None else f'{target}_version',
               'read_state': state,
+              'read_ring_offset': ring_offset,
               'target': target, 'expected_version_hex': expected_version.hex(' '),
               'request_hex': requests[0][1].hex(' '),
               'request_sequence': None, 'ack_received': False,
@@ -319,12 +331,15 @@ def main(argv=None):
     parser.add_argument('--read-code', type=lambda value: int(value, 0), metavar='ADDRESS')
     parser.add_argument('--read-state', choices=tuple(STATE_FIELDS),
                         help='Champ RAM comm 1.37 précisément identifié ; snapshot non atomique')
+    parser.add_argument('--read-ring-offset', type=lambda value: int(value, 0),
+                        help='Offset 0..487 dans le tampon RX série comm ; au plus 256 octets sans bouclage')
     parser.add_argument('--length', type=int, default=1)
     parser.add_argument('--batch-size', type=int, default=1, help='1..16 octets par requête')
     parser.add_argument('--send', action='store_true')
     args = parser.parse_args(argv)
     try:
-        requests = requests_for(args.read_code, args.length, args.batch_size, args.target, args.read_state)
+        requests = requests_for(args.read_code, args.length, args.batch_size, args.target,
+                                args.read_state, args.read_ring_offset)
     except ValueError as exc:
         parser.error(str(exc))
     if not args.send:
@@ -359,7 +374,7 @@ def main(argv=None):
             else:
                 result = run_probe(rx, tx, flow, args.output,
                                    address=args.read_code, length=args.length, batch_size=args.batch_size,
-                                   target=args.target, state=args.read_state)
+                                   target=args.target, state=args.read_state, ring_offset=args.read_ring_offset)
     print(json.dumps(result, indent=2, ensure_ascii=False))
     return int(result['error'] is not None)
 

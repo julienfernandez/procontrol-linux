@@ -152,6 +152,16 @@ class FirmwareProbeTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             requests_for(address=0x5094a, length=10)
 
+    def test_rx_windows_cannot_cross_buffer_or_select_another_processor(self):
+        plan = requests_for(ring_offset=480,length=8,batch_size=16)
+        self.assertEqual(plan[1],(0x6c106,PREFIX+b'A0006C106'+b'M'*8+b'\xf7'))
+        for options in [{'ring_offset': -1}, {'ring_offset': 488},
+                        {'ring_offset': 480,'length': 9}, {'ring_offset': 0,'length': 257},
+                        {'ring_offset': 0,'target': 'fader'},
+                        {'ring_offset': 0,'state': 'fader-version'},
+                        {'ring_offset': 0,'address': 0x8000071b}]:
+            with self.assertRaises(ValueError):requests_for(**options)
+
     def test_different_firmware_version_prevents_any_memory_command(self):
         report = self.simulate(True, version=b'COMv1.38\n\r', address=0x20000)
         self.assertIn('Version comm différente', report['error'])

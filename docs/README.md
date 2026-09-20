@@ -35,6 +35,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Huit octets des faders récupérés malgré le filtre série, avec trois répétitions](fader-raw-readback-2026-09-20.md),
+  [55 captures, bouclage du tampon et preuves](fader-raw-readback-2026-09-20.json).
+
 - [Version des faders confirmée sur le réseau et observation des files série](fader-network-validation-2026-09-20.md),
   [21 captures, snapshots RAM et audit indépendant](fader-network-validation-2026-09-20.json).
 

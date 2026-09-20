@@ -1,5 +1,9 @@
 # Diagnostic des faders : réponse réelle et observation du relais
 
+**Étape suivante :** [huit octets des vecteurs fader récupérés via la RAM du relais](fader-raw-readback-2026-09-20.md),
+trois répétitions, filtre et bouclage du tampon observés. Le présent rapport
+conserve les résultats des seules interrogations de version et d'état.
+
 Le 20 septembre 2026, une requête Ethernet `f0 13 00 70 01 56 f7` a obtenu
 **quatre réponses directes `FDRv1.37 LF CR`** de la ProControl locale.
 Le premier essai, envoyé immédiatement après la connexion, avait seulement

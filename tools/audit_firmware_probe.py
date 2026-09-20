@@ -19,7 +19,8 @@ VERSIONS = {'comm': (bytes.fromhex('f0 13 00 70 00'), b'COMv1.37\n\r'),
             'fader': (bytes.fromhex('f0 13 00 70 01'), b'FDRv1.37\n\r')}
 STATES = {'fader-version': (0x5094a,10), 'fader-version-valid': (0x509c2,4),
           'fader-errors': (0x509ba,4), 'fader-tx-ring': (0x6c10e,24),
-          'fader-rx-ring': (0x6bf0e,24)}
+          'fader-rx-ring': (0x6bf0e,24), 'fader-touch-state': (0x508ea,16),
+          'fader-mode': (0x5095c,1)}
 
 
 def sha(data):
@@ -83,15 +84,26 @@ def audit_version(path, target, host, peer):
 def audit_probe(folder, host, peer):
     saved = json.loads((folder/'result.json').read_text())
     path = folder/'traffic.pcap'
-    if saved.get('read_state'):
-        start,length = STATES[saved['read_state']]
+    if saved.get('read_state') or saved.get('read_ring_offset') is not None:
+        if saved['target'] != 'comm':
+            raise ValueError('Lecture RAM hors cible comm')
+        if saved.get('read_state'):
+            start,length = STATES[saved['read_state']]
+        else:
+            offset,length = saved['read_ring_offset'],saved['read_length']
+            if not 1 <= length <= 256 or not 0 <= offset or offset+length > 488:
+                raise ValueError('Fenêtre RX hors limites')
+            start = 0x6bf26+offset
         if (saved['read_address'],saved['read_length']) != (start,length):
             raise ValueError('Bornes du champ RAM incohérentes')
         data,result = audit_chunk(path,start,length,host,peer)
         if data != (folder/'memory.bin').read_bytes() or data != bytes.fromhex(saved['read_bytes_hex']):
             raise ValueError('RAM reconstruite différente des fichiers enregistrés')
+        if saved['memory_sha256'] != sha(data):
+            raise ValueError('Empreinte RAM incohérente')
         result.update({'method': 'Independent addressed-byte PCAP reconstruction',
-                       'state': saved['read_state'], 'address': start, 'length': length,
+                       'state': saved.get('read_state'), 'ring_offset': saved.get('read_ring_offset'),
+                       'address': start, 'length': length,
                        'data_hex': data.hex(' '), 'observed_complete': True})
     else:
         result = audit_version(path,saved['target'],host,peer)
