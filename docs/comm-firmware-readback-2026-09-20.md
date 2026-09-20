@@ -157,6 +157,22 @@ Cette copie reste sur la même machine ; un autre support est nécessaire pour
 une conservation indépendante du disque local. Les données constructeur et
 les captures brutes ne sont pas publiées dans le Git public.
 
+Une copie Git hors ligne `open-procontrol-b9172cb.bundle` a également été
+créée dans ce dossier : 860 039 octets, branche `main` et historique complet
+jusqu'à `b9172cb43e312a605ef5e680584026449cb1c1dc`. `git bundle verify` a
+réussi, puis un clone local a retrouvé ce commit exact. SHA-256 :
+`46222aebb96b7acbc8c43d9ae2308d6e20cc06d63b7da8549c09803eb1889237`.
+
+```bash
+git clone --branch main open-procontrol-b9172cb.bundle procontrol-linux
+```
+
+Le premier clone sans `--branch main` a récupéré les objets mais n'a pas pu
+extraire l'arbre : ce bundle ne fournit pas de HEAD distant par défaut.
+Préciser la branche a résolu ce point, sans modifier les objets sauvegardés.
+Cette copie Git contient le code et la documentation ; l'archive privée
+séparée contient les fichiers constructeur et les captures.
+
 Sur la base `100b5bc`, **345 tests Python passent en 80,352 s**. Compilation
 Python, inventaire des mappings en mode `--check` et contrôle d'espaces Git
 réussis. Les nouveaux cas vérifient les lots incomplets, les bornes, les
