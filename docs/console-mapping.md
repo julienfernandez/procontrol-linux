@@ -7,6 +7,29 @@ Un clic **sélectionne** un élément ; il ne joue aucune commande.
 La molette zoome, le fond se déplace et le menu des zones cadre chaque section.
 Sur téléphone, la fiche se place sous la console.
 
+[![Vue d’ensemble de l’atelier : ProControl complète, preset Ardour, capture des gestes et fiche du contrôle sélectionné](images/procontrol-mapping.png)](images/procontrol-mapping.png)
+
+*Page locale capturée le 21 septembre 2026, console en ligne et preset
+« Ardour — configuration actuelle ». Cliquer sur les images pour les agrandir.*
+
+## Du dessin au mapping
+
+1. **Trouver le contrôle.** Cliquer sur le dessin, rechercher son nom ou choisir
+   une zone, par exemple **DSP Edit / Assign**. **Vue entière** retrouve la console
+   complète.
+2. **Lire sa fiche.** **Fonction** montre l’affectation dans le contexte choisi ;
+   **Encodage** sépare l’entrée depuis la console du retour vers ses afficheurs,
+   LEDs ou moteurs.
+3. **Observer, essayer, confirmer.** La capture recueille les gestes pour associer
+   une entrée. **Essais** permet de tester une sortie ; **Valider** conserve les
+   confirmations et les notes. Les conditions et limites sont détaillées ci-dessous.
+
+[![Zoom sur DSP Edit / Assign : afficheur DSP 1 B sélectionné en vert, adresse de retour 45 et validation dans la fiche Encodage](images/procontrol-mapping-dsp.png)](images/procontrol-mapping-dsp.png)
+
+*Exemple : le premier afficheur DSP de la série B et son adresse de retour `45`.
+Le cadre vert indique la sélection dans la page. Les captures ont été réalisées
+par sélection et zoom, sans lancer de capture de gestes ni d’essai matériel.*
+
 Le catalogue distingue les éléments physiques et les codes de référence non
 placés. Ces derniers se trouvent par la recherche, sans inventer de bouton sur
 le dessin. Les commandes analogiques sans encodage établi restent identifiées

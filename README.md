@@ -10,6 +10,30 @@ ProControl ↔ Ethernet brut ↔ procontrold ↔ OSC ↔ Ardour
                                   ↳ réglages web locaux
 ```
 
+## La console, sous les yeux
+
+L’atelier **ProControl — Mapping** représente toute la Main Unit dans une vue
+interactive : huit tranches, faders, boutons, LEDs, afficheurs, vumètres, DSP,
+transport et jog. On sélectionne un élément sur la console pour retrouver son
+encodage, sa fonction et ses validations dans la fiche latérale.
+
+[![Atelier ProControl — Mapping : vue complète de la console, preset Ardour et fiche d’encodage d’un afficheur DSP](docs/images/procontrol-mapping.png)](docs/images/procontrol-mapping.png)
+
+*Capture de la page locale, console en ligne, le 21 septembre 2026.
+Cliquer sur l’image pour explorer les détails en grand.*
+
+- **Se repérer** : zoom par section, recherche et sélection directe sur le dessin.
+- **Mapper et vérifier** : capture des gestes, essais explicites des retours et
+  validation séparée de l’emplacement, de l’encodage et de la fonction.
+- **Préparer ses presets** : dupliquer celui d’Ardour, modifier les affectations,
+  appliquer ou revenir à la version précédente. Le preset Logic reste un
+  brouillon pour une future intégration.
+
+Ouvrir **ProControl — Mapping** dans la Gateway à
+`http://127.0.0.1:8765/mapping`, ou suivre le
+[guide illustré du mapping](docs/console-mapping.md). Un clic sur le dessin
+sélectionne seulement un élément ; les essais se lancent depuis sa fiche.
+
 ## Centre de contrôle USB du studio
 
 Le panneau local de la Gateway supervise maintenant MPC, USB, Ardour et Behringer,
