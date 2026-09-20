@@ -1,0 +1,69 @@
+{
+  "date_local": "2026-09-21",
+  "method": "Complement of the four resource segments within the statically identified application checksum ranges",
+  "basis": "docs/preservation-layout-2026-09-21.md",
+  "comm_application": {
+    "checksum_range": [
+      131072,
+      196608
+    ],
+    "known_image_bytes": 63768,
+    "missing_bytes": 1768,
+    "missing_ranges": [
+      {
+        "address": 131080,
+        "end_exclusive": 131172,
+        "length": 92
+      },
+      {
+        "address": 131200,
+        "end_exclusive": 131328,
+        "length": 128
+      },
+      {
+        "address": 131344,
+        "end_exclusive": 132096,
+        "length": 752
+      },
+      {
+        "address": 195812,
+        "end_exclusive": 196608,
+        "length": 796
+      }
+    ],
+    "hardware_read": false,
+    "filling_gaps_with_assumed_bytes_allowed": false
+  },
+  "fader_application": {
+    "checksum_range": [
+      32768,
+      49152
+    ],
+    "known_image_bytes": 11546,
+    "missing_bytes": 4838,
+    "missing_ranges": [
+      {
+        "address": 32776,
+        "end_exclusive": 32868,
+        "length": 92
+      },
+      {
+        "address": 32896,
+        "end_exclusive": 33024,
+        "length": 128
+      },
+      {
+        "address": 33040,
+        "end_exclusive": 33792,
+        "length": 752
+      },
+      {
+        "address": 45286,
+        "end_exclusive": 49152,
+        "length": 3866
+      }
+    ],
+    "hardware_read": false,
+    "filling_gaps_with_assumed_bytes_allowed": false
+  }
+}

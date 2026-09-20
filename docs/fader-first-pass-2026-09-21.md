@@ -1,5 +1,8 @@
 # Programme fader installé : première passe complète
 
+Rapport historique, complété par la [double acquisition finale](fader-firmware-readback-2026-09-21.md).
+Les mentions de seconde passe en cours décrivent l’instantané ci-dessous.
+
 Le 21 septembre 2026 à Paris, les **11 546 octets des quatre segments connus**
 du programme fader 1.37 ont été lus sur la console et reconstruits depuis leurs
 captures Ethernet. Ils correspondent octet par octet aux ressources constructeur.

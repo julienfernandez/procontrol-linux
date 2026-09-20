@@ -1,5 +1,7 @@
 # Pilote de débit du diagnostic comm : lots de 16 et 32 octets
 
+Cette préparation est désormais complétée par le [pilote matériel et ses mesures](preservation-fields-validation-2026-09-21.md#pilote-comm--résultat-des-lots-de-16-et-32).
+
 Préparation du **21 septembre 2026**. Analyse statique et tests logiciels ;
 aucun résultat matériel à 32 octets n'est acquis à ce stade. La double lecture
 du code fader reste menée avec ses sources figées et ses lots de 16 octets.

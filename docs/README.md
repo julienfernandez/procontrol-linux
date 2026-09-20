@@ -35,6 +35,14 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Réglages comm, état fader et pilote réel de lecture 16/32](preservation-fields-validation-2026-09-21.md),
+  [audits, snapshots, mesures et archive](preservation-fields-validation-2026-09-21.json).
+
+- [Deux acquisitions complètes du programme fader installé](fader-firmware-readback-2026-09-21.md),
+  [audit des 30 584 captures, empreintes et archive](fader-firmware-readback-2026-09-21.json).
+- [Intervalles encore manquants des programmes comm et fader](application-preservation-gaps-2026-09-21.md),
+  [couverture arithmétique et bornes exactes](application-preservation-gaps-2026-09-21.json).
+
 - [Lecteurs de réglages préparés et mesure de la durée de collecte fader](fader-preservation-progress-2026-09-21.md),
   [tests, compatibilité des captures, sources et archive](fader-preservation-progress-2026-09-21.json).
 

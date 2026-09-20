@@ -1,0 +1,147 @@
+{
+  "date_local": "2026-09-21",
+  "scope": "Both complete acquisitions of all four known fader code segments; not a full-device backup",
+  "acquisition_commit": "5c4959d42b3acb7a2eff62d4e3a8162adfb91516",
+  "auditor_commit": "0f5a73401c7dd830696bdcb81c034cf7a6cd0bfc",
+  "audit_report_sha256": "e02f7d8b65963c7e56a2967e37d73be30a0e948df345a672afd93031f606009b",
+  "audit": {
+    "method": "Whole archive rebuilt from closed PCAPs via independent per-plan serial decoding",
+    "manifest_snapshot_sha256": "11278a0c12ff5b3fa140a06452942fb5df2fa7eb7c44f7ea48c9d4584be0c8ca",
+    "manifest_snapshot_updated_utc": "2026-09-20T23:47:02.974672+00:00",
+    "complete_archive": true,
+    "completed_prefix_only": false,
+    "planned_passes": 2,
+    "acquisition_error_at_snapshot": null,
+    "passes_equal": true,
+    "all_match_reference": true,
+    "all_socket_drop_counts_zero": true,
+    "counts": {
+      "pcaps": 30584,
+      "frames": 1345137,
+      "socket_drops": 0,
+      "code_blocks": 1928,
+      "code_bytes": 23092
+    },
+    "manifest_snapshot_file": "fader-final-audit.manifest.json"
+  },
+  "passes": [
+    {
+      "number": 1,
+      "complete": true,
+      "blocks": 964,
+      "segments": [
+        {
+          "address": 32768,
+          "length": 8,
+          "expected_length": 8,
+          "sha256": "0b94948d9565a02762f1a6b7f83c5cf28908ea1bf882cdc5800eb57e0fdd8b2d",
+          "complete": true,
+          "matches_reference": true
+        },
+        {
+          "address": 32868,
+          "length": 28,
+          "expected_length": 28,
+          "sha256": "e35d2da6b9a2cab4ad24a40299cbbf8d6028950f3c33d8914dc057e174d8f4ec",
+          "complete": true,
+          "matches_reference": true
+        },
+        {
+          "address": 33024,
+          "length": 16,
+          "expected_length": 16,
+          "sha256": "42bfe0154783f4cf48373891ce4bad48f4dac5ff0d54020c61b656473f06222b",
+          "complete": true,
+          "matches_reference": true
+        },
+        {
+          "address": 33792,
+          "length": 11494,
+          "expected_length": 11494,
+          "sha256": "2479230a850da18b33b1dcf7292dbb12af6421aceabc047b2ae07d5582f23e05",
+          "complete": true,
+          "matches_reference": true
+        }
+      ],
+      "first_request_ns": 1789942917680931000,
+      "last_capture_ns": 1789945464436404000
+    },
+    {
+      "number": 2,
+      "complete": true,
+      "blocks": 964,
+      "segments": [
+        {
+          "address": 32768,
+          "length": 8,
+          "expected_length": 8,
+          "sha256": "0b94948d9565a02762f1a6b7f83c5cf28908ea1bf882cdc5800eb57e0fdd8b2d",
+          "complete": true,
+          "matches_reference": true
+        },
+        {
+          "address": 32868,
+          "length": 28,
+          "expected_length": 28,
+          "sha256": "e35d2da6b9a2cab4ad24a40299cbbf8d6028950f3c33d8914dc057e174d8f4ec",
+          "complete": true,
+          "matches_reference": true
+        },
+        {
+          "address": 33024,
+          "length": 16,
+          "expected_length": 16,
+          "sha256": "42bfe0154783f4cf48373891ce4bad48f4dac5ff0d54020c61b656473f06222b",
+          "complete": true,
+          "matches_reference": true
+        },
+        {
+          "address": 33792,
+          "length": 11494,
+          "expected_length": 11494,
+          "sha256": "2479230a850da18b33b1dcf7292dbb12af6421aceabc047b2ae07d5582f23e05",
+          "complete": true,
+          "matches_reference": true
+        }
+      ],
+      "first_request_ns": 1789945464530781000,
+      "last_capture_ns": 1789948022858020000
+    }
+  ],
+  "archive": {
+    "created_utc": "2026-09-20T23:49:19.212129+00:00",
+    "archive": "procontrol-fader-complete-evidence.tar.gz",
+    "sha256": "c02ee710e438e4eb817ef13b9fc5f48fa72d0fe8f327b9129960e3ef80364e28",
+    "bytes": 65727389,
+    "verified_files": 93722,
+    "tar_members": 93723,
+    "file_manifest": "FADER-COMPLETE-FILE-MANIFEST.json",
+    "file_manifest_sha256": "ddc4fddacd04faf73a5a64d10617a486775e738e83ba570f5ff9174d541177af",
+    "manifest_snapshot_sha256": "11278a0c12ff5b3fa140a06452942fb5df2fa7eb7c44f7ea48c9d4584be0c8ca",
+    "copy_directory": "/home/moi/Documents/OpenProControl-preservation/2026-09-20-comm-1.37",
+    "independent_storage_device": false,
+    "full_device_backup": false,
+    "double_acquisition_complete": true
+  },
+  "services_after_acquisition": {
+    "observed_utc": "2026-09-20T23:47:12.095253+00:00",
+    "collector_pid_gone": 641580,
+    "gateway_pid": 664715,
+    "gateway_console": "online",
+    "pointer_pid": 622060,
+    "pointer_console": "online",
+    "restart_exit_code": 0,
+    "frozen_sources_match": true
+  },
+  "full_device_backup": false,
+  "hardware_restore_tested": false,
+  "physical_motor_calibration_validated": false,
+  "offline_restoration": {
+    "verified_utc": "2026-09-20T23:51:25.137615+00:00",
+    "archive_sha256": "c02ee710e438e4eb817ef13b9fc5f48fa72d0fe8f327b9129960e3ef80364e28",
+    "restored_git_commit": "613a1e95d60ff03288168e13147b81c740fd22f4",
+    "restored_audit_sha256": "22ed3fc2ca16f9ba57a14a144d75fd3e48a844a7ee7f35a53905100f1c4310fb",
+    "audit_matches_original_except_snapshot_filename": true,
+    "hardware_restore_tested": false
+  }
+}
