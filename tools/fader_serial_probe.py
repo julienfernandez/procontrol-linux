@@ -24,13 +24,26 @@ SEGMENTS=((0x8000,0x8008),(0x8064,0x8080),(0x8100,0x8110),(0x8400,0xb0e6))
 RELEASE_ADDRESSES=(0x8455,0x9d3a,0x8c64,0x849b,0x8aa0,0xa00f,0x8883,0x8941)
 RELEASE_PLAN=tuple((address,1) for address in RELEASE_ADDRESSES)
 PAIR_PLAN=((0x8459,1),(0x8455,1))
+# Separate named opt-in: never expand the original code reader's address ranges.
+# Provenance: docs/preservation-layout-2026-09-21.md (static analysis only).
+PRESERVATION_FIELDS={'fader-boot-vectors':(0,8),
+                     'fader-application-checksum':(0xfffe,2),
+                     'fader-touch-thresholds':(0x44012,4),
+                     'fader-calibration-state':(0x4402a,256)}
 
 
-def request_for(plan):
+def request_for(plan,state=None):
     if not plan:raise ValueError('Plan vide')
+    if state is not None:
+        if (state not in PRESERVATION_FIELDS or len(plan)!=9 or tuple(map(tuple,plan[1:]))!=RELEASE_PLAN
+                or not 1<=plan[0][1]<=12):
+            raise ValueError('Champ fader nommé avec huit relâchements requis')
     body=bytearray(FADER_PREFIX);serial_length=0
-    for address,length in plan:
-        if not 1<=length<=16 or not any(lo<=address<address+length<=hi for lo,hi in SEGMENTS):
+    for index,(address,length) in enumerate(plan):
+        ranges=SEGMENTS
+        if state is not None and index==0:
+            start,size=PRESERVATION_FIELDS[state];ranges=((start,start+size),)
+        if not 1<=length<=16 or not any(lo<=address<address+length<=hi for lo,hi in ranges):
             raise ValueError('Lecture hors segment fader connu ou longueur excessive')
         body.extend(f'U{address:08X}'.encode())
         body.extend(b'q' if length==1 else b'Q'*length)
@@ -46,8 +59,16 @@ def code_plan(address,length):
     return plan
 
 
-def parse_serial(raw,plan):
-    _,size=request_for(plan)
+def preservation_plan(state,offset,length):
+    if state not in PRESERVATION_FIELDS or offset<0:
+        raise ValueError('Champ ou offset fader incorrect')
+    plan=((PRESERVATION_FIELDS[state][0]+offset,length),)+RELEASE_PLAN
+    request_for(plan,state=state)
+    return plan
+
+
+def parse_serial(raw,plan,state=None):
+    _,size=request_for(plan,state=state)
     if len(raw)!=size:raise ValueError('Longueur série différente du plan')
     cursor=0;values=bytearray()
     for address,length in plan:
@@ -62,8 +83,8 @@ def parse_serial(raw,plan):
     return bytes(values)
 
 
-def capture_plan(rx,tx,flow,output,plan,settle=.25):
-    body,size=request_for(plan)
+def capture_plan(rx,tx,flow,output,plan,settle=.25,state=None):
+    body,size=request_for(plan,state=state)
     if flow.phase!='online':raise RuntimeError('Session non Online')
     if not .01<=settle<=1:raise ValueError('Délai de réception hors limites')
     result={'started_utc':datetime.now(timezone.utc).isoformat(),'request_hex':body.hex(' '),
@@ -106,8 +127,8 @@ def capture_plan(rx,tx,flow,output,plan,settle=.25):
     return result
 
 
-def acquire_plan(rx,tx,flow,output,plan,expected=None,release_verified=False):
-    _,serial_size=request_for(plan)
+def acquire_plan(rx,tx,flow,output,plan,expected=None,release_verified=False,state=None):
+    _,serial_size=request_for(plan,state=state)
     normalized=tuple(map(tuple,plan))
     if normalized not in (RELEASE_PLAN,PAIR_PLAN) and not (
             len(plan)==9 and normalized[1:]==RELEASE_PLAN and 1<=plan[0][1]<=12):
@@ -119,6 +140,7 @@ def acquire_plan(rx,tx,flow,output,plan,expected=None,release_verified=False):
     report={'started_utc':datetime.now(timezone.utc).isoformat(),'plan':plan,
             'source_sha256':digest(Path(__file__).read_bytes()),'complete':False,'error':None,
             'request_attempted':False,'release_verified_before':release_verified,'steps':[]}
+    if state is not None:report['preservation_field']=state
     def record(name,result):
         report['steps'].append({'name':name,'result_sha256':digest((output/name/'result.json').read_bytes())})
         if result['error']:raise RuntimeError(f'{name}: {result["error"]}')
@@ -143,7 +165,8 @@ def acquire_plan(rx,tx,flow,output,plan,expected=None,release_verified=False):
         before=ring_header(probe('rx-before',state='fader-rx-ring'));report['rx_before']=before
         if before['producer']!=before['consumer']:raise RuntimeError('File RX non vide avant lecture')
         folder=output/'request';folder.mkdir(mode=0o700);report['request_attempted']=True
-        record('request',capture_plan(rx,tx,flow,folder,plan))
+        options={} if state is None else {'state':state}
+        record('request',capture_plan(rx,tx,flow,folder,plan,**options))
         after=ring_header(probe('rx-after',state='fader-rx-ring'));report['rx_after']=after
         if ((after['producer']-before['producer'])%RX_BUFFER_SIZE!=serial_size
                 or after['overflows']!=before['overflows']):raise RuntimeError('Production RX non attribuable')
@@ -154,7 +177,7 @@ def acquire_plan(rx,tx,flow,output,plan,expected=None,release_verified=False):
         final=ring_header(probe('rx-final',state='fader-rx-ring'));report['rx_final']=final
         if final['producer']!=after['producer'] or final['overflows']!=after['overflows']:
             raise RuntimeError('Tampon modifié pendant la lecture')
-        values=parse_serial(raw,plan)
+        values=parse_serial(raw,plan,state=state)
         (output/'memory.bin').write_bytes(values)
         report.update(read_bytes_hex=values.hex(' '),memory_sha256=digest(values))
         probe('fader-version-after',target='fader')

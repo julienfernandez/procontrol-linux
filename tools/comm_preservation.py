@@ -86,7 +86,7 @@ def preflight():
     return status
 
 
-def run_live(interface, host, peer, output):
+def run_live(interface, host, peer, output, collector=None):
     """Always attempt gateway restart, including failed probes and SIGTERM."""
     try:
         subprocess.run([str(ROOT/'procontrol'), 'stop'], cwd=ROOT, check=True)
@@ -95,8 +95,8 @@ def run_live(interface, host, peer, output):
             with rx, tx:
                 rx.bind((interface, 0)); tx.bind((interface, 0))
                 rx.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 4*1024*1024)
-                result = acquire(rx, tx, ConsoleSession(host, peer), output,
-                                 mac_bytes(host), mac_bytes(peer))
+                result = (acquire if collector is None else collector)(
+                    rx, tx, ConsoleSession(host, peer), output, mac_bytes(host), mac_bytes(peer))
     finally:
         restarted = subprocess.run([str(ROOT/'procontrol'), 'start'], cwd=ROOT,
                                    capture_output=True, text=True)

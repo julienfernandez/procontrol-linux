@@ -145,6 +145,9 @@ pas que l'essai matériel a déjà eu lieu.
 L'étude des faders devra ensuite distinguer image de démarrage, contrôle de
 programme et instantané de calibration, tout en conservant les huit lectures
 de relâchement par bloc. Aucun de ces travaux n'est déclaré acquis ici.
+La [procédure fader préparée](fader-preservation-procedure.md) couvre désormais
+les vecteurs du bootstrap, le mot de contrôle, les seuils et les huit structures
+RAM. Ses tests restent distincts de l'observation matérielle à venir.
 
 ## Reproduire l'analyse et conserver les preuves
 

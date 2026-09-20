@@ -17,19 +17,31 @@ from inspect_pcap import packets,mac_address
 
 SEGMENTS=((0x8000,0x8008),(0x8064,0x8080),(0x8100,0x8110),(0x8400,0xb0e6))
 RELEASES=((0x8455,1),(0x9d3a,1),(0x8c64,1),(0x849b,1),(0x8aa0,1),(0xa00f,1),(0x8883,1),(0x8941,1))
+PRESERVATION_FIELDS={'fader-boot-vectors':(0,8),
+                     'fader-application-checksum':(0xfffe,2),
+                     'fader-touch-thresholds':(0x44012,4),
+                     'fader-calibration-state':(0x4402a,256)}
 
 
 def sha(data):return hashlib.sha256(data).hexdigest()
 
 
-def validate_plan(plan):
+def validate_plan(plan,state=None):
     plan=tuple(map(tuple,plan))
-    if plan==RELEASES:kind='release-proof'
+    if state is not None:
+        if (state not in PRESERVATION_FIELDS or len(plan)!=9 or plan[1:]!=RELEASES
+                or not 1<=plan[0][1]<=12):
+            raise ValueError('Champ nommé ou relâchements incorrects')
+        kind='preservation-and-releases'
+    elif plan==RELEASES:kind='release-proof'
     elif plan==((0x8459,1),(0x8455,1)):kind='touch-pair'
     elif len(plan)==9 and plan[1:]==RELEASES and 1<=plan[0][1]<=12:kind='code-and-releases'
     else:raise ValueError('Plan hors des lectures documentées')
-    for address,length in plan:
-        if not 1<=length<=16 or not any(lo<=address<address+length<=hi for lo,hi in SEGMENTS):
+    for index,(address,length) in enumerate(plan):
+        ranges=SEGMENTS
+        if state is not None and index==0:
+            start,size=PRESERVATION_FIELDS[state];ranges=((start,start+size),)
+        if not 1<=length<=16 or not any(lo<=address<address+length<=hi for lo,hi in ranges):
             raise ValueError('Plage mémoire fader incorrecte')
     return plan,kind
 
@@ -78,7 +90,8 @@ def decode_serial(raw,plan):
 def audit_plan(root,host,peer):
     manifest=json.loads((root/'manifest.json').read_text())
     if not manifest['complete'] or manifest.get('error'):raise ValueError('Lecture incomplète')
-    plan,kind=validate_plan(manifest['plan'])
+    state=manifest.get('preservation_field')
+    plan,kind=validate_plan(manifest['plan'],state=state)
     names=[s['name'] for s in manifest['steps']]
     required={'versions','request','rx-before','rx-after','rx-final','touch-before','touch-after',
               'mode-before','mode-after','errors-before','errors-after','fader-version-after'}
@@ -135,10 +148,12 @@ def audit_plan(root,host,peer):
         if memory('touch-'+side)!=bytes(16) or memory('mode-'+side)!=b'\0':raise ValueError('État non neutre')
     errors={side:int.from_bytes(memory('errors-'+side),'big') for side in ('before','after')}
     if any(manifest['parser_errors_'+side]!=v for side,v in errors.items()):raise ValueError('Compteur altéré')
-    return {'method':'Independent PCAP RAM reconstruction and separate serial parser','kind':kind,
+    result={'method':'Independent PCAP RAM reconstruction and separate serial parser','kind':kind,
             'plan':plan,'data_hex':values.hex(' '),'serial_sha256':sha(raw),'memory_sha256':sha(values),
             'manifest_sha256':sha((root/'manifest.json').read_bytes()),'matches_saved_files':True,
             'touch_neutral_before_after':True,'mode_normal_before_after':True,'parser_errors':errors,'steps':audits}
+    if state is not None:result['preservation_field']=state
+    return result
 
 
 def main():
