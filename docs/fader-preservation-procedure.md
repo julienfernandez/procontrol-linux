@@ -101,6 +101,15 @@ une erreur de transmission ou écraser la première valeur. Une divergence
 des vecteurs ou du mot de contrôle est signalée séparément et donne un code
 de sortie non nul à l'auditeur, après écriture du rapport détaillé.
 
+L'analyse du formateur de réponse `0x90d8` montre une limite supplémentaire :
+`0x910a` lit la valeur destinée à l'hexadécimal, puis `0x9122` relit l'adresse
+pour le caractère brut. Ces deux accès sont distincts. Une modification de
+RAM entre eux peut donc produire deux représentations différentes au sein
+d'une même réponse. Ce cas n'a pas encore été observé sur les nouvelles zones.
+Les parseurs exigent leur concordance et conservent la capture en cas d'échec ;
+ne pas remplacer l'une des valeurs par l'autre ni conclure automatiquement à
+une corruption ou une perte réseau.
+
 ## Vérifications et conservation
 
 Les tests spécifiques vérifient les limites et l'option de champ explicite,

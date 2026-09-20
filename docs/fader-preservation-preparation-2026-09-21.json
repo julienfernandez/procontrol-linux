@@ -93,5 +93,25 @@
   "independent_storage_device": false,
   "new_fields_hardware_validated": false,
   "calibration_triggered": false,
-  "live_acquisition_sources_modified": false
+  "live_acquisition_sources_modified": false,
+  "memory_reply_consistency": {
+    "analysis_utc": "2026-09-20T23:21:56.797346+00:00",
+    "source_file": "CODE-27-00008400.bin",
+    "source_sha256": "2479230a850da18b33b1dcf7292dbb12af6421aceabc047b2ae07d5582f23e05",
+    "formatter_entry": 37080,
+    "hexadecimal_value_load": {
+      "address": 37130,
+      "opcode_hex": "1010",
+      "instruction": "moveb (a0),d0"
+    },
+    "literal_value_load": {
+      "address": 37154,
+      "opcode_hex": "1ad0",
+      "instruction": "moveb (a0),(a5)+"
+    },
+    "two_separate_memory_loads": true,
+    "volatile_disagreement_observed_on_hardware": false,
+    "behavior": "Reject mismatched hex/literal values and preserve the capture; do not infer packet loss without evidence",
+    "disassembly_window_sha256": "1c87bd4e6188e9149b4b1039b230c692cda1eefff80244a0e11ea96cf63c7748"
+  }
 }

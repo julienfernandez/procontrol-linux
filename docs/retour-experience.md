@@ -127,6 +127,7 @@ Sources : [session](session-reference.md), [helper sans root](rootless-launch.md
 | Audit d'un préfixe avec seulement le hash du manifeste évolutif | Conserver une copie exacte avant la lecture des preuves ; le premier instantané a été récupéré et vérifié par son hash, puis le CLI corrigé | [Instantanés et couverture](fader-archive-verification.md) |
 | Assimiler image de mise à jour et contenu restaurable | Les sommes du démarrage portent aussi sur des trous absents d'Intel HEX ; des réglages et mots de contrôle résident hors image. Ne pas inventer leur remplissage | [Carte de préservation](preservation-layout-2026-09-21.md) |
 | Lire une valeur brute comme un pourcentage | Les seuils fader passent par un facteur 128/100 ; identifier la conversion et les unités avant de proposer un réglage | [État de calibration et seuils](preservation-layout-2026-09-21.md#calibration-des-faders--un-état-calculé-en-ram) |
+| Considérer une réponse mémoire fader comme une lecture atomique | Le formateur lit séparément l'octet pour l'hexadécimal puis pour le caractère brut. Une RAM modifiée entre les deux peut rendre la réponse incohérente ; conserver et refuser cette réponse sans inventer une perte réseau | [Instantanés et formateur de réponse](fader-preservation-procedure.md#interpréter-sans-transformer-linstantané) |
 
 ## Ce que l'on conserve et où
 
