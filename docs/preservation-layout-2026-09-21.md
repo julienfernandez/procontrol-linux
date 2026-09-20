@@ -137,9 +137,17 @@ du collecteur actif et la vérification des sources, intégrer ce commit dans
 le dépôt principal, puis effectuer les essais depuis sa racine avec son
 verrou habituel et une reprise de passerelle garantie.
 
+La [procédure préparée de double lecture des petits blocs](comm-preservation-procedure.md)
+automatise ensuite les cinq champs et leur audit indépendant, tout en conservant
+les contenus invalides ou différents comme observations. Sa présence ne signifie
+pas que l'essai matériel a déjà eu lieu.
+
 L'étude des faders devra ensuite distinguer image de démarrage, contrôle de
 programme et instantané de calibration, tout en conservant les huit lectures
 de relâchement par bloc. Aucun de ces travaux n'est déclaré acquis ici.
+La [procédure fader préparée](fader-preservation-procedure.md) couvre désormais
+les vecteurs du bootstrap, le mot de contrôle, les seuils et les huit structures
+RAM. Ses tests restent distincts de l'observation matérielle à venir.
 
 ## Reproduire l'analyse et conserver les preuves
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit hors ligne d'une capture clôturée de version ou d'un état RAM comm.
+"""Audit hors ligne d'une capture clôturée de version ou d'un champ nommé comm.
 
 Un audit fidèle peut confirmer un essai incomplet : observed_complete reste
 alors false. Aucune socket, aucun accès à la console et aucune écriture mémoire.
@@ -20,7 +20,13 @@ VERSIONS = {'comm': (bytes.fromhex('f0 13 00 70 00'), b'COMv1.37\n\r'),
 STATES = {'fader-version': (0x5094a,10), 'fader-version-valid': (0x509c2,4),
           'fader-errors': (0x509ba,4), 'fader-tx-ring': (0x6c10e,24),
           'fader-rx-ring': (0x6bf0e,24), 'fader-touch-state': (0x508ea,16),
-          'fader-mode': (0x5095c,1)}
+          'fader-mode': (0x5095c,1),
+          'comm-boot-vectors': (0x00000,8),
+          'comm-application-checksum': (0x30000,2),
+          'comm-network-settings': (0x34000,10),
+          'comm-utility-settings': (0x3c000,88),
+          'comm-utility-mirror': (0x40000,88),
+          'comm-diagnostic-overflows': (0x6b51e,4)}
 
 
 def sha(data):
@@ -86,7 +92,7 @@ def audit_probe(folder, host, peer):
     path = folder/'traffic.pcap'
     if saved.get('read_state') or saved.get('read_ring_offset') is not None:
         if saved['target'] != 'comm':
-            raise ValueError('Lecture RAM hors cible comm')
+            raise ValueError('Lecture de champ hors cible comm')
         if saved.get('read_state'):
             start,length = STATES[saved['read_state']]
         else:
@@ -95,12 +101,12 @@ def audit_probe(folder, host, peer):
                 raise ValueError('Fenêtre RX hors limites')
             start = 0x6bf26+offset
         if (saved['read_address'],saved['read_length']) != (start,length):
-            raise ValueError('Bornes du champ RAM incohérentes')
+            raise ValueError('Bornes du champ incohérentes')
         data,result = audit_chunk(path,start,length,host,peer)
         if data != (folder/'memory.bin').read_bytes() or data != bytes.fromhex(saved['read_bytes_hex']):
-            raise ValueError('RAM reconstruite différente des fichiers enregistrés')
+            raise ValueError('Mémoire reconstruite différente des fichiers enregistrés')
         if saved['memory_sha256'] != sha(data):
-            raise ValueError('Empreinte RAM incohérente')
+            raise ValueError('Empreinte mémoire incohérente')
         result.update({'method': 'Independent addressed-byte PCAP reconstruction',
                        'state': saved.get('read_state'), 'ring_offset': saved.get('read_ring_offset'),
                        'address': start, 'length': length,

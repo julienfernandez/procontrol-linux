@@ -38,11 +38,16 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 - [Lecteurs de réglages préparés et mesure de la durée de collecte fader](fader-preservation-progress-2026-09-21.md),
   [tests, compatibilité des captures, sources et archive](fader-preservation-progress-2026-09-21.json).
 
+- [Pilote préparé pour comparer les lots diagnostic comm de 16 et 32 octets](comm-batch-benchmark.md) :
+  dimension de file, compteur de débordement, bloc connu et audit des captures.
+
 - [Première passe complète du programme fader installé](fader-first-pass-2026-09-21.md),
   [audit indépendant, segments et archive des captures](fader-first-pass-2026-09-21.json).
 
 - [Carte statique du démarrage, des réglages persistants et de la calibration](preservation-layout-2026-09-21.md),
   [adresses, chemins étudiés, manuel constructeur et archive des preuves](preservation-layout-2026-09-21.json).
+  Lecteurs préparés : [petits blocs comm](comm-preservation-procedure.md) et
+  [vecteurs, contrôle et état de calibration fader](fader-preservation-procedure.md).
 
 - [Audit complet d'une archive fader et contrôle des blocs déjà terminés](fader-archive-verification.md),
   [deux instantanés partiels reconstruits depuis les captures](fader-archive-audit-2026-09-21.json).

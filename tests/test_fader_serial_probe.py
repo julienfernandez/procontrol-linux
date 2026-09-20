@@ -52,10 +52,10 @@ class FaderSerialProbeTests(unittest.TestCase):
                 with self.assertRaises(ValueError):probe.acquire_plan(None,None,None,root,plan)
             self.assertEqual(list(root.iterdir()),[])
 
-    def simulate(self,touched=False,overwritten=False):
+    def simulate(self,touched=False,overwritten=False,state=None,length=12):
         base=0x6bf26;offset=450
-        plan=probe.code_plan(0x8400,12)
-        values=bytes([0xc0,0x80,0,0xf7]*3)+bytes(range(0xd0,0xd8))
+        plan=probe.code_plan(0x8400,length) if state is None else probe.preservation_plan(state,0,length)
+        values=bytes([0xc0,0x80,0,0xf7]*3)[:length]+bytes(range(0xd0,0xd8))
         raw=serial(plan,values);ring=bytearray(488)
         for i,v in enumerate(raw):ring[(offset+i)%488]=v
         before=base+offset;after=base+(offset+len(raw))%488
@@ -76,13 +76,16 @@ class FaderSerialProbeTests(unittest.TestCase):
             elif kwargs.get('ring_offset') is not None:
                 start=kwargs['ring_offset'];data=ring[start:start+kwargs['length']]
             return save(folder,data)
-        def capture(rx,tx,flow,folder,plan):requests.append(plan);return save(folder)
+        def capture(rx,tx,flow,folder,plan,**kwargs):
+            if folder.name=='request':self.assertEqual(kwargs.get('state'),state)
+            else:self.assertNotIn('state',kwargs)
+            requests.append(plan);return save(folder)
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
             with patch.object(probe,'run_probe',side_effect=read),\
                  patch.object(probe,'run_fader_version',side_effect=lambda a,b,c,d:save(d)),\
                  patch.object(probe,'capture_plan',side_effect=capture):
-                result=probe.acquire_plan(None,None,None,root,plan,release_verified=True)
+                result=probe.acquire_plan(None,None,None,root,plan,release_verified=True,state=state)
             if touched:self.assertFalse(result['request_attempted']);self.assertEqual(requests,[])
             elif overwritten:
                 self.assertFalse(result['complete']);self.assertTrue(result['recovery_touch_neutral'])

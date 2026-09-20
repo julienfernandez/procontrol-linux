@@ -1,0 +1,117 @@
+{
+  "date_local": "2026-09-21",
+  "status": "Prepared on research/preservation-reads; new hardware fields not acquired",
+  "fields": {
+    "fader-boot-vectors": {
+      "address": 0,
+      "length": 8
+    },
+    "fader-application-checksum": {
+      "address": 65534,
+      "length": 2
+    },
+    "fader-touch-thresholds": {
+      "address": 278546,
+      "length": 4
+    },
+    "fader-calibration-state": {
+      "address": 278570,
+      "length": 256
+    }
+  },
+  "passes": 2,
+  "blocks_per_pass": 25,
+  "bytes_per_pass": 270,
+  "release_reads_per_block": 8,
+  "maximum_serial_bytes": 465,
+  "source_files": [
+    {
+      "path": "tools/fader_serial_probe.py",
+      "sha256": "724e440512f570ea9f7e90f15cab2635638cad60784cdae5f3e934328cd2ac5f"
+    },
+    {
+      "path": "tools/audit_fader_serial.py",
+      "sha256": "3595e32b9a537ebdb5681c32cdcdbd40bfd56a5bda8419e93e45dc2adedbeed2"
+    },
+    {
+      "path": "tools/fader_preservation.py",
+      "sha256": "3eee4614f93cc62aa6963edce2fdf84cef8139c90b3cf26170ec7a5976977097"
+    },
+    {
+      "path": "tools/audit_fader_preservation.py",
+      "sha256": "2a424eaa25e15af1f390050847bff23e2c4f55a5160c2c89d446fdbccf3f0141"
+    },
+    {
+      "path": "tools/comm_preservation.py",
+      "sha256": "d5d6ca99f8f33f925d0eba2b12779f4f37f9ed25c2ab6bb085c9a6045f330a48"
+    },
+    {
+      "path": "tests/test_fader_preservation.py",
+      "sha256": "08b24e00c0dd65204cee018b4bd70433cc6b88009adec45c4733cc0c1716f304"
+    },
+    {
+      "path": "tests/test_fader_preservation_fields.py",
+      "sha256": "ff377c105b09f955fd6f5f4cd4793fcd8a987d9ed81250c716826dab107b2106"
+    },
+    {
+      "path": "tests/test_fader_serial_probe.py",
+      "sha256": "ac2acd063ef01dc3b570b0100b3505f604bff7156ba0702d691122a2ecb1bcac"
+    },
+    {
+      "path": "tests/test_audit_fader_readback.py",
+      "sha256": "1e3d1ab308e4e8278fbf58710d447bd1d50748da713c4ce9a2a9d3b9d7a8253d"
+    }
+  ],
+  "software_tests": [
+    {
+      "file": "fader-preservation-stage-tests-final.txt",
+      "sha256": "62005912f8e4d854cf9aa99e21dd0add56c0daf49d1bd764113517e6c8b45ed0",
+      "tests": 15,
+      "seconds": 17.167,
+      "result": "OK"
+    },
+    {
+      "file": "comm-preservation-dispatch-regression.txt",
+      "sha256": "af07aae6105e2ddbfb61b44b5ec6fb523736e950c12116607ce0147431082c39",
+      "tests": 11,
+      "seconds": 0.309,
+      "result": "OK"
+    }
+  ],
+  "existing_real_capture_compatibility": {
+    "verified_utc": "2026-09-20T23:20:00.940347+00:00",
+    "method": "Run the staged, extended independent audit against the restored real first-pass evidence",
+    "matches_original_audit_except_snapshot_filename": true,
+    "original_report_sha256": "145b3972110dde681c5e2246646bf276566f9135fde67e6d075908af78dcbef4",
+    "staged_report_sha256": "73c94a1c33952677e45d6200a463e37d5c41695490245c54e88b0933518617f0",
+    "pcaps": 15376,
+    "frames": 675735,
+    "new_named_fields_hardware_tested": false
+  },
+  "existing_evidence_archive_sha256": "49e09556f1a3102302d7011e3128b6ce8610c65cfeed86895c41f9ebdc3da7d3",
+  "private_evidence_directory": "~/Documents/OpenProControl-preservation/2026-09-20-comm-1.37/",
+  "independent_storage_device": false,
+  "new_fields_hardware_validated": false,
+  "calibration_triggered": false,
+  "live_acquisition_sources_modified": false,
+  "memory_reply_consistency": {
+    "analysis_utc": "2026-09-20T23:21:56.797346+00:00",
+    "source_file": "CODE-27-00008400.bin",
+    "source_sha256": "2479230a850da18b33b1dcf7292dbb12af6421aceabc047b2ae07d5582f23e05",
+    "formatter_entry": 37080,
+    "hexadecimal_value_load": {
+      "address": 37130,
+      "opcode_hex": "1010",
+      "instruction": "moveb (a0),d0"
+    },
+    "literal_value_load": {
+      "address": 37154,
+      "opcode_hex": "1ad0",
+      "instruction": "moveb (a0),(a5)+"
+    },
+    "two_separate_memory_loads": true,
+    "volatile_disagreement_observed_on_hardware": false,
+    "behavior": "Reject mismatched hex/literal values and preserve the capture; do not infer packet loss without evidence",
+    "disassembly_window_sha256": "1c87bd4e6188e9149b4b1039b230c692cda1eefff80244a0e11ea96cf63c7748"
+  }
+}
