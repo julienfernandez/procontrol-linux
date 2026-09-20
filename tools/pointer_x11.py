@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pont trackpad → pointeur X11, continu et sans root ; aucun clic ni clavier."""
+"""Pont trackpad, clics et clavier → X11, continu et sans root."""
 # SPDX-License-Identifier: GPL-3.0-or-later
 import argparse
 from surface_settings import load as load_settings, validate as validate_settings
@@ -72,9 +72,12 @@ class FreshPointer:
         self.gain = gain; self.pending = None; self.seen = deque(maxlen=256)
         self.remainder = [0.0, 0.0]
 
+    def reset(self):
+        self.pending = None; self.seen.clear(); self.remainder = [0.0, 0.0]
+
     def feed(self, row, now):
         if row.get('event') in ('started', 'console_state', 'stopped'):
-            self.pending = None; self.seen.clear(); self.remainder = [0.0, 0.0]
+            self.reset()
         if row.get('event') == 'ethernet_rx':
             self.pending = row
             return None
@@ -121,13 +124,17 @@ def worker(args):
         control = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
         Path('pointer.sock').unlink(missing_ok=True)
         control.bind('pointer.sock'); control.setblocking(False)
-        path = runtime / 'events.jsonl'; log = path.open(); log.seek(0, 2)
+        path = runtime / 'events.jsonl'
+        try: log = path.open(); log.seek(0, 2)
+        except FileNotFoundError: log = None
         settings = load_settings(runtime.parent/'settings.json')
         parser = FreshPointer(args.gain); alive = True; next_status = 0
+        daemon_identity = None
         state = {'pid': os.getpid(), 'started_utc': datetime.now(timezone.utc).isoformat(),
                  'gain': args.gain, 'mode': 'motion_clicks_alpha_keyboard', 'commands': 0, 'moves': 0,
                  'input_events': 0, 'settings_revision': settings['revision'],
-                 'position': pointer.position(), 'error': None}
+                 'position': pointer.position(), 'error': None,
+                 'daemon_running': False, 'daemon_pid': None, 'console': 'waiting_daemon'}
         def stop(*_):
             nonlocal alive
             alive = False
@@ -158,19 +165,32 @@ def worker(args):
                 except BlockingIOError: pass
                 if time.monotonic() >= next_status:
                     daemon = daemon_status(runtime)
-                    if not daemon.get('running'):
-                        state['error'] = 'Démon Ethernet arrêté'; break
-                    state['console'] = daemon.get('console')
-                    state['alpha'] = daemon.get('surface',{}).get('alpha',False)
-                    if state['console'] != 'online': inputs.release_all()
+                    running = bool(daemon.get('running'))
+                    identity = (daemon.get('pid'), daemon.get('started_utc')) if running else None
+                    if identity != daemon_identity:
+                        inputs.release_all(); parser.reset()
+                        # Never replay the old process's tail after a restart.
+                        if log is not None: log.close()
+                        try: log = path.open(); log.seek(0, 2)
+                        except FileNotFoundError: log = None
+                        daemon_identity = identity
+                    state['daemon_running'] = running
+                    state['daemon_pid'] = daemon.get('pid') if running else None
+                    state['console'] = daemon.get('console') if running else 'waiting_daemon'
+                    state['alpha'] = running and daemon.get('surface',{}).get('alpha',False)
+                    if state['console'] != 'online':
+                        inputs.release_all(); parser.reset()
                     state['position'] = pointer.position(); publish(); next_status = time.monotonic() + 1
+                if log is None:
+                    try: log = path.open()
+                    except FileNotFoundError: time.sleep(0.01); continue
                 offset = log.tell(); line = log.readline()
                 if line and not line.endswith('\n'):
                     log.seek(offset); time.sleep(0.01); continue
                 if line:
                     try: row = json.loads(line)
                     except ValueError: continue
-                    if row.get('event') == 'input_events':
+                    if row.get('event') == 'input_events' and state.get('console') == 'online':
                         age = time.time() - datetime.fromisoformat(row['utc']).timestamp()
                         if 0 <= age <= 0.25:
                             try:
@@ -181,20 +201,26 @@ def worker(args):
                         else: inputs.release_all()
                     if row.get('event') in ('stopped','started') or (row.get('event')=='console_state' and row.get('state')!='online'):
                         inputs.release_all()
+                        state['console'] = 'waiting_daemon'
+                        next_status = 0
                     motion = parser.feed(row, time.time())
                     if motion is not None and state.get('console') == 'online':
                         state['commands'] += 1
                         if any(motion): pointer.move(*motion); state['moves'] += 1
                 else:
-                    if os.fstat(log.fileno()).st_ino != path.stat().st_ino:
-                        log.close(); log = path.open()
+                    try: rotated = os.fstat(log.fileno()).st_ino != path.stat().st_ino
+                    except FileNotFoundError: rotated = True
+                    if rotated:
+                        log.close(); log = None
                         # Fichier nouvellement créé : la limite de fraîcheur reste appliquée.
                         parser.pending = None
                     time.sleep(0.01)
         except Exception as exc:
             state['error'] = str(exc); raise
         finally:
-            alive = False; inputs.release_all(); publish(); log.close(); pointer.close(); control.close()
+            alive = False; inputs.release_all(); publish()
+            if log is not None: log.close()
+            pointer.close(); control.close()
             Path('pointer.sock').unlink(missing_ok=True)
 
 

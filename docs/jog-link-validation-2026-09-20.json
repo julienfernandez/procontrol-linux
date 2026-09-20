@@ -1,0 +1,140 @@
+{
+  "date": "2026-09-20",
+  "ardour_version": "9.8.0",
+  "base_revision": "22ed8656c2533e325322ff11831448e5123e0d4b",
+  "baseline": {
+    "link_enabled": {
+      "pool_exhausted": true,
+      "sent": 1100,
+      "elapsed_seconds": 30.684857
+    },
+    "link_service_stopped": {
+      "pool_exhausted": true,
+      "sent": 700,
+      "elapsed_seconds": 18.914733,
+      "scheduled_transport_events_at_exhaustion": 14,
+      "immediate_events": 0
+    },
+    "unit_duplicate_before": "FAIL at first duplicate"
+  },
+  "native_tests": {
+    "pool_duplicates": 4096,
+    "pool_all_slots_recovered": true,
+    "link_rolling_seek_transitions": 4096
+  },
+  "python_tests": {
+    "passed": 223,
+    "seconds": 30.118
+  },
+  "start_boundary": {
+    "passed": true,
+    "pattern": "start-boundary",
+    "jog_commands": 2976,
+    "jog_seconds": 60.00521240697708,
+    "resume": {
+      "frame1": 44544,
+      "frame2": 88576,
+      "speed": 1.0
+    },
+    "final_speed": 0.0,
+    "physical_surface_actions_in_window": {},
+    "link_start_commands": 1,
+    "link_stop_commands": 1,
+    "link_peers_at_end": 1
+  },
+  "alternating": {
+    "passed": true,
+    "pattern": "alternating",
+    "jog_commands": 5925,
+    "jog_seconds": 120.00593892700272,
+    "resume": {
+      "frame1": 159684,
+      "frame2": 176114,
+      "speed": 1.0
+    },
+    "final_speed": 0.0,
+    "physical_surface_actions_in_window": {
+      "/jog": 396,
+      "1": 4,
+      "/goto_start": 3
+    },
+    "link_start_commands": 1,
+    "link_stop_commands": 1,
+    "link_peers_at_end": 1
+  },
+  "clock_and_small_jog": {
+    "at_start": [
+      "0"
+    ],
+    "small_negative_at_start": [
+      "0"
+    ],
+    "small_positive": [
+      "1764"
+    ],
+    "small_negative_returns_zero": [
+      "0"
+    ]
+  },
+  "smpte_at_start": [
+    "00:00:00:00"
+  ],
+  "jog_without_global_observer": true,
+  "installed": [
+    {
+      "path": "/home/moi/.local/opt/ardour-9.8/lib/ardour9/libardour.so.3.0.0",
+      "sha256": "1d71d7fcdc8ee5fe514140eefbd0e14277226d2dc0f0bfe7b18e46e3da0d7941",
+      "backup": "/home/moi/Documents/Codex/2026-09-13/oui-si-par-reprendre-a-tu/outputs/procontrol-linux/run/jog-link-20260920/libardour.so.3.0.0.before"
+    },
+    {
+      "path": "/home/moi/.local/opt/ardour-9.8/lib/ardour9/surfaces/libardour_osc.so",
+      "sha256": "a4e470ece9bc6953c4403b8c6422ca555fda746ef786ecbcc41fb3e46d34117b",
+      "backup": "/home/moi/Documents/Codex/2026-09-13/oui-si-par-reprendre-a-tu/outputs/procontrol-linux/run/jog-link-20260920/libardour_osc.so.before"
+    },
+    {
+      "path": "/home/moi/.local/opt/ardour-9.8/lib/ardour9/libardourcp.so",
+      "sha256": "2565eafc84a8164acc03eb4737769e182d3f59495f79910350e2733595fdf172",
+      "backup": "/home/moi/Documents/Codex/2026-09-13/oui-si-par-reprendre-a-tu/outputs/procontrol-linux/run/jog-link-20260920/libardourcp.so.before"
+    }
+  ],
+  "patch_sha256": "a635b0819708eca64b9993f7a033d49e07cc8a79935d953b360fbc2f53934721",
+  "limits": [
+    "No overnight endurance test",
+    "Audible MPC alignment and other sync/record/tempo/loop modes not validated",
+    "120-second test includes 396 additional physical jog actions and 3 goto_start actions; 60-second start-boundary test has no physical surface actions",
+    "Intermediate debugger-script interruption and first memory-only boundary failure are excluded from successful final tests"
+  ],
+  "restart": {
+    "normal_quit_of_copy": true,
+    "original_session": {
+      "pid": 390473,
+      "session": "/home/moi/Musique/studio-mpc-usb/studio-mpc-usb.ardour",
+      "started_at": 1789860705.3546517
+    },
+    "play_stop": {
+      "record_enabled": 0,
+      "stopped_before": 0.0,
+      "playing": 1.0,
+      "frame1": 43520,
+      "frame2": 87552,
+      "stopped_after": 0.0,
+      "passed": true
+    }
+  },
+  "final_runtime": {
+    "pid": 390325,
+    "console": "online",
+    "ardour": "responding",
+    "osc_error": null,
+    "error": null,
+    "routes_ready": true,
+    "routes": 8,
+    "session": "/home/moi/Musique/studio-mpc-usb"
+  },
+  "physical_confirmation": {
+    "confirmed": true,
+    "received_utc": "2026-09-19T23:33:25.974585+00:00",
+    "user_reply": "Oui, lecture et compteur corrects",
+    "scope": "Original session: playback plus physical jog back to start remains responsive; console counter correct at the beginning"
+  }
+}

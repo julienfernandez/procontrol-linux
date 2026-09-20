@@ -1,0 +1,108 @@
+{
+  "date": "2026-09-20",
+  "python_tests": {
+    "passed": 241,
+    "seconds": 48.051
+  },
+  "inventory_followup_tests": {
+    "passed": 2,
+    "seconds": 8.557
+  },
+  "native_tests": {
+    "link_seek_cycles": 4096,
+    "event_pool_duplicates": 4096,
+    "all_pool_slots_recovered": true
+  },
+  "builds": {
+    "link_bridge": "pass",
+    "ethernet_helper": "pass",
+    "link_sdk_revision": "902aef95bf94af49746fdda5369b42cdcfa1e6d2"
+  },
+  "ardour_patch_validation": {
+    "base": "22ed8656c2533e325322ff11831448e5123e0d4b",
+    "patches": [
+      {
+        "patch": "ardour-9.8-plugin-ui.patch",
+        "sha256": "aec877853b1f94969a094e30af831ab8a5f7911a71a54569dfba95cb516b2965",
+        "applies": true
+      },
+      {
+        "patch": "ardour-9.8-osc-stability.patch",
+        "sha256": "9a03619b85bfe5cea609748a881254cb5a1c98f1ba3b4252cc11122cf9cd709b",
+        "applies": true
+      },
+      {
+        "patch": "ardour-9.8-curated-plugins.patch",
+        "sha256": "7cf2679b82e7c9e7bb1d22cda65a89c2b972ab10fd6fbf85d09cb9307f35f9c6",
+        "applies": true
+      },
+      {
+        "patch": "ardour-9.8-warm-tape.patch",
+        "sha256": "883cf01edb59293cf9a7a49ec4db1a60805033f97d6bd8f361b82d60c4d3ea6c",
+        "applies": true
+      },
+      {
+        "patch": "ardour-9.8-jog-pool.patch",
+        "sha256": "a635b0819708eca64b9993f7a033d49e07cc8a79935d953b360fbc2f53934721",
+        "applies": true
+      }
+    ],
+    "reproduces_local_source": {
+      "libs/ardour/lv2_plugin.cc": true,
+      "libs/ardour/session_events.cc": true,
+      "libs/ardour/session_process.cc": true,
+      "libs/ardour/session_transport.cc": true,
+      "libs/ctrl-interface/control_protocol/basic_ui.cc": true,
+      "libs/surfaces/osc/osc.cc": true,
+      "libs/surfaces/osc/osc.h": true,
+      "libs/surfaces/osc/osc_global_observer.cc": true,
+      "libs/surfaces/osc/osc_select_observer.cc": true
+    }
+  },
+  "installed_libraries": [
+    {
+      "library": "libardour.so.3.0.0",
+      "sha256": "1d71d7fcdc8ee5fe514140eefbd0e14277226d2dc0f0bfe7b18e46e3da0d7941",
+      "matches_jog_manifest": true
+    },
+    {
+      "library": "libardour_osc.so",
+      "sha256": "a4e470ece9bc6953c4403b8c6422ca555fda746ef786ecbcc41fb3e46d34117b",
+      "matches_jog_manifest": true
+    },
+    {
+      "library": "libardourcp.so",
+      "sha256": "2565eafc84a8164acc03eb4737769e182d3f59495f79910350e2733595fdf172",
+      "matches_jog_manifest": true
+    }
+  ],
+  "runtime": {
+    "observed_utc": "2026-09-20T07:54:45.315129+00:00",
+    "gateway_running": true,
+    "console": "online",
+    "tracks": 8,
+    "routes_ready": true,
+    "feedback": {
+      "sent": 213,
+      "acked": 213,
+      "timeouts": 0,
+      "recoveries": 0
+    },
+    "pointer_running": true,
+    "pointer_gain": 0.58,
+    "link_running": true,
+    "link_peers": 1,
+    "link_tempo": 120
+  },
+  "session_file": {
+    "before_sha256": "0bd2c70712b1d4a74bdcb7950a294b346513f43ac27c5006050e1726c094479e",
+    "after_sha256": "0bd2c70712b1d4a74bdcb7950a294b346513f43ac27c5006050e1726c094479e"
+  },
+  "limits": [
+    "No new hardware gesture or audio listening test in this review",
+    "No overnight endurance or CPU benchmark",
+    "Navigation cross awaiting controlled capture",
+    "Jog-to-IN/OUT editor position remains asynchronous",
+    "GitHub workflow excludes locally linked Ardour pool test"
+  ]
+}

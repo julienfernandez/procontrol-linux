@@ -1,0 +1,32 @@
+name: Software checks
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Linux test and build dependencies
+        run: sudo apt-get update && sudo apt-get install -y iproute2 util-linux libjack-jackd2-dev build-essential
+      - name: Python regression suite
+        run: python3 -m unittest discover -s tests -v
+      - name: Syntax and generated mapping inventory
+        run: |
+          python3 -m compileall -q tools tests
+          python3 tools/mapping_inventory.py --check
+          git diff --check
+      - name: Native transport regression and Ethernet helper compilation
+        run: |
+          mkdir -p build
+          c++ -std=c++17 -Wall -Wextra -Werror native/tests/link-transport.cc -o build/test-link-transport
+          build/test-link-transport
+          cc -std=c11 -Wall -Wextra -Werror native/procontrol-net.c -o build/procontrol-net
+      - name: Compile Link bridge with pinned SDK
+        run: ./link build

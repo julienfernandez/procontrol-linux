@@ -1,5 +1,38 @@
 # Historique des versions
 
+## 20 septembre 2026 — revue, documentation et contrôles automatiques
+
+- Intégration des correctifs jog/JACK/Link et de reconnexion du pointeur déjà
+  déployés localement, avec leurs tests et preuves de validation.
+- Inventaire des boutons corrigé pour inclure les éditeurs DSP et monitoring,
+  neuf contextes indépendants et contrôle `--check` contre la dérive des guides.
+- Carte fonctionnelle actualisée, index des guides, ordre des cinq patches
+  Ardour et distinction entre essais logiciels, Ardour et matériel.
+- CI GitHub : tests Python, inventaire, syntaxe, test natif Link, compilation du
+  helper Ethernet et du pont Link avec SDK épinglé. [Détail de la revue](docs/review-2026-09-20.md).
+
+## 20 septembre 2026 — édition, bibliothèque DSP et compteur
+
+- Commandes d’édition adaptées aux groupes d’actions Ardour 9.8 : cuts, copie,
+  suppression, duplication, calage, UNDO/REDO, SAVE et contexte explicite de l’éditeur.
+- Sélection IN/OUT, pas d’une ou quatre mesures, boucles, punch et jog fin ;
+  validation sur une copie jetable. [Guide d’édition](docs/console-editing.md).
+- INS/SEND par tranche ouvre le navigateur DSP de cette piste ; EQ/DYN ajoutent
+  leur effet absent. Huit profils proposés : EQ, compresseur, réverb, délai,
+  phaser, Chaleur, Tube et Tape. [Bibliothèque](docs/curated-plugins.md).
+- Compteur BBT de largeur fixe et pont unidirectionnel Ardour → Link ;
+  [synchro MPC et limites](docs/counter-mpc-sync.md).
+
+## 20 septembre 2026 — reprise de la souris après redémarrage
+
+- Le pont X11 reste en attente lors de l'arrêt de la passerelle et se reconnecte
+  automatiquement, en conservant la sensibilité configurée.
+- Libération des touches/clics maintenus, abandon de l'ancien flux et tolérance
+  à un journal momentanément absent pendant sa rotation.
+- Régression reproduite sur l'ancien code ; reprise du même processus vérifiée
+  après une relance réelle de la passerelle, Ardour restant ouvert.
+  Voir [le rapport](docs/pointer-recovery-2026-09-20.md).
+
 ## 20 septembre 2026 — monitoring par tranche
 
 - Page MON/Ø : ASSIGN/MUTE bascule IN/DISK, INPUT/OUTPUT ciblent la piste
@@ -9,6 +42,16 @@
   cibles absolues protégées lors des changements rapides de sélection/banque.
 - 223 tests logiciels passent. Essai physique et auditif de cette extension
   encore à effectuer ; voir [le guide](docs/track-monitoring.md).
+
+## 20 septembre 2026 — jog, début de session et Link
+
+- Correction native de la fuite des événements de transport rejetés et du plan
+  JACK périmé qui pouvait redémarrer Ardour à chaque cycle au start.
+- Compteur OSC et jog relatif alignés sur la position audible de l'interface.
+- Maintien de la lecture Link pendant un locate JACK, compteurs de vrais
+  démarrages/arrêts et protection du jog OSC sans observateur de feedback.
+- Tests natifs du pool et de Link, scénario de recul au start et outil de
+  stress reproductible sur copie de session ; [preuves et limites](docs/jog-link-stability-2026-09-20.md).
 
 ## 17 septembre 2026 — stabilité OSC
 

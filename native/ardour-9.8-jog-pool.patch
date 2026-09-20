@@ -1,0 +1,109 @@
+diff --git a/libs/ardour/session_events.cc b/libs/ardour/session_events.cc
+index f79d12b..eb8c770 100644
+--- a/libs/ardour/session_events.cc
++++ b/libs/ardour/session_events.cc
+@@ -246,8 +246,15 @@ SessionEventManager::merge_event (SessionEvent* ev)
+ 	default:
+ 		for (Events::iterator i = events.begin(); i != events.end(); ++i) {
+ 			if ((*i)->type == ev->type && (*i)->action_sample == ev->action_sample) {
+-			  error << string_compose(_("Session: cannot have two events of type %1 at the same sample (%2)."),
+-						  enum_2_string (ev->type), ev->action_sample) << endmsg;
++				/* Repeated JACK starts can request the same notification.
++				 * The existing event already covers it, but the rejected
++				 * allocation must still be returned to its owning pool.
++				 */
++				if (ev->type != SessionEvent::TransportStateChange) {
++					error << string_compose(_("Session: cannot have two events of type %1 at the same sample (%2)."),
++					                        enum_2_string (ev->type), ev->action_sample) << endmsg;
++				}
++				delete ev;
+ 				return;
+ 			}
+ 		}
+diff --git a/libs/ardour/session_process.cc b/libs/ardour/session_process.cc
+index e6d4b82..39a8647 100644
+--- a/libs/ardour/session_process.cc
++++ b/libs/ardour/session_process.cc
+@@ -1253,7 +1253,12 @@ Session::plan_master_strategy_engine (pframes_t nframes, double master_speed, sa
+ 
+ 		if (!transport_stopped_or_stopping()) {
+ 			DEBUG_TRACE (DEBUG::Slave, "JACK Transport: jack is stopped, we are not, so stop ...\n");
+-			TFSM_STOP (false, false);
++			/* The plan is executed later in Session::process(). Stopping
++			 * here left the previous plan (possibly Start) in place and
++			 * could restart us every cycle while JACK was still waiting
++			 * for a locate at the beginning of the session.
++			 */
++			transport_master_strategy.action = TransportMasterStop;
+ 			return 1.0;
+ 		}
+ 
+diff --git a/libs/ardour/session_transport.cc b/libs/ardour/session_transport.cc
+index 0790d30..97e6376 100644
+--- a/libs/ardour/session_transport.cc
++++ b/libs/ardour/session_transport.cc
+@@ -610,6 +610,19 @@ Session::start_transport (bool after_loop)
+ 	DEBUG_TRACE (DEBUG::Transport, string_compose ("send TSC4 with speed = %1\n", transport_speed()));
+ 
+ 	if (!after_loop) {
++		/* A seek may have skipped the notifications from the previous
++		 * start. Replace that pair before scheduling the new one, keeping
++		 * both the start and latency-preroll notifications for this roll.
++		 * Queue the clear: deleting timeline events here could invalidate
++		 * an iterator in process_with_events().
++		 */
++		/* Preroll record trim also queues a notification at record-in;
++		 * that future monitoring change must survive this start.
++		 */
++		if (!_preroll_record_trim_len) {
++			clear_events (SessionEvent::TransportStateChange);
++		}
++
+ 		/* emit TransportStateChange signal only when transport is actually rolling */
+ 		SessionEvent* ev = new SessionEvent (SessionEvent::TransportStateChange, SessionEvent::Add, _transport_sample, _transport_sample, 1.0);
+ 		queue_event (ev);
+diff --git a/libs/ctrl-interface/control_protocol/basic_ui.cc b/libs/ctrl-interface/control_protocol/basic_ui.cc
+index 8a404d6..c8d894d 100644
+--- a/libs/ctrl-interface/control_protocol/basic_ui.cc
++++ b/libs/ctrl-interface/control_protocol/basic_ui.cc
+@@ -571,7 +571,10 @@ BasicUI::locate (samplepos_t where, bool roll)
+ void
+ BasicUI::jump_by_seconds (double secs, LocateTransportDisposition ltd)
+ {
+-	samplepos_t current = session->transport_sample();
++	/* Relative navigation must start where the user hears/sees the
++	 * playhead, not at the disk-reader's JACK latency-preroll position.
++	 */
++	samplepos_t current = session->audible_sample();
+ 	double s = (double) current / (double) session->nominal_sample_rate();
+ 
+ 	s+= secs;
+diff --git a/libs/surfaces/osc/osc_global_observer.cc b/libs/surfaces/osc/osc_global_observer.cc
+index 085f4a3..35ea376 100644
+--- a/libs/surfaces/osc/osc_global_observer.cc
++++ b/libs/surfaces/osc/osc_global_observer.cc
+@@ -242,7 +242,10 @@ OSCGlobalObserver::tick ()
+ 	if (_init) {
+ 		return;
+ 	}
+-	samplepos_t now_sample = session->transport_sample();
++	/* Match the GUI clocks. With JACK sync the internal disk-reader
++	 * position can be ahead by latency preroll, even at JACK frame zero.
++	 */
++	samplepos_t now_sample = session->audible_sample();
+ 	if (feedback[15]) { // trigger grid status
+ 		if (_heartbeat == 0) {
+ 			_osc.trigger_grid_state(addr);
+--- a/libs/surfaces/osc/osc.cc
++++ b/libs/surfaces/osc/osc.cc
+@@ -3167,7 +3167,9 @@
+ 		set_transport_speed (0);
+ 	}
+ 	s->jogmode = (uint32_t) mode;
+-	s->global_obs->jog_mode (mode);
++	if (s->global_obs) {
++		s->global_obs->jog_mode (mode);
++	}
+ 	return 0;
+ }
+ 

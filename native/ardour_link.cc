@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <sys/file.h>
 #include <fcntl.h>
+#include "link_transport.h"
 
 namespace {
 volatile std::sig_atomic_t running = 1;
@@ -23,7 +24,8 @@ struct Bridge {
     std::atomic<bool> valid{false}, playing{false}, shutdown{false};
     std::atomic<double> bpm{0}, quantum{4}, phase_error_ms{0};
     std::atomic<unsigned long> cycles{0}, realignments{0};
-    bool previous_playing = false, previous_valid = false;
+    std::atomic<unsigned long> transport_starts{0}, transport_stops{0};
+    bool previous_playing = false, previous_rolling = false, previous_valid = false;
     jack_nframes_t previous_frame = 0, previous_size = 0;
     std::size_t previous_peers = 0;
     double previous_quantum = 4;
@@ -42,6 +44,7 @@ struct Bridge {
         b.valid.store(ok);
         ++b.cycles;
         const bool rolling = ok && (transport == JackTransportRolling || transport == JackTransportLooping);
+        const bool playing = link_transport_playing(transport, ok, b.previous_playing);
         auto state = b.link.captureAudioSessionState();
         // Link beats are quarter notes, even for a JACK meter such as 6/8.
         const double scale = ok ? 4.0 / p.beat_type : 1.0;
@@ -56,16 +59,17 @@ struct Bridge {
         }
         // Only JACK transitions publish transport commands. A peer joining does
         // not itself start playback; no incoming command is sent into Ardour.
-        if (rolling != b.previous_playing || !ok) {
-            if (state.isPlaying() != rolling) {
-                state.setIsPlaying(rolling, now);
+        if (playing != b.previous_playing || !ok) {
+            if (state.isPlaying() != playing) {
+                state.setIsPlaying(playing, now);
+                if (playing) ++b.transport_starts; else ++b.transport_stops;
                 changed = true;
             }
         }
-        if (rolling && !b.previous_playing) b.play_started = now;
+        if (playing && !b.previous_playing) b.play_started = now;
         const auto expected = b.previous_frame + b.previous_size;
         const auto delta = std::abs(static_cast<double>(p.frame) - expected);
-        const bool jump = rolling && b.previous_playing && delta > frames * 2.0;
+        const bool jump = rolling && b.previous_rolling && delta > frames * 2.0;
         const double error = ok ? std::remainder(state.phaseAtTime(now, q) - beat, q) : 0;
         const double error_ms = error * 60000.0 / tempo;
         b.phase_error_ms.store(rolling ? error_ms : 0);
@@ -74,7 +78,7 @@ struct Bridge {
         const auto correction_interval = now - b.play_started < std::chrono::milliseconds(250)
             ? std::chrono::milliseconds(20) : std::chrono::milliseconds(1000);
         const bool drift = rolling && std::abs(error_ms) > 10 && now - b.last_alignment > correction_interval;
-        if (rolling && (!b.previous_playing || !b.previous_valid || jump ||
+        if (rolling && (!b.previous_rolling || !b.previous_valid || jump ||
                 peers != b.previous_peers || q != b.previous_quantum || drift)) {
             state.forceBeatAtTime(beat, now, q);
             b.last_alignment = now;
@@ -82,13 +86,14 @@ struct Bridge {
             changed = true;
         }
         if (changed) b.link.commitAudioSessionState(state);
-        b.previous_playing = rolling;
+        b.previous_playing = playing;
+        b.previous_rolling = rolling;
         b.previous_valid = ok;
         b.previous_frame = p.frame;
         b.previous_size = frames;
         b.previous_peers = peers;
         b.previous_quantum = q;
-        b.playing.store(rolling);
+        b.playing.store(playing);
         b.bpm.store(ok ? tempo : 0);
         b.quantum.store(q);
         return 0;
@@ -128,6 +133,8 @@ int main(int argc, char** argv) {
             << ",\"peers\":" << b.link.numPeers() << ",\"tempo\":" << b.bpm.load()
             << ",\"link_tempo\":" << state.tempo() << ",\"quantum\":" << b.quantum.load()
             << ",\"playing\":" << (b.playing.load() ? "true" : "false")
+            << ",\"transport_starts\":" << b.transport_starts.load()
+            << ",\"transport_stops\":" << b.transport_stops.load()
             << ",\"phase_error_ms\":" << b.phase_error_ms.load()
             << ",\"realignments\":" << b.realignments.load() << ",\"audio_cycles\":" << last_cycles << "}\n";
         out.close();

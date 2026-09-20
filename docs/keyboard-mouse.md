@@ -7,21 +7,31 @@ en arrière-plan. Les clics et le clavier ALPHA / pavé sont maintenant raccord�
 ## Utilisation sur ce laptop
 
 ```
-./pointer start --gain 0.24
+./pointer start
 ./pointer status
 ./pointer stop
 ```
 
 Le pont fonctionne sans root sur la session XFCE/X11, à l'aide de l'extension
 [XTEST](https://xorg.freedesktop.org/archive/X11R7.7/doc/libXtst/xtestlib.html).
-Il nécessite procontrold actif et s'arrête si celui-ci s'arrête. Il n'émet aucun
+Il nécessite procontrold actif au premier lancement. Depuis le correctif du
+20/09/2026, il reste en attente si la passerelle s'arrête et reprend
+automatiquement à son retour. Il n'émet aucun
 paquet Ethernet. État : `run/pointer-status.json` ; erreurs :
 `run/pointer-launcher.log`. `stop` ne coupe que la souris, pas le transport.
 
-Gain utilisé actuellement : **0,24**, après un premier essai à 0,12 jugé trop
-lent. Pour changer le gain, arrêter ce seul pont puis relancer avec `--gain`.
-Sans cet argument, la valeur initiale du programme est 0,12. Un lancement
-alors qu'il tourne retourne son état sans changer le gain. Les fractions sont
+Pendant une coupure, l'état reste `running: true`, avec `console:
+waiting_daemon` et `daemon_running: false`. Les touches et clics possédés sont
+libérés. Le retour de la passerelle est détecté au prochain contrôle (environ
+une seconde), sans rejouer les gestes de l'ancien processus. Une disparition
+temporaire du journal pendant sa rotation est également tolérée. Le service
+ne s'arrête que sur une demande explicite ou une erreur ; voir la
+[validation de reprise](pointer-recovery-2026-09-20.md).
+
+Gain configuré sur ce laptop : **0,58**. Sans `--gain`, le lancement charge
+`pointer_gain` dans `settings.json`. La page de réglages applique les changements
+à chaud ; `--gain` permet une surcharge lors du lancement après arrêt.
+Un lancement alors qu'il tourne retourne son état sans changer le gain. Les fractions sont
 accumulées pour préserver les mouvements lents. Ce réglage est une sensibilité
 constante, pas encore une courbe d'accélération selon la vitesse du doigt.
 

@@ -13,6 +13,8 @@ ProControl ↔ Ethernet brut ↔ procontrold ↔ OSC ↔ Ardour
 ## Fonctions disponibles
 
 - Session Ethernet Online maintenue en arrière-plan, transport et jog.
+- Édition depuis la console : cuts, copie, suppression, duplication, calage,
+  sélection IN/OUT, boucles, UNDO/REDO et SAVE ; [guide pratique](docs/console-editing.md).
 - Huit faders motorisés bidirectionnels avec gestion du toucher, banques,
   sélection, mute, solo, armement et panoramique.
 - Automatisation du gain par touche AUTO : Manual, Play, Write, Touch, Latch,
@@ -22,16 +24,17 @@ ProControl ↔ Ethernet brut ↔ procontrold ↔ OSC ↔ Ardour
 - Noms de pistes, valeurs, compteur de position, LEDs de la Channel Matrix,
   vumètres stéréo et master sur les grandes colonnes calibrées.
 - Trackpad, clics, mode clavier ALPHA et pavé numérique via X11.
-- Section DSP : navigation des greffons, édition de l'EQ et du compresseur LSP,
-  paramètres sur les encodeurs et afficheurs ; suivi de fenêtre avec le
-  correctif OSC Ardour fourni.
+- Section DSP ouverte par INS/SEND sur chaque voie : EQ et compresseur ajoutés
+  s’ils manquent, puis bibliothèque de huit effets avec paramètres mappés sur
+  les encodeurs et afficheurs ; nécessite les patches Ardour fournis.
 - Démarrage et redémarrage idempotents, réglages locaux à
   `http://127.0.0.1:8765`.
 
-Les validations matérielles et les limites de chaque fonction sont consignées
-séparément dans les rapports. Les derniers changements du jog et des moteurs
-à 50 Hz passent les tests logiciels ; leur essai physique intensif reste à
-confirmer. Voir [CHANGELOG.md](CHANGELOG.md).
+Les validations logicielles, essais dans Ardour et observations physiques sont
+distingués dans les rapports. Le retour au début avec le jog en lecture et le
+compteur ont été confirmés par l’utilisateur ; cela ne valide pas toute
+l’endurance audio ou la synchronisation audible MPC. Voir [la revue actuelle](docs/review-2026-09-20.md),
+[l’index des guides](docs/README.md) et [CHANGELOG.md](CHANGELOG.md).
 
 ## Démarrage
 
@@ -73,6 +76,8 @@ et [les réglages stéréo](docs/stereo-settings.md).
 
 ## Ardour, DSP et retours
 
+- [Édition, sélection et boucles](docs/console-editing.md)
+- [Bibliothèque DSP de huit effets](docs/curated-plugins.md)
 - [Contrat OSC et commandes](docs/ardour-osc-contract.md)
 - [Automatisation et LEDs](docs/automation-modes.md)
 - [Écoute IN / DISK depuis la console](docs/track-monitoring.md)
@@ -104,24 +109,39 @@ mesures/temps, le diagnostic MIDI Clock et le pont optionnel **Ardour → Ableto
 Le service se pilote avec `./link start|status|stop` après installation ; son état
 distingue le processus actif, le tempo transmis et les participants Link détectés.
 
+Le [correctif jog / JACK / Link du 20 septembre](docs/jog-link-stability-2026-09-20.md)
+traite l'épuisement du pool audio, la boucle de redémarrage au start et l'écart
+entre le compteur OSC et la position affichée par Ardour. Il nécessite le
+[patch natif complémentaire](native/ardour-9.8-jog-pool.patch) et la reconstruction
+du pont Link pour conserver la lecture pendant les repositionnements JACK.
+
 ## Développement et tests
 
 ```bash
 python3 -m unittest discover -s tests -v
+python3 tools/mapping_inventory.py --check
+python3 -m compileall -q tools tests
 ```
 
-223 tests passent sur la machine de développement. Les tests du helper natif
+241 tests passent sur la machine de développement lors de la revue du 20 septembre. Les tests du helper natif
 peuvent être ignorés s'il n'est pas installé ; certaines vérifications de
 capture nécessitent les utilitaires Linux `ip` et `flock`. Les tests de
 capture emploient un faux dumpcap et n'accèdent pas à la console réelle.
 
 - `tools/` : session Ethernet, ordonnanceurs, mapping, OSC et services.
-- `native/` : helper CAP_NET_RAW et correctif OSC Ardour.
+- `native/` : helper CAP_NET_RAW, pont Link et cinq patches Ardour ;
+  [ordre d’application et tests natifs](native/README.md).
 - `ardour/` : scripts Lua côté DAW.
 - `tests/` : tests et fixtures minimales de protocole.
 - `web/`, `assets/` : réglages locaux et icône.
 - `docs/` : protocole, mesures, cartographie et historique des validations.
 - `vendor/` : références GPL conservées avec provenance et licences.
+
+Le [workflow GitHub](.github/workflows/checks.yml) vérifie les tests Python,
+l’inventaire généré, la syntaxe, le test natif de transport Link et la compilation
+du helper et du pont Link complet. Il ne pilote aucun matériel. Le test natif du
+pool Ardour nécessite la bibliothèque patchée locale. Pour régénérer l’inventaire
+après un changement de mapping : `python3 tools/mapping_inventory.py`.
 
 Avant une modification des modules en service, arrêter `pointer` et
 `procontrol`, puis les relancer après vérification. Un seul émetteur Ethernet
