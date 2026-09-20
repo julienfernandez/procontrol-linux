@@ -18,6 +18,12 @@ passage, pas une archive complète ni deux passages validés**.
 Le [manifeste de cette validation](fader-archive-audit-2026-09-21.json) conserve
 les empreintes, les tests, les instantanés et les emplacements des preuves.
 
+**Étape suivante à 23:04:37 UTC :** la
+[première passe entière a été reconstruite et conservée avec ses captures](fader-first-pass-2026-09-21.md).
+Ce nouvel instantané couvre les 11 546 octets du premier passage et les cinq
+premiers blocs du second. Les résultats partiels ci-dessus sont conservés
+comme historique ; la double acquisition reste alors inachevée.
+
 ## Contrôles supplémentaires à l'échelle de l'archive
 
 - La preuve préalable des huit lectures `d0–d7` est auditée depuis ses PCAP.
