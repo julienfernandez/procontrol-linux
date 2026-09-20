@@ -35,6 +35,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Pilote préparé pour comparer les lots diagnostic comm de 16 et 32 octets](comm-batch-benchmark.md) :
+  dimension de file, compteur de débordement, bloc connu et audit des captures.
+
 - [Première passe complète du programme fader installé](fader-first-pass-2026-09-21.md),
   [audit indépendant, segments et archive des captures](fader-first-pass-2026-09-21.json).
 

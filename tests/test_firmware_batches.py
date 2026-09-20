@@ -36,8 +36,10 @@ class BatchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             diagnostic_payloads(memory_envelope(0x20400, 0)+b'\x90\x10\x5c')
 
-    def exchange(self, incomplete=False):
+    def exchange(self, incomplete=False, experimental=False):
         data = bytes([0xf7, 0xf0, 0, 10, 13, 39, 255, 128, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+        start, batch = (0x2a3d0, 32) if experimental else (0x20400, 16)
+        if experimental: data = bytes(range(256))
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
             rx, remote_tx = socket.socketpair(socket.AF_UNIX, socket.SOCK_DGRAM)
@@ -63,19 +65,20 @@ class BatchTests(unittest.TestCase):
                     self.assertEqual(remote_rx.recv(65535)[28],0xe2)
                     remote_tx.send(peer.frame(0xa0,ack=1))
                     seq = 1000
-                    for index, (address, expected) in enumerate(requests_for(0x20400,len(data),16)):
+                    for index, (address, expected) in enumerate(requests_for(start,len(data),batch,
+                                                                           experimental_batch32=experimental)):
                         request = pending.pop(0) if pending else remote_rx.recv(65535)
                         self.assertEqual(request[30:30+len(expected)],expected)
                         remote_tx.send(peer.frame(0xa0,ack=int.from_bytes(request[18:22],'big')))
                         if address is None:
                             groups = [(1,PREFIX+EXPECTED_VERSION+b'\xf7')]
                         else:
-                            positions = list(range(address,min(address+16,0x20400+len(data))))
+                            positions = list(range(address,min(address+batch,start+len(data))))
                             if incomplete: positions.pop()
                             positions.reverse()  # responses need not arrive in address order
                             groups = [(1,PREFIX+b'\n\r\xf7')]
                             groups += [(len(positions[n:n+2]), b''.join(
-                                memory_envelope(a,data[a-0x20400]) for a in positions[n:n+2]))
+                                memory_envelope(a,data[a-start]) for a in positions[n:n+2]))
                                 for n in range(0,len(positions),2)]
                         for count, body in groups:
                             seq += 1
@@ -90,8 +93,9 @@ class BatchTests(unittest.TestCase):
 
             thread = threading.Thread(target=server);thread.start()
             try:
-                report = run_probe(rx,tx,ConsoleSession(HOST,PEER),out,address=0x20400,
-                                   length=len(data),batch_size=16,connect_timeout=.5,reply_timeout=.2)
+                report = run_probe(rx,tx,ConsoleSession(HOST,PEER),out,address=start,
+                                   length=len(data),batch_size=batch,connect_timeout=.5,reply_timeout=.2,
+                                   experimental_batch32=experimental)
                 thread.join(2)
                 self.assertFalse(thread.is_alive())
                 if failures: raise failures[0]
@@ -102,7 +106,18 @@ class BatchTests(unittest.TestCase):
                 else:
                     self.assertIsNone(report['error'])
                     self.assertEqual((out/'memory.bin').read_bytes(),data)
-                    self.assertEqual(len(report['transactions']),3)
+                    self.assertEqual(len(report['transactions']),1+(len(data)+batch-1)//batch)
+                    if experimental:
+                        from audit_comm_archive import audit_chunk
+                        actual, audited = audit_chunk(out/'traffic.pcap',start,len(data),
+                            bytes.fromhex(HOST.replace(':','')),bytes.fromhex(PEER.replace(':','')),
+                            expected_batch_size=batch)
+                        self.assertEqual(actual,data)
+                        self.assertEqual(audited['counts']['memory_requests'],8)
+                        with self.assertRaises(ValueError):
+                            audit_chunk(out/'traffic.pcap',start,len(data),
+                                bytes.fromhex(HOST.replace(':','')),bytes.fromhex(PEER.replace(':','')),
+                                expected_batch_size=16)
             finally:
                 rx.close();tx.close();remote_tx.close();remote_rx.close()
 
@@ -111,6 +126,21 @@ class BatchTests(unittest.TestCase):
 
     def test_missing_byte_prevents_next_batch_and_complete_dump(self):
         self.exchange(incomplete=True)
+
+    def test_experimental_32_preserves_all_byte_values_over_socket_and_independent_audit(self):
+        self.exchange(experimental=True)
+
+    def test_experimental_32_missing_byte_stops_without_retry(self):
+        self.exchange(incomplete=True,experimental=True)
+
+    def test_experimental_32_is_only_available_for_fixed_code_pilot(self):
+        allowed=dict(address=0x2a3d0,length=256,batch_size=32,experimental_batch32=True)
+        self.assertEqual(len(requests_for(**allowed)),9)
+        for changes in ({'address':0x20400},{'length':255},{'batch_size':16},
+                        {'experimental_batch32':False},{'state':'fader-rx-ring'},
+                        {'ring_offset':0},{'target':'fader'}):
+            with self.subTest(changes=changes),self.assertRaises(ValueError):
+                requests_for(**{**allowed,**changes})
 
 
 if __name__ == '__main__': unittest.main()

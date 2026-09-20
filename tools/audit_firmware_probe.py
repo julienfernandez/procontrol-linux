@@ -25,7 +25,8 @@ STATES = {'fader-version': (0x5094a,10), 'fader-version-valid': (0x509c2,4),
           'comm-application-checksum': (0x30000,2),
           'comm-network-settings': (0x34000,10),
           'comm-utility-settings': (0x3c000,88),
-          'comm-utility-mirror': (0x40000,88)}
+          'comm-utility-mirror': (0x40000,88),
+          'comm-diagnostic-overflows': (0x6b51e,4)}
 
 
 def sha(data):

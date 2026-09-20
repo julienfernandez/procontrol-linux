@@ -15,14 +15,16 @@ SEGMENTS = ((0x20000,0x20008),(0x20064,0x20080),(0x20100,0x20110),(0x20400,0x2fc
 PREFIX = bytes.fromhex('f0 13 00 70 00')
 REPLY = re.compile(re.escape(PREFIX) +
     rb"(?:\n\r|COMv1\.37\n\r|(?P<address>[0-9A-Fa-f]{8}): (?P<hex>[0-9A-Fa-f]{2}) '(?P<byte>.)'\n\r)\xf7", re.DOTALL)
-REQUEST = re.compile(re.escape(PREFIX) + rb'A([0-9A-F]{8})(m|M{1,16})\xf7')
+REQUEST = re.compile(re.escape(PREFIX) + rb'A([0-9A-F]{8})(m|M{1,32})\xf7')
 
 
 def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def audit_chunk(path, start, length, host, peer):
+def audit_chunk(path, start, length, host, peer, expected_batch_size=None):
+    if expected_batch_size is not None and not 1<=expected_batch_size<=32:
+        raise ValueError('Taille de lot attendue incorrecte')
     expected=set(range(start,start+length))
     requested=set(); values={}; requests={}; acks=set(); sequences={}
     counts=Counter(); first=None; last=None
@@ -49,6 +51,8 @@ def audit_chunk(path, start, length, host, peer):
             match=REQUEST.fullmatch(body)
             if not match:raise ValueError('Commande diagnostic hors plan de lecture')
             address=int(match[1],16);size=len(match[2])
+            if expected_batch_size is not None and size!=min(expected_batch_size,start+length-address):
+                raise ValueError('Taille de lot observée différente du pilote attendu')
             addresses=set(range(address,address+size))
             if not addresses<=expected or addresses & requested:
                 raise ValueError('Adresses hors bloc ou requêtes de lecture chevauchantes')

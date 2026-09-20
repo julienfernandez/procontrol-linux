@@ -33,6 +33,11 @@ moteurs et la calibration n'ont pas été modifiés pendant ces recherches.
 
 ### Observer les échanges et identifier la preuve
 
+- Une allocation de file de 512 octets inclut 24 octets d'en-tête ; ses
+  488 positions n'acceptent que 487 octets non consommés, un emplacement
+  distinguant plein et vide. Vérifier le compteur de débordement et les
+  réponses réelles avant d'augmenter un lot. Voir le
+  [pilote comm 16/32 et ses limites](comm-batch-benchmark.md).
 - Un ACK confirme une transaction réseau, pas l'allumage d'un afficheur, la
   sensation d'un fader ou un résultat audio. Garder séparées capture, réponse
   applicative, confirmation physique, validation logicielle et endurance.
