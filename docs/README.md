@@ -35,6 +35,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Première passe complète du programme fader installé](fader-first-pass-2026-09-21.md),
+  [audit indépendant, segments et archive des captures](fader-first-pass-2026-09-21.json).
+
 - [Carte statique du démarrage, des réglages persistants et de la calibration](preservation-layout-2026-09-21.md),
   [adresses, chemins étudiés, manuel constructeur et archive des preuves](preservation-layout-2026-09-21.json).
 

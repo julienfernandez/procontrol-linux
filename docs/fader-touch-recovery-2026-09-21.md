@@ -174,3 +174,9 @@ La réussite concerne les octets, les événements réseau et le cache tactile d
 relais. Ce n'est ni une validation de mouvement moteur, ni une mesure d'audio,
 ni une sauvegarde restaurable de toute la console. Bootstrap, calibration,
 EEPROM, trous mémoire et restauration matérielle restent des sujets distincts.
+
+Complément du 21 septembre : la méthode a ensuite permis la
+[première passe complète des quatre segments fader](fader-first-pass-2026-09-21.md),
+avec reconstruction indépendante et conservation des captures. La seconde
+passe continue dans ce nouvel état ; les validations des quatre essais décrits
+ici ne sont pas réécrites rétroactivement.

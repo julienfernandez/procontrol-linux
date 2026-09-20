@@ -17,16 +17,17 @@ actuel, consulter la [carte fonctionnelle](control-map.md), les
 | Firmware constructeur | Deux ressources `comm` et `fader` 1.37 extraites, contrôlées et reproductibles ; analyse statique | [Origine, extraction et adresses](firmware-research-2026-09-20.md), [empreintes](firmware-research-2026-09-20.json) |
 | Diagnostic du processeur principal | Version `COMv1.37` et premières lectures confirmées sur la console, avec captures et répétitions | [Cinq expériences réseau](firmware-network-validation-2026-09-20.md), [preuves](firmware-network-validation-2026-09-20.json) |
 | Programme de communication installé | Les 63 768 octets adressés par l'image `comm` ont été lus deux fois et comparés au constructeur ; audit indépendant des 504 PCAP | [Lecture complète](comm-firmware-readback-2026-09-20.md), [manifeste de preuves](comm-firmware-readback-2026-09-20.json) |
-| Relais vers le processeur des faders | Quatre réponses directes `FDRv1.37` ; cache et files série lus dans la RAM de `comm`. Premier essai incomplet conservé ; programme des faders non acquis | [Validation réseau](fader-network-validation-2026-09-20.md), [preuves](fader-network-validation-2026-09-20.json), [analyse statique](fader-diagnostic-analysis-2026-09-20.md) |
-| Premiers octets installés des faders | Huit octets de vecteurs `0x8000–0x8007` lus trois fois via les données conservées dans RX, identiques au constructeur ; audit de 55 PCAP, bouclage réel inclus. Programme complet encore non acquis | [Lecture brute et effets du filtre](fader-raw-readback-2026-09-20.md), [empreintes et résultats](fader-raw-readback-2026-09-20.json) |
+| Relais vers le processeur des faders | Quatre réponses directes `FDRv1.37` ; cache et files série lus dans la RAM de `comm`. Premier essai incomplet conservé ; cette étape précédait l'acquisition du programme | [Validation réseau](fader-network-validation-2026-09-20.md), [preuves](fader-network-validation-2026-09-20.json), [analyse statique](fader-diagnostic-analysis-2026-09-20.md) |
+| Premiers octets installés des faders | Huit octets de vecteurs `0x8000–0x8007` lus trois fois via les données conservées dans RX, identiques au constructeur ; audit de 55 PCAP, bouclage réel inclus. Étape désormais complétée par la première passe entière | [Lecture brute et effets du filtre](fader-raw-readback-2026-09-20.md), [empreintes et résultats](fader-raw-readback-2026-09-20.json) |
 | Effets tactiles des lectures fader | Paire `c0/d0` observée sur le réseau, huit lectures `d0–d7` vérifiées et cache tactile neutre après deux lectures d'un bloc de code ; outil de double acquisition préparé, résultat complet encore attendu | [Neutralisation et table de commandes](fader-touch-recovery-2026-09-21.md), [preuves](fader-touch-recovery-2026-09-21.json) |
+| Programme fader installé | Première passe des quatre segments : 11 546 octets reconstruits depuis les captures, tous identiques au constructeur. Archive privée incluant les PCAP vérifiée ; seconde passe encore en cours | [Première passe entière](fader-first-pass-2026-09-21.md), [empreintes et couverture](fader-first-pass-2026-09-21.json) |
 | Démarrage et réglages persistants | Analyse statique : blocs `comm` réseau de 10 octets et Utility de 88 octets, plages sommées au démarrage et contrôles hors image ; structures de calibration fader en RAM. Contenu réel de ces nouvelles zones encore inconnu | [Cartographie et prochaines lectures](preservation-layout-2026-09-21.md), [provenance et empreintes](preservation-layout-2026-09-21.json) |
-| Sauvegarde restaurable de toute l'unité | Encore ouverte : démarrage, trous mémoire, EEPROM, calibration, programme installé des faders et restauration matérielle restent à établir | [Périmètre exact de la conservation](comm-firmware-readback-2026-09-20.md#périmètre-réel-de-la-sauvegarde) |
+| Sauvegarde restaurable de toute l'unité | Encore ouverte : démarrage, trous mémoire, réglages persistants, calibration, seconde acquisition fader et restauration matérielle restent à établir | [Périmètre exact de la conservation](comm-firmware-readback-2026-09-20.md#périmètre-réel-de-la-sauvegarde) |
 
-La concordance du programme `comm` donne une base solide pour interpréter ce
-code. Elle ne valide pas automatiquement les autres mémoires ni l'image
-effectivement installée dans le processeur des faders. Les paramètres moteurs
-et la calibration n'ont pas été modifiés pendant ces recherches.
+La concordance du programme `comm` et de la première passe fader donne une
+base pour interpréter leurs segments de code. Elle ne valide pas les autres
+mémoires, la seconde passe ou une restauration matérielle. Les paramètres
+moteurs et la calibration n'ont pas été modifiés pendant ces recherches.
 
 ## Enseignements à conserver
 
