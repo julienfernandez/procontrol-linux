@@ -35,6 +35,9 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Carte statique du démarrage, des réglages persistants et de la calibration](preservation-layout-2026-09-21.md),
+  [adresses, chemins étudiés, manuel constructeur et archive des preuves](preservation-layout-2026-09-21.json).
+
 - [Audit complet d'une archive fader et contrôle des blocs déjà terminés](fader-archive-verification.md),
   [deux instantanés partiels reconstruits depuis les captures](fader-archive-audit-2026-09-21.json).
 

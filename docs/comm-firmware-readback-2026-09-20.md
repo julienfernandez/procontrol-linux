@@ -186,6 +186,12 @@ l'ACK. Le lecteur réel n'a pas été modifié pour imposer ce faux ordre.
 
 ## Suite de la recherche
 
+La [cartographie statique du démarrage et des réglages](preservation-layout-2026-09-21.md)
+identifie désormais deux blocs persistants `comm` et les mots de contrôle
+absents de l'image acquise. Leurs contenus ne sont pas encore lus ; ce
+complément précise les prochaines cibles sans étendre le périmètre du présent
+rapport historique.
+
 Le relais série des faders et son filtre de réponses ont depuis été examinés
 dans une [étape statique séparée](fader-diagnostic-analysis-2026-09-20.md).
 L'état consolidé et les règles de conservation sont dans la
