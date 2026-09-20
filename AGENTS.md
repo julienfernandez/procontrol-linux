@@ -19,6 +19,11 @@
 
 ## État actuel et continuité
 
+- Le 21 septembre 2026, l'utilisateur confirme qu'il n'utilise pas le matériel
+  et autorise explicitement tous les tests utiles pour accélérer l'exploration.
+  Enchaîner les expériences sans nouvelle demande de disponibilité. Conserver
+  un seul émetteur Ethernet et les preuves de chaque essai ; une collecte déjà
+  active garde son verrou jusqu'à sa fin ou un arrêt contrôlé justifié.
 - Répondre en français. Donner des retours visibles sur le travail et les résultats.
 - L'utilisateur demande d'avancer vite, de réutiliser franchement GitHub et les
   photos, et de raccorder toutes les fonctions possibles à Ardour. L'essai actif,
