@@ -36,10 +36,15 @@ class BatchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             diagnostic_payloads(memory_envelope(0x20400, 0)+b'\x90\x10\x5c')
 
-    def exchange(self, incomplete=False, experimental=False):
+    def exchange(self, incomplete=False, experimental=False, state=None):
         data = bytes([0xf7, 0xf0, 0, 10, 13, 39, 255, 128, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
         start, batch = (0x2a3d0, 32) if experimental else (0x20400, 16)
         if experimental: data = bytes(range(256))
+        options=dict(address=start,length=len(data),batch_size=batch,experimental_batch32=experimental)
+        if state:
+            from firmware_probe import STATE_FIELDS
+            start,size=STATE_FIELDS[state];data=bytes(i%256 for i in range(size))
+            options=dict(state=state,batch_size=16)
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
             rx, remote_tx = socket.socketpair(socket.AF_UNIX, socket.SOCK_DGRAM)
@@ -65,8 +70,7 @@ class BatchTests(unittest.TestCase):
                     self.assertEqual(remote_rx.recv(65535)[28],0xe2)
                     remote_tx.send(peer.frame(0xa0,ack=1))
                     seq = 1000
-                    for index, (address, expected) in enumerate(requests_for(start,len(data),batch,
-                                                                           experimental_batch32=experimental)):
+                    for index, (address, expected) in enumerate(requests_for(**options)):
                         request = pending.pop(0) if pending else remote_rx.recv(65535)
                         self.assertEqual(request[30:30+len(expected)],expected)
                         remote_tx.send(peer.frame(0xa0,ack=int.from_bytes(request[18:22],'big')))
@@ -93,9 +97,8 @@ class BatchTests(unittest.TestCase):
 
             thread = threading.Thread(target=server);thread.start()
             try:
-                report = run_probe(rx,tx,ConsoleSession(HOST,PEER),out,address=start,
-                                   length=len(data),batch_size=batch,connect_timeout=.5,reply_timeout=.2,
-                                   experimental_batch32=experimental)
+                report = run_probe(rx,tx,ConsoleSession(HOST,PEER),out,
+                                   connect_timeout=.5,reply_timeout=.2,**options)
                 thread.join(2)
                 self.assertFalse(thread.is_alive())
                 if failures: raise failures[0]
@@ -107,6 +110,11 @@ class BatchTests(unittest.TestCase):
                     self.assertIsNone(report['error'])
                     self.assertEqual((out/'memory.bin').read_bytes(),data)
                     self.assertEqual(len(report['transactions']),1+(len(data)+batch-1)//batch)
+                    if state:
+                        from audit_firmware_probe import audit_probe
+                        checked=audit_probe(out,bytes.fromhex(HOST.replace(':','')),
+                                             bytes.fromhex(PEER.replace(':','')))
+                        self.assertEqual(bytes.fromhex(checked['data_hex']),data)
                     if experimental:
                         from audit_comm_archive import audit_chunk
                         actual, audited = audit_chunk(out/'traffic.pcap',start,len(data),
@@ -132,6 +140,9 @@ class BatchTests(unittest.TestCase):
 
     def test_experimental_32_missing_byte_stops_without_retry(self):
         self.exchange(incomplete=True,experimental=True)
+
+    def test_named_flash_gap_larger_than_256_bytes_over_socket(self):
+        self.exchange(state='comm-app-gap-2fce4')
 
     def test_experimental_32_is_only_available_for_fixed_code_pilot(self):
         allowed=dict(address=0x2a3d0,length=256,batch_size=32,experimental_batch32=True)

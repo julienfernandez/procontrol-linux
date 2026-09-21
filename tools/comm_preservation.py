@@ -31,11 +31,11 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def acquire(rx, tx, flow, output, host, peer):
-    manifest = {'schema': 'comm-preservation-v1', 'complete': False, 'error': None,
+def acquire(rx, tx, flow, output, host, peer, fields=FIELDS, schema='comm-preservation-v1'):
+    manifest = {'schema': schema, 'complete': False, 'error': None,
                 'started_utc': datetime.now(timezone.utc).isoformat(), 'passes': [],
                 'source_sha256': sha(Path(__file__).read_bytes()),
-                'bytes_per_pass': sum(STATE_FIELDS[name][1] for name in FIELDS)}
+                'bytes_per_pass': sum(STATE_FIELDS[name][1] for name in fields)}
 
     def save():
         manifest['updated_utc'] = datetime.now(timezone.utc).isoformat()
@@ -50,7 +50,7 @@ def acquire(rx, tx, flow, output, host, peer):
             root.mkdir(mode=0o700)
             current = {'number': number, 'fields': [], 'complete': False}
             manifest['passes'].append(current)
-            for name in FIELDS:
+            for name in fields:
                 folder = root/name
                 folder.mkdir(mode=0o700)
                 saved = run_probe(rx, tx, flow, folder, state=name, batch_size=16)
@@ -106,8 +106,8 @@ def run_live(interface, host, peer, output, collector=None):
     return result
 
 
-def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+def main(argv=None, fields=FIELDS, collector=None, description=__doc__):
+    parser = argparse.ArgumentParser(description=description)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--interface', default='enp0s25')
     parser.add_argument('--mac', type=mac_address, default='00:a0:7e:a0:ad:9c')
@@ -115,8 +115,8 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if not args.send:
         print(json.dumps({'network_opened': False, 'passes': 2,
-                          'bytes_per_pass': sum(STATE_FIELDS[name][1] for name in FIELDS),
-                          'fields': {name: STATE_FIELDS[name] for name in FIELDS}}, indent=2))
+                          'bytes_per_pass': sum(STATE_FIELDS[name][1] for name in fields),
+                          'fields': {name: STATE_FIELDS[name] for name in fields}}, indent=2))
         return 0
     if os.geteuid() == 0 or args.output is None or args.output.exists():
         parser.error('Compte utilisateur et nouveau dossier --output requis')
@@ -137,7 +137,7 @@ def main(argv=None):
 
     previous = signal.signal(signal.SIGTERM, interrupted)
     try:
-        result = run_live(args.interface, host, args.mac, args.output)
+        result = run_live(args.interface, host, args.mac, args.output, collector=collector)
     finally:
         signal.signal(signal.SIGTERM, previous)
     print(json.dumps({k: v for k, v in result.items() if k != 'passes'}, indent=2))

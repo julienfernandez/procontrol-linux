@@ -47,23 +47,24 @@ def interpret(fields):
                         'snapshot_atomic': False}}
 
 
-def audit(root, host, peer):
+def audit(root, host, peer, fields=FIELDS, schema='comm-preservation-v1', interpreter=interpret):
     manifest_bytes = (root/'manifest.json').read_bytes()
     manifest = json.loads(manifest_bytes)
-    if (manifest.get('schema') != 'comm-preservation-v1' or not manifest.get('complete')
-            or manifest.get('error') or manifest.get('bytes_per_pass') != 196
+    byte_count = sum(size for _, size in fields.values())
+    if (manifest.get('schema') != schema or not manifest.get('complete')
+            or manifest.get('error') or manifest.get('bytes_per_pass') != byte_count
             or [p.get('number') for p in manifest.get('passes', [])] != [1, 2]):
         raise ValueError('Acquisition incomplète ou plan différent')
     report = {'archive_manifest_sha256': sha(manifest_bytes),
               'method': 'Independent PCAP reconstruction, exact fields and separate interpretation',
               'complete': True, 'passes': [], 'pcap_files': 0, 'frames': 0,
-              'socket_drops': 0, 'bytes_per_pass': 196,
+              'socket_drops': 0, 'bytes_per_pass': byte_count,
               'full_device_backup': False, 'ram_snapshot_atomic': False}
     previous_last = None
     seen = set()
     data_passes = []
     for entry in manifest['passes']:
-        if not entry.get('complete') or [r.get('name') for r in entry['fields']] != list(FIELDS):
+        if not entry.get('complete') or [r.get('name') for r in entry['fields']] != list(fields):
             raise ValueError('Champs absents, réordonnés ou dupliqués')
         data = {}; audits = {}
         for record in entry['fields']:
@@ -77,7 +78,7 @@ def audit(root, host, peer):
                 raise ValueError('Pertes socket non nulles ou inconnues')
             current = audit_probe(folder, host, peer)
             if (current != json.loads(cached_bytes) or current.get('state') != name
-                    or (current['address'], current['length']) != FIELDS[name]):
+                    or (current['address'], current['length']) != fields[name]):
                 raise ValueError('Audit indépendant différent du résultat enregistré')
             if (current['first_ns'] > current['last_ns'] or current['pcap_sha256'] in seen
                     or (previous_last is not None and current['first_ns'] <= previous_last)):
@@ -86,8 +87,10 @@ def audit(root, host, peer):
             data[name] = bytes.fromhex(current['data_hex']); audits[name] = current
             report['pcap_files'] += 1; report['frames'] += current['counts']['frames']
         data_passes.append(data)
-        report['passes'].append({'number': entry['number'], 'fields': audits, 'interpretation': interpret(data)})
-    report['field_passes_equal'] = {name: data_passes[0][name] == data_passes[1][name] for name in FIELDS}
+        row = {'number': entry['number'], 'fields': audits}
+        if interpreter is not None: row['interpretation'] = interpreter(data)
+        report['passes'].append(row)
+    report['field_passes_equal'] = {name: data_passes[0][name] == data_passes[1][name] for name in fields}
     report['persistent_fields_equal'] = all(equal for name, equal in report['field_passes_equal'].items()
                                            if name != 'comm-utility-mirror')
     return report
