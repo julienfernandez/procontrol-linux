@@ -36,7 +36,7 @@ class BatchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             diagnostic_payloads(memory_envelope(0x20400, 0)+b'\x90\x10\x5c')
 
-    def exchange(self, incomplete=False, experimental=False, state=None):
+    def exchange(self, incomplete=False, experimental=False, state=None, experimental_rx=False):
         data = bytes([0xf7, 0xf0, 0, 10, 13, 39, 255, 128, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
         start, batch = (0x2a3d0, 32) if experimental else (0x20400, 16)
         if experimental: data = bytes(range(256))
@@ -45,6 +45,9 @@ class BatchTests(unittest.TestCase):
             from firmware_probe import STATE_FIELDS
             start,size=STATE_FIELDS[state];data=bytes(i%256 for i in range(size))
             options=dict(state=state,batch_size=16)
+        if experimental_rx:
+            start,batch=0x6bf26,32;data=bytes(range(256))
+            options=dict(ring_offset=0,length=256,batch_size=32,experimental_rx_batch32=True)
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
             rx, remote_tx = socket.socketpair(socket.AF_UNIX, socket.SOCK_DGRAM)
@@ -110,10 +113,11 @@ class BatchTests(unittest.TestCase):
                     self.assertIsNone(report['error'])
                     self.assertEqual((out/'memory.bin').read_bytes(),data)
                     self.assertEqual(len(report['transactions']),1+(len(data)+batch-1)//batch)
-                    if state:
+                    if state or experimental_rx:
                         from audit_firmware_probe import audit_probe
                         checked=audit_probe(out,bytes.fromhex(HOST.replace(':','')),
-                                             bytes.fromhex(PEER.replace(':','')))
+                                             bytes.fromhex(PEER.replace(':','')),
+                                             expected_batch_size=32 if experimental_rx else None)
                         self.assertEqual(bytes.fromhex(checked['data_hex']),data)
                     if experimental:
                         from audit_comm_archive import audit_chunk

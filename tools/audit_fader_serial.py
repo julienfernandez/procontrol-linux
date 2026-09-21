@@ -92,6 +92,10 @@ def audit_plan(root,host,peer):
     if not manifest['complete'] or manifest.get('error'):raise ValueError('Lecture incomplète')
     state=manifest.get('preservation_field')
     plan,kind=validate_plan(manifest['plan'],state=state)
+    experimental=manifest.get('experimental_rx_batch32',False)
+    if not isinstance(experimental,bool) or (experimental and
+            (state is not None or plan!=((0x8400,12),)+RELEASES)):
+        raise ValueError('Pilote RX batch32 hors de son plan fixe')
     names=[s['name'] for s in manifest['steps']]
     required={'versions','request','rx-before','rx-after','rx-final','touch-before','touch-after',
               'mode-before','mode-after','errors-before','errors-after','fader-version-after'}
@@ -106,7 +110,8 @@ def audit_plan(root,host,peer):
             audits[name]=audit_request(folder/'traffic.pcap',plan,host,peer)
             if saved['error'] or audits[name]['pcap_sha256']!=saved['pcap_sha256']:raise ValueError('Requête altérée')
         else:
-            audits[name]=audit_probe(folder,host,peer)
+            options={'expected_batch_size':32} if experimental and name.startswith('rx-data-') else {}
+            audits[name]=audit_probe(folder,host,peer,**options)
             if not audits[name]['observed_complete']:raise ValueError('Étape incomplète')
             if name=='versions':
                 pre=folder/'comm-version'
@@ -153,6 +158,7 @@ def audit_plan(root,host,peer):
             'manifest_sha256':sha((root/'manifest.json').read_bytes()),'matches_saved_files':True,
             'touch_neutral_before_after':True,'mode_normal_before_after':True,'parser_errors':errors,'steps':audits}
     if state is not None:result['preservation_field']=state
+    if experimental:result['rx_batch_size']=32
     return result
 
 

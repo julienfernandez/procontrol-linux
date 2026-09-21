@@ -89,7 +89,7 @@ def audit_version(path, target, host, peer):
             'pcap_sha256': sha(path.read_bytes())}
 
 
-def audit_probe(folder, host, peer):
+def audit_probe(folder, host, peer, expected_batch_size=None):
     saved = json.loads((folder/'result.json').read_text())
     path = folder/'traffic.pcap'
     if saved.get('read_state') or saved.get('read_ring_offset') is not None:
@@ -104,7 +104,7 @@ def audit_probe(folder, host, peer):
             start = 0x6bf26+offset
         if (saved['read_address'],saved['read_length']) != (start,length):
             raise ValueError('Bornes du champ incohérentes')
-        data,result = audit_chunk(path,start,length,host,peer)
+        data,result = audit_chunk(path,start,length,host,peer,expected_batch_size=expected_batch_size)
         if data != (folder/'memory.bin').read_bytes() or data != bytes.fromhex(saved['read_bytes_hex']):
             raise ValueError('Mémoire reconstruite différente des fichiers enregistrés')
         if saved['memory_sha256'] != sha(data):

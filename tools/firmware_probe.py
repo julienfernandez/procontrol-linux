@@ -77,10 +77,13 @@ def read_selection(address, length, batch_size, target, state, ring_offset=None)
 
 
 def requests_for(address=None, length=1, batch_size=1, target='comm', state=None, ring_offset=None,
-                 experimental_batch32=False):
+                 experimental_batch32=False, experimental_rx_batch32=False):
     """Absolute address per byte: an absent/duplicate reply cannot shift reads."""
     if target not in PROFILES:
         raise ValueError('Cible diagnostic inconnue')
+    if experimental_rx_batch32 and (experimental_batch32 or target!='comm' or state is not None
+            or address is not None or ring_offset is None or batch_size!=32):
+        raise ValueError('Pilote RX batch32 limité aux fenêtres du tampon série comm')
     if experimental_batch32 and (target!='comm' or state is not None or ring_offset is not None
             or address!=0x2a3d0 or length!=256 or batch_size!=32):
         raise ValueError('Pilote batch32 limité au bloc comm 0x2a3d0 de 256 octets')
@@ -89,7 +92,7 @@ def requests_for(address=None, length=1, batch_size=1, target='comm', state=None
     address, length = read_selection(address, length, batch_size, target, state, ring_offset)
     prefix, _ = PROFILES[target]
     result = [(None, prefix + b'V\xf7')]
-    if not 1 <= batch_size <= (32 if experimental_batch32 else 16):
+    if not 1 <= batch_size <= (32 if experimental_batch32 or experimental_rx_batch32 else 16):
         raise ValueError('Lot limité à 1..16 octets ; 32 réservé au pilote explicite')
     if address is not None:
         if state is None and ring_offset is None and (not 1 <= length <= 256 or not any(
@@ -167,9 +170,10 @@ def diagnostic_payloads(body, target='comm'):
 
 def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
               address=None, length=1, batch_size=1, target='comm', state=None, ring_offset=None,
-              experimental_batch32=False):
+              experimental_batch32=False, experimental_rx_batch32=False):
     """One outstanding request, no retries, at most 50 Hz, version before reads."""
-    requests = requests_for(address, length, batch_size, target, state, ring_offset, experimental_batch32)
+    requests = requests_for(address, length, batch_size, target, state, ring_offset,
+                            experimental_batch32, experimental_rx_batch32)
     address, length = read_selection(address, length, batch_size, target, state, ring_offset)
     _, expected_version = PROFILES[target]
     report = {'started_utc': datetime.now(timezone.utc).isoformat(),
@@ -187,6 +191,7 @@ def run_probe(rx, tx, flow, output, connect_timeout=15., reply_timeout=2.,
               'read_address': address, 'read_length': length if address is not None else 0,
               'batch_size': batch_size}
     if experimental_batch32:report['experimental_batch32']=True
+    if experimental_rx_batch32:report['experimental_rx_batch32']=True
     deadline = time.monotonic() + connect_timeout
     request_time = None
     next_send = 0.
@@ -354,11 +359,14 @@ def main(argv=None):
     parser.add_argument('--batch-size', type=int, default=1, help='1..16 octets par requête')
     parser.add_argument('--experimental-batch32',action='store_true',
                         help='Pilote seulement : --read-code 0x2a3d0 --length 256 --batch-size 32')
+    parser.add_argument('--experimental-rx-batch32',action='store_true',
+                        help='Pilote RX seulement : fenêtre --read-ring-offset bornée et --batch-size 32')
     parser.add_argument('--send', action='store_true')
     args = parser.parse_args(argv)
     try:
         requests = requests_for(args.read_code, args.length, args.batch_size, args.target,
-                                args.read_state, args.read_ring_offset, args.experimental_batch32)
+                                args.read_state, args.read_ring_offset, args.experimental_batch32,
+                                args.experimental_rx_batch32)
     except ValueError as exc:
         parser.error(str(exc))
     if not args.send:
@@ -393,8 +401,9 @@ def main(argv=None):
             else:
                 result = run_probe(rx, tx, flow, args.output,
                                    address=args.read_code, length=args.length, batch_size=args.batch_size,
-                                   target=args.target, state=args.read_state, ring_offset=args.read_ring_offset,
-                                   experimental_batch32=args.experimental_batch32)
+                                    target=args.target, state=args.read_state, ring_offset=args.read_ring_offset,
+                                   experimental_batch32=args.experimental_batch32,
+                                   experimental_rx_batch32=args.experimental_rx_batch32)
     print(json.dumps(result, indent=2, ensure_ascii=False))
     return int(result['error'] is not None)
 

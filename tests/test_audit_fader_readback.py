@@ -23,14 +23,16 @@ def serial(data,address=0x8000):
         f"{address+i:08X}: {v:02X} '".encode()+bytes([v])+b"'\n\r" for i,v in enumerate(data))
 
 
-def fixture(root,plan=None,values=None,epoch_ns=1700000000000000000,socket_drops=None):
+def fixture(root,plan=None,values=None,epoch_ns=1700000000000000000,socket_drops=None,rx_batch=1):
     """Synthetic PCAP evidence; no hardware dump or live parser used."""
     host=Session(HOST,PEER);peer=Session(PEER,HOST)
     def write_capture(folder,transactions):
         frames=[]
         for index,(body,response) in enumerate(transactions,1):
             frames.extend([host.frame(0,1,index,body=body),peer.frame(0xa0,ack=index)])
-            if response is not None:frames.append(peer.frame(0,1,1000+index,body=response))
+            if response is not None:
+                count,body=response if isinstance(response,tuple) else (1,response)
+                frames.append(peer.frame(0,count,1000+index,body=body))
         path=folder/'traffic.pcap'
         with path.open('wb') as f:
             write_header(f)
@@ -57,10 +59,14 @@ def fixture(root,plan=None,values=None,epoch_ns=1700000000000000000,socket_drops
     def memory(name,address,data,state=None,offset=None):
         folder=root/name;folder.mkdir()
         transactions=[(COMM+b'V\xf7',COMM+b'COMv1.37\n\r\xf7')]
-        for i,v in enumerate(data):
-            loc=address+i
-            transactions.append((COMM+f'A{loc:08X}m'.encode()+b'\xf7',
-                                 COMM+f"{loc:08X}: {v:02X} '".encode()+bytes([v])+b"'\n\r\xf7"))
+        batch=rx_batch if offset is not None else 1
+        for i in range(0,len(data),batch):
+            loc=address+i;part=data[i:i+batch]
+            response=b''.join(COMM+f"{loc+j:08X}: {v:02X} '".encode()+bytes([v])+b"'\n\r\xf7"
+                              for j,v in enumerate(part))
+            reads=b'm' if batch==1 else b'M'*len(part)
+            if batch!=1:response=(1+len(part),COMM+b'\n\r\xf7'+response)
+            transactions.append((COMM+f'A{loc:08X}'.encode()+reads+b'\xf7',response))
         (folder/'memory.bin').write_bytes(data)
         record(name,{'target':'comm','read_state':state,'read_ring_offset':offset,
                      'read_address':address,'read_length':len(data),'read_bytes_hex':data.hex(),

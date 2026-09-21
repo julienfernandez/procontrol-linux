@@ -52,7 +52,7 @@ class FaderSerialProbeTests(unittest.TestCase):
                 with self.assertRaises(ValueError):probe.acquire_plan(None,None,None,root,plan)
             self.assertEqual(list(root.iterdir()),[])
 
-    def simulate(self,touched=False,overwritten=False,state=None,length=12):
+    def simulate(self,touched=False,overwritten=False,state=None,length=12,experimental=False):
         base=0x6bf26;offset=450
         plan=probe.code_plan(0x8400,length) if state is None else probe.preservation_plan(state,0,length)
         values=bytes([0xc0,0x80,0,0xf7]*3)[:length]+bytes(range(0xd0,0xd8))
@@ -74,6 +74,8 @@ class FaderSerialProbeTests(unittest.TestCase):
                 if overwritten and folder.name=='rx-final':pointer+=1
                 data=struct.pack('>6I',pointer,base,pointer,512,0,0)
             elif kwargs.get('ring_offset') is not None:
+                self.assertEqual(kwargs['batch_size'],32 if experimental else 16)
+                self.assertEqual(kwargs.get('experimental_rx_batch32',False),experimental)
                 start=kwargs['ring_offset'];data=ring[start:start+kwargs['length']]
             return save(folder,data)
         def capture(rx,tx,flow,folder,plan,**kwargs):
@@ -85,7 +87,8 @@ class FaderSerialProbeTests(unittest.TestCase):
             with patch.object(probe,'run_probe',side_effect=read),\
                  patch.object(probe,'run_fader_version',side_effect=lambda a,b,c,d:save(d)),\
                  patch.object(probe,'capture_plan',side_effect=capture):
-                result=probe.acquire_plan(None,None,None,root,plan,release_verified=True,state=state)
+                result=probe.acquire_plan(None,None,None,root,plan,release_verified=True,state=state,
+                                          experimental_rx_batch32=experimental)
             if touched:self.assertFalse(result['request_attempted']);self.assertEqual(requests,[])
             elif overwritten:
                 self.assertFalse(result['complete']);self.assertTrue(result['recovery_touch_neutral'])

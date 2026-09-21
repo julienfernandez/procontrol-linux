@@ -127,9 +127,12 @@ def capture_plan(rx,tx,flow,output,plan,settle=.25,state=None):
     return result
 
 
-def acquire_plan(rx,tx,flow,output,plan,expected=None,release_verified=False,state=None):
+def acquire_plan(rx,tx,flow,output,plan,expected=None,release_verified=False,state=None,
+                 experimental_rx_batch32=False):
     _,serial_size=request_for(plan,state=state)
     normalized=tuple(map(tuple,plan))
+    if experimental_rx_batch32 and (state is not None or normalized!=((0x8400,12),)+RELEASE_PLAN):
+        raise ValueError('Pilote RX batch32 limité aux douze octets fader à 0x8400 suivis des relâchements')
     if normalized not in (RELEASE_PLAN,PAIR_PLAN) and not (
             len(plan)==9 and normalized[1:]==RELEASE_PLAN and 1<=plan[0][1]<=12):
         raise ValueError('Plan non suivi des huit relâchements connus')
@@ -141,6 +144,7 @@ def acquire_plan(rx,tx,flow,output,plan,expected=None,release_verified=False,sta
             'source_sha256':digest(Path(__file__).read_bytes()),'complete':False,'error':None,
             'request_attempted':False,'release_verified_before':release_verified,'steps':[]}
     if state is not None:report['preservation_field']=state
+    if experimental_rx_batch32:report['experimental_rx_batch32']=True
     def record(name,result):
         report['steps'].append({'name':name,'result_sha256':digest((output/name/'result.json').read_bytes())})
         if result['error']:raise RuntimeError(f'{name}: {result["error"]}')
@@ -172,7 +176,8 @@ def acquire_plan(rx,tx,flow,output,plan,expected=None,release_verified=False,sta
                 or after['overflows']!=before['overflows']):raise RuntimeError('Production RX non attribuable')
         raw=bytearray()
         for i,(offset,length) in enumerate(ring_windows(before['producer'],serial_size)):
-            raw.extend(probe(f'rx-data-{i}',ring_offset=offset,length=length,batch_size=16))
+            options={'batch_size':32,'experimental_rx_batch32':True} if experimental_rx_batch32 else {'batch_size':16}
+            raw.extend(probe(f'rx-data-{i}',ring_offset=offset,length=length,**options))
         (output/'serial.bin').write_bytes(raw);report['serial_sha256']=digest(raw)
         final=ring_header(probe('rx-final',state='fader-rx-ring'));report['rx_final']=final
         if final['producer']!=after['producer'] or final['overflows']!=after['overflows']:
