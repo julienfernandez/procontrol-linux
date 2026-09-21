@@ -1,0 +1,522 @@
+{
+  "schema": "fader-rx-benchmark-validation-v1",
+  "date": "2026-09-21",
+  "source_commit": "6eddde4536cc6eab4719a498c7f4aca174ff92c1",
+  "order": [
+    16,
+    32,
+    32,
+    16,
+    16,
+    32,
+    32,
+    16
+  ],
+  "known_fader_range": {
+    "start": "0x8400",
+    "length": 12
+  },
+  "serial_bytes_per_block": 465,
+  "settle_seconds": 0.25,
+  "default_batch_size": 16,
+  "reference": {
+    "file": "CODE-27-00008400.bin",
+    "length": 11494,
+    "sha256": "2479230a850da18b33b1dcf7292dbb12af6421aceabc047b2ae07d5582f23e05"
+  },
+  "campaigns": [
+    {
+      "name": "fader-rx-benchmark-1",
+      "started_utc": "2026-09-21T00:11:37.687019+00:00",
+      "finished_utc": "2026-09-21T00:12:02.887402+00:00",
+      "concurrent_regression_tests": true,
+      "audit_sha256": "1d5f7e61d479d71b082f3f74e2ceda2e547389d71cba95d3716ee11304797110",
+      "verified_utc": "2026-09-21T00:12:34.001303+00:00",
+      "manifest_sha256": "933001d86adbc4558673d312eee3f5b1301267a9d85bb7e6d8107a1f58e9725c",
+      "complete": true,
+      "all_reference_bytes_match": true,
+      "all_overflow_counters_unchanged": true,
+      "all_touch_states_neutral": true,
+      "all_modes_normal": true,
+      "socket_drops": 0,
+      "counts": {
+        "pcaps": 159,
+        "frames": 6079
+      },
+      "release_proof": {
+        "manifest_sha256": "5b81657f2107479c985ada10a64034b0cedf2286f1b0445d664e3941449a6c81",
+        "audit_sha256": "2d7a5fd2012cb49c98e29245e85a6c5120e4da414f9d92b0873e38faa7dd00cb",
+        "counts": {
+          "pcaps": 15,
+          "frames": 444
+        },
+        "elapsed_seconds": 5.113458,
+        "rx_read_seconds": 0.6235809999999999,
+        "rx_window_lengths": [
+          174,
+          34
+        ],
+        "first_request_ns": 1789949500869418000,
+        "last_capture_ns": 1789949502751727000
+      },
+      "runs": [
+        {
+          "number": 1,
+          "batch_size": 16,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "ef2a633a09a198ff67353b72468fdba00dccc4dda6449c0b94e8df7195ca1520",
+          "audit_sha256": "ed5dc302d08fbfbc9308ee9f775afa28ea99dde79c0f67d59d6c599e0dd46e40",
+          "counts": {
+            "pcaps": 16,
+            "frames": 740
+          },
+          "elapsed_seconds": 2.61139,
+          "rx_read_seconds": 1.28607,
+          "rx_window_lengths": [
+            256,
+            172,
+            37
+          ],
+          "first_request_ns": 1789949502911311000,
+          "last_capture_ns": 1789949505470982000
+        },
+        {
+          "number": 2,
+          "batch_size": 32,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "26899c95398e6d32c91005ca44fe16320c744b9f0ef299cc4a6c0b5374939a22",
+          "audit_sha256": "c4bd85e4aec1d4d5217bfc6fab60802b0e25fdde6d44ed17b32b81748e7874f5",
+          "counts": {
+            "pcaps": 16,
+            "frames": 655
+          },
+          "elapsed_seconds": 1.989599,
+          "rx_read_seconds": 0.66841,
+          "rx_window_lengths": [
+            256,
+            169,
+            40
+          ],
+          "first_request_ns": 1789949505730000000,
+          "last_capture_ns": 1789949507667933000
+        },
+        {
+          "number": 3,
+          "batch_size": 32,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "3aec64364d0e7e0bd5044601dac102aa2cc5d799f01d097b856f4c4a4c5721d6",
+          "audit_sha256": "50100ad240e8db762fb1f2bde668be9f74f9d86a803e8b8027c31625dbae307a",
+          "counts": {
+            "pcaps": 16,
+            "frames": 640
+          },
+          "elapsed_seconds": 2.001249,
+          "rx_read_seconds": 0.6735819999999999,
+          "rx_window_lengths": [
+            256,
+            166,
+            43
+          ],
+          "first_request_ns": 1789949507924494000,
+          "last_capture_ns": 1789949509874084000
+        },
+        {
+          "number": 4,
+          "batch_size": 16,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "165a16f3994060e760853a6ed5240c51d47d45ac8c38c7c3a6ca1288522f49de",
+          "audit_sha256": "57ecfb98875b91b57e001a6c3fbb6bd40af9392442088c285c79a460c6a27db4",
+          "counts": {
+            "pcaps": 16,
+            "frames": 704
+          },
+          "elapsed_seconds": 2.62521,
+          "rx_read_seconds": 1.280586,
+          "rx_window_lengths": [
+            256,
+            163,
+            46
+          ],
+          "first_request_ns": 1789949510125772000,
+          "last_capture_ns": 1789949512698387000
+        },
+        {
+          "number": 5,
+          "batch_size": 16,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "f3d1b4a77a83ed63be54909c8e45ca010f9ea28a7f8826d3ebcaa3640f49bc7d",
+          "audit_sha256": "c781bfee88d7967b130c6a2ff6b62e2833d3709a118bdc47a7bc65c2b85508bf",
+          "counts": {
+            "pcaps": 16,
+            "frames": 727
+          },
+          "elapsed_seconds": 2.608053,
+          "rx_read_seconds": 1.2832119999999998,
+          "rx_window_lengths": [
+            256,
+            160,
+            49
+          ],
+          "first_request_ns": 1789949512961777000,
+          "last_capture_ns": 1789949515516977000
+        },
+        {
+          "number": 6,
+          "batch_size": 32,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "6787d065ba9f8668ad4209e354f9fc526e41b6e51b17db5f4e3733f5b99649f6",
+          "audit_sha256": "c0651905338cd293eefb1f9db7fbafd61b0758404c4c3171e8adab4b0bc2fc91",
+          "counts": {
+            "pcaps": 16,
+            "frames": 632
+          },
+          "elapsed_seconds": 1.974023,
+          "rx_read_seconds": 0.6536900000000001,
+          "rx_window_lengths": [
+            256,
+            157,
+            52
+          ],
+          "first_request_ns": 1789949515795168000,
+          "last_capture_ns": 1789949517717535000
+        },
+        {
+          "number": 7,
+          "batch_size": 32,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "1270a8c056ca204ff3eedeb481986a46a35ea03a57d5a216cad3158154763ae5",
+          "audit_sha256": "4c3defd7135bd5b37492b442265b1c53faec523431918e2f65e1c927ea76b65d",
+          "counts": {
+            "pcaps": 16,
+            "frames": 624
+          },
+          "elapsed_seconds": 1.98765,
+          "rx_read_seconds": 0.6574730000000001,
+          "rx_window_lengths": [
+            256,
+            154,
+            55
+          ],
+          "first_request_ns": 1789949517975599000,
+          "last_capture_ns": 1789949519911642000
+        },
+        {
+          "number": 8,
+          "batch_size": 16,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "e81a7e85b87c67ef8c494392b18a4c9ab66f737e542c67fcc5a10c2bd3babca2",
+          "audit_sha256": "f78872cdf264cf2e99b5f719817e209d0ecdff0fdec97ecfb8aef28500da499a",
+          "counts": {
+            "pcaps": 16,
+            "frames": 722
+          },
+          "elapsed_seconds": 2.586433,
+          "rx_read_seconds": 1.26032,
+          "rx_window_lengths": [
+            256,
+            151,
+            58
+          ],
+          "first_request_ns": 1789949520178867000,
+          "last_capture_ns": 1789949522709676000
+        }
+      ],
+      "physical_latency_validated": false,
+      "endurance_validated": false,
+      "median_elapsed_seconds": {
+        "16": 2.6097215,
+        "32": 1.9886244999999998
+      },
+      "ratio_16_over_32_elapsed_seconds": 1.3123249260984164,
+      "median_rx_read_seconds": {
+        "16": 1.281899,
+        "32": 0.6629415000000001
+      },
+      "ratio_16_over_32_rx_read_seconds": 1.9336532710653953,
+      "block_time_reduction_percent": 23.799359433564092,
+      "rx_time_reduction_percent": 48.28442022343413,
+      "restart_exit_code": 0
+    },
+    {
+      "name": "fader-rx-benchmark-2",
+      "started_utc": "2026-09-21T00:13:37.541866+00:00",
+      "finished_utc": "2026-09-21T00:14:01.610100+00:00",
+      "concurrent_regression_tests": false,
+      "audit_sha256": "87bad861ed0ca729d489d8ae584cedda96b4278d9ccbe23cd3e327d73ee8215b",
+      "verified_utc": "2026-09-21T00:14:02.326545+00:00",
+      "manifest_sha256": "17f7c690da108ff7d913e06f02a53e6ed8e64e43683fa2c4b93593f5a90ff4f5",
+      "complete": true,
+      "all_reference_bytes_match": true,
+      "all_overflow_counters_unchanged": true,
+      "all_touch_states_neutral": true,
+      "all_modes_normal": true,
+      "socket_drops": 0,
+      "counts": {
+        "pcaps": 158,
+        "frames": 5915
+      },
+      "release_proof": {
+        "manifest_sha256": "99b06176bee3434513c60787f8b6603a83e4e667c16e09d461c6ee47612f882a",
+        "audit_sha256": "66840b1fde0fe6255f6791a522d01152ea5b4bb475611be2f2ee5bec279bf17c",
+        "counts": {
+          "pcaps": 14,
+          "frames": 412
+        },
+        "elapsed_seconds": 3.884732,
+        "rx_read_seconds": 0.544602,
+        "rx_window_lengths": [
+          208
+        ],
+        "first_request_ns": 1789949619549697000,
+        "last_capture_ns": 1789949621374885000
+      },
+      "runs": [
+        {
+          "number": 1,
+          "batch_size": 16,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "42f331a963be5395ec2a148cd1661b0067fe8682a784a26ec801e7a5a7b0e44e",
+          "audit_sha256": "4e124449532fa2587e5ed6576104bafdd262f071c250a7f272dca6ad3a279b48",
+          "counts": {
+            "pcaps": 16,
+            "frames": 684
+          },
+          "elapsed_seconds": 2.631638,
+          "rx_read_seconds": 1.283241,
+          "rx_window_lengths": [
+            170,
+            256,
+            39
+          ],
+          "first_request_ns": 1789949621563409000,
+          "last_capture_ns": 1789949624141922000
+        },
+        {
+          "number": 2,
+          "batch_size": 32,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "9d7e9c0efeebafefccdd6f4c3e192efea0ca5abf3a0bb45a985849fcd7e2accc",
+          "audit_sha256": "42f7689abc7e90f789c1b0a74afebf4e5dbd771066a054008355eb2df077cfed",
+          "counts": {
+            "pcaps": 16,
+            "frames": 633
+          },
+          "elapsed_seconds": 1.986313,
+          "rx_read_seconds": 0.66072,
+          "rx_window_lengths": [
+            167,
+            256,
+            42
+          ],
+          "first_request_ns": 1789949624399066000,
+          "last_capture_ns": 1789949626333882000
+        },
+        {
+          "number": 3,
+          "batch_size": 32,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "1c0359bf1cca194637fc815bfa12f0f1dc1a71a8d396cb3f8d5ae9089278952a",
+          "audit_sha256": "65427a3707d0da3855a970c969dec8a08d35bed940b6dbb4d5294c3ae07f1306",
+          "counts": {
+            "pcaps": 16,
+            "frames": 632
+          },
+          "elapsed_seconds": 1.995315,
+          "rx_read_seconds": 0.666466,
+          "rx_window_lengths": [
+            164,
+            256,
+            45
+          ],
+          "first_request_ns": 1789949626596079000,
+          "last_capture_ns": 1789949628538578000
+        },
+        {
+          "number": 4,
+          "batch_size": 16,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "8658849cc7f8f4d705d71f13c9d88611e55623235f8a418f7f673c349e71bb6c",
+          "audit_sha256": "acb47af0db75e6fa250e953b35317504c54dba5b0c763f76c412f68ba788e6a4",
+          "counts": {
+            "pcaps": 16,
+            "frames": 706
+          },
+          "elapsed_seconds": 2.610646,
+          "rx_read_seconds": 1.286397,
+          "rx_window_lengths": [
+            161,
+            256,
+            48
+          ],
+          "first_request_ns": 1789949628794908000,
+          "last_capture_ns": 1789949631353608000
+        },
+        {
+          "number": 5,
+          "batch_size": 16,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "f3944ebf1fb674641b861892d6cae0ac02be9d8fc1147bf7f808bd3052ff1c6f",
+          "audit_sha256": "c81650b0986dc945d866e9c58b728706284dc7da1fbe720b479bed89d69f47b2",
+          "counts": {
+            "pcaps": 16,
+            "frames": 705
+          },
+          "elapsed_seconds": 2.608076,
+          "rx_read_seconds": 1.2786130000000002,
+          "rx_window_lengths": [
+            158,
+            256,
+            51
+          ],
+          "first_request_ns": 1789949631628344000,
+          "last_capture_ns": 1789949634184703000
+        },
+        {
+          "number": 6,
+          "batch_size": 32,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "c53f7e6e9b4c0131e8402d63384802292119b59bdbf9940b70437db79fe5f0bb",
+          "audit_sha256": "8960ffa5377789d7a9e57f095aa0b0ccaa12ae3acce75ad95905bb900c96a301",
+          "counts": {
+            "pcaps": 16,
+            "frames": 626
+          },
+          "elapsed_seconds": 1.997545,
+          "rx_read_seconds": 0.658882,
+          "rx_window_lengths": [
+            155,
+            256,
+            54
+          ],
+          "first_request_ns": 1789949634456027000,
+          "last_capture_ns": 1789949636400700000
+        },
+        {
+          "number": 7,
+          "batch_size": 32,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "5ab8ac3841a843c87feedf8a9a979718feb632aabfc3c1e79edb711b3ea56557",
+          "audit_sha256": "1d281112c434e9e5cfbf1eba8dd99a1bf9d892c9bcb793425e9f5c19b82e813e",
+          "counts": {
+            "pcaps": 16,
+            "frames": 620
+          },
+          "elapsed_seconds": 1.996499,
+          "rx_read_seconds": 0.660597,
+          "rx_window_lengths": [
+            152,
+            256,
+            57
+          ],
+          "first_request_ns": 1789949636663104000,
+          "last_capture_ns": 1789949638605724000
+        },
+        {
+          "number": 8,
+          "batch_size": 16,
+          "overflows_before": 0,
+          "overflows_after": 0,
+          "manifest_sha256": "02af1e214f8ed421ab9256d48c282d774d8cac070446009f71124afaf361becb",
+          "audit_sha256": "32c15e35e099e6953f31424e2e820f77af21560b829e610c4d508a1e03f699fe",
+          "counts": {
+            "pcaps": 16,
+            "frames": 704
+          },
+          "elapsed_seconds": 2.62009,
+          "rx_read_seconds": 1.281651,
+          "rx_window_lengths": [
+            149,
+            256,
+            60
+          ],
+          "first_request_ns": 1789949638869972000,
+          "last_capture_ns": 1789949641438396000
+        }
+      ],
+      "physical_latency_validated": false,
+      "endurance_validated": false,
+      "median_elapsed_seconds": {
+        "16": 2.615368,
+        "32": 1.9959069999999999
+      },
+      "ratio_16_over_32_elapsed_seconds": 1.310365663330005,
+      "median_rx_read_seconds": {
+        "16": 1.2824460000000002,
+        "32": 0.6606585
+      },
+      "ratio_16_over_32_rx_read_seconds": 1.9411632484861696,
+      "block_time_reduction_percent": 23.685424001517198,
+      "rx_time_reduction_percent": 48.484497592881105,
+      "restart_exit_code": 0
+    }
+  ],
+  "tests": {
+    "count": 450,
+    "seconds": 104.745,
+    "skipped": 0,
+    "result": "OK",
+    "log_sha256": "8390010e57407d1b8c5e6ca6abb682522585cb5b4791c27b4d0fcc475c3cc89c"
+  },
+  "archive": {
+    "created_utc": "2026-09-21T00:14:24.354336+00:00",
+    "archive": "procontrol-fader-rx-benchmarks.tar.gz",
+    "sha256": "142e973fd3cb72c3274b140060099fdba803b8974bf349187797917d36f16efe",
+    "bytes": 2303517,
+    "verified_members": 1008,
+    "file_manifest": "FADER-RX-BENCHMARKS-FILE-MANIFEST.json",
+    "file_manifest_sha256": "d0d834e047f0bdf51b356dfd3d0739ff9c220f98df027bebf73bb54d19ea222f",
+    "independent_storage_device": false,
+    "physical_latency_validated": false,
+    "endurance_validated": false
+  },
+  "restoration": {
+    "verified_utc": "2026-09-21T00:16:51.077831+00:00",
+    "archive_sha256": "142e973fd3cb72c3274b140060099fdba803b8974bf349187797917d36f16efe",
+    "verified_members": 1008,
+    "restored_git_commit": "6eddde4536cc6eab4719a498c7f4aca174ff92c1",
+    "campaigns": [
+      {
+        "campaign": "fader-rx-benchmark-1",
+        "restored_audit": "fader-rx-benchmark-1-restored-audit.json",
+        "restored_audit_sha256": "9a19a72bd427075790af9618a8c358f67556fcc132cfc74718fcbcec0f72a331",
+        "audit_matches_original_except_verification_time": true
+      },
+      {
+        "campaign": "fader-rx-benchmark-2",
+        "restored_audit": "fader-rx-benchmark-2-restored-audit.json",
+        "restored_audit_sha256": "2a04ce64e3515a641ef25fa0ea1a7f9ae3d90d998529dda3deb31add73467e87",
+        "audit_matches_original_except_verification_time": true
+      }
+    ],
+    "hardware_restore_tested": false
+  },
+  "limits": {
+    "independent_storage_device": false,
+    "hardware_restore_tested": false,
+    "physical_latency_validated": false,
+    "endurance_validated": false,
+    "other_plans_validated": false
+  },
+  "service_verification": {
+    "observed_utc": "2026-09-21T00:14:23.403794+00:00",
+    "all_recorded_source_hashes_match": true,
+    "console": "online",
+    "gateway_running": true,
+    "pointer_running": true
+  }
+}

@@ -14,7 +14,10 @@ ensuite les faux événements tactiles produits par certaines valeurs lues et
 les huit lectures de relâchement ajoutées à chaque bloc. Le
 [vérificateur d'archive](fader-archive-verification.md) distingue les blocs
 terminés d'une acquisition complète et décrit la surveillance du lecteur
-exclusif. La double acquisition des faders est encore en cours à cette étape.
+exclusif. La [double acquisition des segments fader](fader-firmware-readback-2026-09-21.md)
+est désormais complète. Côté comm, les [compléments lus le 21 septembre](comm-application-complete-2026-09-21.md)
+portent la couverture cumulative à 65 536 octets avec une somme complète
+égale au mot de contrôle stocké.
 Ces rapports précisent les adresses, empreintes, effets volatils et limites ;
 ils n'établissent pas une sauvegarde restaurable de toute la console.
 

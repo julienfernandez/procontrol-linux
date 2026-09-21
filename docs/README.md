@@ -35,6 +35,14 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 
 ## Vérifications récentes
 
+- [Lecture RX fader : deux pilotes réels 16/32, gain et limites](fader-rx-benchmark-validation-2026-09-21.md),
+  [mesures de chaque bloc et archive vérifiée](fader-rx-benchmark-validation-2026-09-21.json),
+  [procédure bornée](fader-rx-benchmark.md).
+
+- [Programme comm : deux images cumulatives complètes de 64 Kio](comm-application-complete-2026-09-21.md),
+  [sommes, captures et archive](comm-application-complete-2026-09-21.json),
+  [procédure de lecture des compléments](comm-application-procedure.md).
+
 - [Réglages comm, état fader et pilote réel de lecture 16/32](preservation-fields-validation-2026-09-21.md),
   [audits, snapshots, mesures et archive](preservation-fields-validation-2026-09-21.json).
 

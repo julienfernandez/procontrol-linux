@@ -1,5 +1,9 @@
 # Pilote des lectures RX fader par lots de 16 et 32
 
+**Essais réalisés le 21 septembre 2026 :** les
+[deux campagnes matérielles et leur archive](fader-rx-benchmark-validation-2026-09-21.md)
+confirment un gain sur le plan borné décrit ici. Les défauts restent inchangés.
+
 Ce pilote étend la [mesure sur le code comm](preservation-fields-validation-2026-09-21.md)
 aux fenêtres du tampon série RX. Huit essais suivent l'ordre
 **16, 32, 32, 16, 16, 32, 32, 16**. Ils demandent tous les mêmes douze octets

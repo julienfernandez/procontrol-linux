@@ -1,0 +1,246 @@
+{
+  "date_local": "2026-09-21",
+  "acquisition_commit": "d578fbb2ee4de74f910e73b278b5c1654cc8e94d",
+  "audit_sha256": "dcf50eb570086881496d795e3e3230ee49e335a8ed451a44bf8c341d97ea2a54",
+  "audit": {
+    "method": "Cumulative complete application reconstruction from independently audited PCAPs",
+    "code_archive_manifest_sha256": "480e78fcbb93d50130b419fbd1468095b90ab819c3b2c4e8fd609bc01cb4474c",
+    "gap_archive_manifest_sha256": "0305f6f2a08056fcc77002cfb8af607f3452d3e80041403c5a5bec02f10d60d2",
+    "bytes_per_pass": 65536,
+    "complete_application_coverage": true,
+    "cumulative_acquisition": true,
+    "snapshot_atomic": false,
+    "full_device_backup": false,
+    "all_known_segments_match_reference": true,
+    "gap_fields_equal": {
+      "comm-app-gap-20008": true,
+      "comm-app-gap-20080": true,
+      "comm-app-gap-20110": true,
+      "comm-app-gap-2fce4": true,
+      "comm-application-checksum": true
+    },
+    "passes": [
+      {
+        "number": 1,
+        "sha256": "9a24da8fc2ea58d33fc11a2dc28f6d1fb556dc422a0ec2cd254d605a2d501c48",
+        "parts": [
+          {
+            "address": 131072,
+            "length": 8,
+            "sha256": "230e4cc0835ad1fbd6cac5b383d422b9f270ca2000d5072a428b9b035f235b03",
+            "source": "earlier-code-pass"
+          },
+          {
+            "address": 131080,
+            "length": 92,
+            "sha256": "f7b17d2718fb1c33c3f11a2ec0b20bc08a365fa6b3700dc45cfbe5dae8ca3d73",
+            "source": "new-gap-pass"
+          },
+          {
+            "address": 131172,
+            "length": 28,
+            "sha256": "64e9a8906127c7ba897b21e6e2d87336c8957576d3d6ed13070a0043f8209074",
+            "source": "earlier-code-pass"
+          },
+          {
+            "address": 131200,
+            "length": 128,
+            "sha256": "e9175db65a9789096ca9cb5524d3abc2107df03e3c9ba3af1aca628f9c5d3bd2",
+            "source": "new-gap-pass"
+          },
+          {
+            "address": 131328,
+            "length": 16,
+            "sha256": "ab98bf58a7b2442d97c4c9c61d414a231ee743687c840983d9aa7ea0d2e07bf2",
+            "source": "earlier-code-pass"
+          },
+          {
+            "address": 131344,
+            "length": 752,
+            "sha256": "fc8f2b0ff85f90e36ac44fcb77013c13bdb666f5c5bef3460f316fedaf1b1bcf",
+            "source": "new-gap-pass"
+          },
+          {
+            "address": 132096,
+            "length": 63716,
+            "sha256": "e2945b200be72745afb10a3bc68300b4dc3b5adba90b3a8157cec37f051e1af8",
+            "source": "earlier-code-pass"
+          },
+          {
+            "address": 195812,
+            "length": 796,
+            "sha256": "11d3e87d52818aba95507062f58c6c6260c5003cd8b284b66df9feb260abeae5",
+            "source": "new-gap-pass"
+          }
+        ],
+        "computed_sum16": 55881,
+        "stored_sum16": 55881,
+        "checksum_matches": true,
+        "gap_byte_histogram": {
+          "ff": 1768
+        },
+        "first_code_capture_ns": 1789938628347099000,
+        "last_code_capture_ns": 1789938780892371000,
+        "first_gap_capture_ns": 1789949071421323000,
+        "last_gap_capture_ns": 1789949075853932000
+      },
+      {
+        "number": 2,
+        "sha256": "9a24da8fc2ea58d33fc11a2dc28f6d1fb556dc422a0ec2cd254d605a2d501c48",
+        "parts": [
+          {
+            "address": 131072,
+            "length": 8,
+            "sha256": "230e4cc0835ad1fbd6cac5b383d422b9f270ca2000d5072a428b9b035f235b03",
+            "source": "earlier-code-pass"
+          },
+          {
+            "address": 131080,
+            "length": 92,
+            "sha256": "f7b17d2718fb1c33c3f11a2ec0b20bc08a365fa6b3700dc45cfbe5dae8ca3d73",
+            "source": "new-gap-pass"
+          },
+          {
+            "address": 131172,
+            "length": 28,
+            "sha256": "64e9a8906127c7ba897b21e6e2d87336c8957576d3d6ed13070a0043f8209074",
+            "source": "earlier-code-pass"
+          },
+          {
+            "address": 131200,
+            "length": 128,
+            "sha256": "e9175db65a9789096ca9cb5524d3abc2107df03e3c9ba3af1aca628f9c5d3bd2",
+            "source": "new-gap-pass"
+          },
+          {
+            "address": 131328,
+            "length": 16,
+            "sha256": "ab98bf58a7b2442d97c4c9c61d414a231ee743687c840983d9aa7ea0d2e07bf2",
+            "source": "earlier-code-pass"
+          },
+          {
+            "address": 131344,
+            "length": 752,
+            "sha256": "fc8f2b0ff85f90e36ac44fcb77013c13bdb666f5c5bef3460f316fedaf1b1bcf",
+            "source": "new-gap-pass"
+          },
+          {
+            "address": 132096,
+            "length": 63716,
+            "sha256": "e2945b200be72745afb10a3bc68300b4dc3b5adba90b3a8157cec37f051e1af8",
+            "source": "earlier-code-pass"
+          },
+          {
+            "address": 195812,
+            "length": 796,
+            "sha256": "11d3e87d52818aba95507062f58c6c6260c5003cd8b284b66df9feb260abeae5",
+            "source": "new-gap-pass"
+          }
+        ],
+        "computed_sum16": 55881,
+        "stored_sum16": 55881,
+        "checksum_matches": true,
+        "gap_byte_histogram": {
+          "ff": 1768
+        },
+        "first_code_capture_ns": 1789938780957725000,
+        "last_code_capture_ns": 1789938933141364000,
+        "first_gap_capture_ns": 1789949075908310000,
+        "last_gap_capture_ns": 1789949080393269000
+      }
+    ],
+    "counts": {
+      "code_pcaps": 504,
+      "gap_pcaps": 10,
+      "frames": 138715,
+      "socket_drops": 0
+    },
+    "passes_equal": true,
+    "all_checksums_match": true
+  },
+  "private_archive": {
+    "created_utc": "2026-09-21T00:09:18.890264+00:00",
+    "archive": "procontrol-comm-application-complete.tar.gz",
+    "sha256": "6deaa297fd026f20d684880b2868ba6778347468a1aeea415914c2d755565906",
+    "bytes": 7481368,
+    "verified_members": 1584,
+    "file_manifest": "COMM-APPLICATION-FILE-MANIFEST.json",
+    "file_manifest_sha256": "cff0ace6f5759496b7dc6a375a9e8cbe00bbcb49c4b694fab85b82b94f2c14ac",
+    "cumulative_acquisition": true,
+    "snapshot_atomic": false,
+    "full_device_backup": false,
+    "independent_storage_device": false
+  },
+  "source_bindings": {
+    "git_commit": "d578fbb2ee4de74f910e73b278b5c1654cc8e94d",
+    "sources": [
+      {
+        "path": "tools/comm_application_gaps.py",
+        "sha256": "5c57098863e15434055c4955132a17311d25a852f1850fd8d2857b61525fa46e"
+      },
+      {
+        "path": "tools/comm_preservation.py",
+        "sha256": "fcc6402eee341e9cec338ab08d162eb442dc731a4fbfb6c91b73ad5862fa7309"
+      },
+      {
+        "path": "tools/firmware_probe.py",
+        "sha256": "011a4bca4354c7b2aedce58b436408d65f4eff32ceef9c06cc11d8852210e45d"
+      },
+      {
+        "path": "tools/audit_firmware_probe.py",
+        "sha256": "8bde994f3afe158b05fec2f582113ec247298e3d11f6963a32672c398b9dcb78"
+      },
+      {
+        "path": "tools/audit_comm_preservation.py",
+        "sha256": "869a6c3cf811e4b580433ec2acddd6888ac383d0f38393504f3bfec784a368c3"
+      },
+      {
+        "path": "tools/audit_comm_application.py",
+        "sha256": "eec4307c8f62e9ac7704cb08ec0b37dff7d24349ec8c7c910ca9735b2c5ff901"
+      },
+      {
+        "path": "tools/audit_comm_archive.py",
+        "sha256": "dcb7412f02af1c4c176bd95c60c117d187fc3a537b9eaa04e0c2b79411204337"
+      },
+      {
+        "path": "tools/procontrold.py",
+        "sha256": "f565cba7657385d723c2351a5005834202b6830c02b2c66592ff1d90ac3a1cbb"
+      },
+      {
+        "path": "tools/session_probe.py",
+        "sha256": "587dc74b69d2adb1a978d16cd0b7949248167d8f00bc5b4b6a7af942c98dda03"
+      },
+      {
+        "path": "tools/pcap_writer.py",
+        "sha256": "7e11b1102199eb3b3b4b31de5552c4ac16f47c1d7549927b61b6e5bd4e3d29a6"
+      },
+      {
+        "path": "tools/inspect_pcap.py",
+        "sha256": "460ed00ec63b4b938c5d19ed95f83b53ae92154a29a6ef3a7c55b021289dfa07"
+      }
+    ]
+  },
+  "services_after_reading": {
+    "observed_utc": "2026-09-21T00:08:32.116093+00:00",
+    "gateway_pid": 669517,
+    "gateway_online": true,
+    "pointer_pid": 622060,
+    "pointer_online": true,
+    "restart_exit_code": 0
+  },
+  "software_tests": {
+    "count": 445,
+    "skipped": 0,
+    "duration_seconds": 102.833,
+    "log_sha256": "d4162a723b178521a63cb3a161be2c4acb0b6aa339175b1e5978727ace6f87db"
+  },
+  "hardware_restore_tested": false,
+  "offline_restoration": {
+    "verified_utc": "2026-09-21T00:10:27.770593+00:00",
+    "archive_sha256": "6deaa297fd026f20d684880b2868ba6778347468a1aeea415914c2d755565906",
+    "restored_git_commit": "d578fbb2ee4de74f910e73b278b5c1654cc8e94d",
+    "restored_audit_sha256": "dcf50eb570086881496d795e3e3230ee49e335a8ed451a44bf8c341d97ea2a54",
+    "audit_matches_original": true,
+    "hardware_restore_tested": false
+  }
+}

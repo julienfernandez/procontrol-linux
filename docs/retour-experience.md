@@ -16,13 +16,14 @@ actuel, consulter la [carte fonctionnelle](control-map.md), les
 |---|---|---|
 | Firmware constructeur | Deux ressources `comm` et `fader` 1.37 extraites, contrôlées et reproductibles ; analyse statique | [Origine, extraction et adresses](firmware-research-2026-09-20.md), [empreintes](firmware-research-2026-09-20.json) |
 | Diagnostic du processeur principal | Version `COMv1.37` et premières lectures confirmées sur la console, avec captures et répétitions | [Cinq expériences réseau](firmware-network-validation-2026-09-20.md), [preuves](firmware-network-validation-2026-09-20.json) |
-| Programme de communication installé | Les 63 768 octets adressés par l'image `comm` ont été lus deux fois et comparés au constructeur ; audit indépendant des 504 PCAP | [Lecture complète](comm-firmware-readback-2026-09-20.md), [manifeste de preuves](comm-firmware-readback-2026-09-20.json) |
+| Programme de communication installé | 65 536 octets couverts par deux acquisitions cumulatives, segments et compléments audités depuis 514 PCAP ; les deux images sont identiques et leur somme correspond au mot stocké `0xda49` | [Plage complète du programme](comm-application-complete-2026-09-21.md), [manifeste de preuves](comm-application-complete-2026-09-21.json) |
 | Relais vers le processeur des faders | Quatre réponses directes `FDRv1.37` ; cache et files série lus dans la RAM de `comm`. Premier essai incomplet conservé ; cette étape précédait l'acquisition du programme | [Validation réseau](fader-network-validation-2026-09-20.md), [preuves](fader-network-validation-2026-09-20.json), [analyse statique](fader-diagnostic-analysis-2026-09-20.md) |
 | Premiers octets installés des faders | Huit octets de vecteurs `0x8000–0x8007` lus trois fois via les données conservées dans RX, identiques au constructeur ; audit de 55 PCAP, bouclage réel inclus. Étape désormais complétée par la première passe entière | [Lecture brute et effets du filtre](fader-raw-readback-2026-09-20.md), [empreintes et résultats](fader-raw-readback-2026-09-20.json) |
 | Effets tactiles des lectures fader | Paire `c0/d0` observée sur le réseau, huit lectures `d0–d7` vérifiées et cache tactile neutre après deux lectures d'un bloc de code ; méthode ensuite appliquée aux 1 928 blocs de la double acquisition complète | [Neutralisation et table de commandes](fader-touch-recovery-2026-09-21.md), [preuves](fader-touch-recovery-2026-09-21.json) |
 | Programme fader installé | Deux passes de 11 546 octets identiques au constructeur et entre elles ; 30 584 captures auditées, pertes socket nulles. Archive privée complète vérifiée | [Double acquisition entière](fader-firmware-readback-2026-09-21.md), [empreintes et couverture](fader-firmware-readback-2026-09-21.json) |
-| Démarrage et réglages persistants | Deux lectures des vecteurs, contrôles et petits blocs comm/fader réalisées ; réglages persistants identiques, un octet RAM variable conservé. Les programmes complets restent à sommer | [Lectures réelles et écart RAM](preservation-fields-validation-2026-09-21.md), [audits et empreintes](preservation-fields-validation-2026-09-21.json) |
+| Démarrage et réglages persistants | Deux lectures des vecteurs, contrôles et petits blocs comm/fader réalisées ; réglages persistants identiques, un octet RAM variable conservé. La somme complète comm est vérifiée ; celle du fader reste à établir | [Lectures réelles et écart RAM](preservation-fields-validation-2026-09-21.md), [audits et empreintes](preservation-fields-validation-2026-09-21.json) |
 | Sauvegarde restaurable de toute l'unité | Encore ouverte : bootstrap complet, trous mémoire, autres réglages éventuels et restauration matérielle restent à établir | [Périmètre exact de la conservation](comm-firmware-readback-2026-09-20.md#périmètre-réel-de-la-sauvegarde) |
+| Accélération des lectures RX | Deux pilotes de huit blocs connus : environ 24 % de temps en moins par bloc avec des lots de 32 ; octets conformes, aucun débordement observé, touchers neutres. Défaut 16 conservé ; aucune endurance ni latence musicale établie | [Conditions, mesures et restitution des preuves](fader-rx-benchmark-validation-2026-09-21.md), [manifeste](fader-rx-benchmark-validation-2026-09-21.json) |
 
 La concordance des deux passes `comm` et des deux passes fader donne une
 base pour interpréter leurs segments de code. Elle ne valide pas les autres
@@ -32,6 +33,12 @@ moteurs et la calibration n'ont pas été modifiés pendant ces recherches.
 ## Enseignements à conserver
 
 ### Observer les échanges et identifier la preuve
+
+- Mesurer séparément les lectures RX et la durée du bloc complet : presque
+  doubler la vitesse d'une phase ne divise pas par deux toute la collecte.
+  Conserver les tailles de fenêtres et les tâches concurrentes ; le premier
+  pilote RX chevauchait les tests logiciels, le second a été répété après
+  leur fin. Voir les [deux campagnes RX](fader-rx-benchmark-validation-2026-09-21.md).
 
 - Une RAM peut varier entre deux lectures réussies : conserver les deux snapshots et
   localiser l’écart. Sur les huit structures fader, un octet a changé alors que

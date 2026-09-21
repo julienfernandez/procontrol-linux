@@ -1,5 +1,7 @@
 # Octets encore manquants dans les plages des programmes
 
+Ce relevé initial est complété par la [lecture réelle des 1 768 octets comm](comm-application-complete-2026-09-21.md). Les quatre intervalles fader restent à acquérir.
+
 Calcul du **21 septembre 2026** à partir des quatre segments adressés par
 chaque ressource constructeur et des plages additionnées au démarrage.
 Ce document décrit une couverture à compléter ; les intervalles ci-dessous
