@@ -91,6 +91,10 @@ Sources : [protocole](protocol.md), [captures Linux](capture-linux.md),
 - Un fichier `status.json` ancien ne prouve pas qu'un processus tourne. Vérifier
   PID, verrou, fraîcheur, état Online, réponse Ardour et erreurs avant et après
   intervention. Les changements de documentation ne nécessitent pas d'arrêt.
+- Après transmission du verrou au démon, `/proc/locks` peut encore afficher
+  le PID du lanceur terminé. Vérifier le descripteur et son `fdinfo` dans le
+  processus actif avant de conclure à un verrou abandonné ; voir
+  [l'observation et sa méthode de vérification](fader-archive-verification.md#identifier-le-processus-qui-détient-le-réseau).
 - Le verrou partagé peut appartenir au lecteur de firmware. Dans cet état,
   `running: true` ne désigne pas nécessairement le démon, et l'inventaire
   historique des processus de capture peut omettre le lecteur Python.

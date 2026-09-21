@@ -96,6 +96,29 @@ effective du collecteur, vérifier `restart-result.json`, `restart.log`, puis
 un nouveau PID du démon et un état Online frais. La sortie du lecteur et la
 reprise de la passerelle sont deux résultats distincts.
 
+**Complément observé le 21 septembre 2026 à 00:21 UTC :** après une relance
+normale, `/proc/locks` et `/proc/671903/fdinfo/3` indiquent le PID `671900`
+pour le verrou, alors que ce processus a terminé. Le démon `671903` est
+actif, publie un état Online frais et conserve le descripteur `3` pointant
+vers `run/daemon.lock`, avec son verrou exclusif visible dans `fdinfo`.
+L'égalité entre le PID inscrit dans la table des verrous et le PID actif
+échoue donc ici sans panne du service. Aucun redémarrage n'a été nécessaire.
+
+Le [lanceur](../tools/procontrold.py) prend le verrou avant `spawn_worker()`,
+passe le même descripteur au fils avec `pass_fds`, puis ferme sa propre copie
+sans déverrouillage explicite. Pour vérifier cet état hérité, rapprocher la
+commande du processus actif, son état frais, la cible de `/proc/PID/fd/FD`
+et la ligne `lock:` de `/proc/PID/fdinfo/FD`, y compris l'inode du fichier.
+Ne pas déduire un verrou abandonné de la seule disparition du PID affiché
+dans `/proc/locks`. Les identifiants ci-dessus décrivent cet instantané ;
+ils ne doivent pas être codés en dur dans un diagnostic futur.
+
+La preuve locale est `final-e6793c2-verification.json`, conservée avec les
+archives de préservation et les contrôles GitHub réussis de `e6793c2`
+([exécution 35547278747](https://github.com/julienfernandez/procontrol-linux/actions/runs/35547278747)).
+Cette vérification par descripteur complète le contrôle du collecteur décrit
+plus haut ; elle ne change pas le comportement du lanceur.
+
 ### Auditer uniquement les blocs clôturés
 
 Le collecteur inscrit un bloc dans son manifeste seulement après avoir fermé
