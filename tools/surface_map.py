@@ -76,6 +76,7 @@ class SurfaceMap:
         self.editing=ConsoleEditing(self)
 
     def reset_inputs(self):
+        if getattr(self,'sends',None) is not None:self.sends.exit()
         if getattr(self,'monitor',None) is not None:self.monitor.disconnect()
         if getattr(self,'eq',None) is not None:self.eq.exit('Console reconnectée')
         self.seen.clear(); self.alpha=False; self.caps=False; self.modifiers.clear()
@@ -118,6 +119,9 @@ class SurfaceMap:
         return actions
 
     def command(self,c,now):
+        if getattr(self,'sends',None) is not None:
+            result=self.sends.command(c)
+            if result is not None:return result
         editing=self.editing.command(c)
         if editing is not None:return editing
         if getattr(self,'monitor',None) is not None:
@@ -228,6 +232,16 @@ class SurfaceMap:
             return [osc('/access_action',{0:'Editor/zoom-to-session',
                 2:'Editor/zoom-to-selection',4:'EditorEditing/temporal-zoom-out',
                 6:'EditorEditing/temporal-zoom-in'}[n])]
+        if z==8 and n==0x15:
+            return [osc('/select/'+self.automation_target+'/automation',0)]
+        if z==8 and n==0x16:
+            self.clock_mode='bbt' if self.clock_mode=='smpte' else 'smpte'
+            return [('mode','clock',[self.clock_mode])]
+        if z==8 and n in (0x13,0x1e,0x20):
+            sends=getattr(self,'sends',None)
+            if sends is not None:
+                return [('sends','toggle',[])]
+            self.encoder_mode='send';return [('mode','encoders',['send',self.send_index])]
         if z==8 and n in (0x18,0x1a,0x1c,0x1d):
             self.automation_target={0x18:'gain',0x1a:'pan',0x1c:'mute',0x1d:'trimdB'}[n]
             return [led(z,k,k==n) for k in (0x18,0x1a,0x1c,0x1d)]

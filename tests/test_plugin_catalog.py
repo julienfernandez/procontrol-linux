@@ -174,16 +174,16 @@ class PluginCatalogTests(unittest.TestCase):
         self.assertEqual(self.f.desired['led',0,1], button_led(0,1,False))
         self.assertEqual(self.f.desired['led',2,1], button_led(2,1,True))
 
-    def test_library_has_eight_choices_without_discovery(self):
-        self.connected(); self.action('90 0a 40'); self.load()
+    def test_library_has_fourteen_explicit_choices_without_discovery(self):
+        self.connected(); self.eq.creation_version = 3; self.action('90 0a 40'); self.load()
         self.action('90 00 4f')  # third row = + Effet
         self.assertEqual(self.eq.mode, 'library')
-        self.assertEqual(len(self.eq.browser_rows()), 8)
-        self.assertEqual([r[0] for r in CATALOG], ['eq','comp','reverb','delay','phaser','warm','tube','tape'])
+        self.assertEqual(len(self.eq.browser_rows()), 14)
+        self.assertEqual([r[0] for r in CATALOG], ['eq','comp','reverb','delay','phaser','warm','tube','tape','autotune','pitch','sidechain','pump','transient','vocoder'])
         self.action('b0 54 3f')
-        self.assertEqual(self.eq.cursor, 7)
+        self.assertEqual(self.eq.cursor, 13)
         actions = self.action('90 11 5a')  # ENTER confirms the rotary cursor.
-        self.assertEqual(actions[0][2][2], 'tape')
+        self.assertEqual(actions[0][2][2], 'vocoder')
 
     def test_dsp_knob_controls_compressor_and_stale_catalog_blocks(self):
         self.action('90 03 40'); self.load(2)
@@ -236,7 +236,7 @@ class PluginCatalogTests(unittest.TestCase):
         self.r.disconnect()
         self.assertEqual(self.eq.creation_version, 0)
         self.assertFalse(self.eq.creation_supported)
-        for bad in ([], [True], [3], ['2']):
+        for bad in ([], [True], [4], ['2']):
             self.eq.feed('/procontrol/plugin/version', bad)
             self.assertFalse(self.eq.creation_supported)
 
@@ -282,6 +282,33 @@ class PluginCatalogTests(unittest.TestCase):
                             for action in self.action(f'b0 {0x4d+knob:02x} 41'):
                                 self.assertEqual(action[1], '/strip/plugin/parameter')
                                 self.assertEqual(action[2][:2], [1,pid])
+
+    def test_version_three_extends_version_two_without_changing_dyn(self):
+        self.connected(); self.r.feed('/procontrol/plugin/version', [2])
+        self.action('90 0a 40'); self.eq.tick(); self.r.feed('/strip/plugin/list', [1])
+        self.eq.handle('open', [8])
+        self.assertEqual(self.eq.create_error, 'MAJ Ardour')
+        self.r.feed('/procontrol/plugin/version', [3])
+        request = self.eq.handle('open', [8])
+        self.assertEqual(request[0][2][2], 'autotune')
+
+    def test_vocoder_profile_rejects_other_surge_effect_descriptors(self):
+        self.connected(); self.action('90 0a 40'); self.eq.tick()
+        self.r.feed('/strip/plugin/list', [1,1,'Surge XT Effects',1]); self.action('90 00 4d')
+        self.eq.tick(); self.r.feed('/strip/plugin/list', [1,1,'Surge XT Effects',1]); self.eq.tick()
+        self.r.feed('/strip/plugin/descriptor', [1,1,1,'Delay Time',128,0.,0.,1.,'',0,.5])
+        self.r.feed('/strip/plugin/descriptor_end',[1,1])
+        self.assertFalse(self.eq.usable())
+        self.assertEqual(self.action('b0 4d 41'), [])
+
+    def test_gain_profile_turns_in_db(self):
+        self.eq.plugin_name = 'LSP Sidechain Compressor Stereo'
+        self.eq.params = {'Attack threshold': dict(id=1, flags=128, low=.001, high=1., value=.1)}
+        writes = []
+        self.eq.write_label = lambda label,value: writes.append((label,value))
+        self.eq.turn_parameter(0,1)
+        self.assertAlmostEqual(writes[0][1], .1 * 10 ** (.25/20))
+        self.assertEqual(self.eq.parameter_text('Attack threshold', self.eq.params['Attack threshold']), '-20.0dB')
 
 
 if __name__ == '__main__': unittest.main()

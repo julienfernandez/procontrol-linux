@@ -1,0 +1,85 @@
+--- a/libs/surfaces/osc/osc.cc
++++ b/libs/surfaces/osc/osc.cc
+@@ -5408,7 +5408,7 @@
+ int
+ OSC::procontrol_plugin_version (lo_message msg)
+ {
+-	return int_message (X_("/procontrol/plugin/version"), 2, get_address (msg));
++	return int_message (X_("/procontrol/plugin/version"), 3, get_address (msg));
+ }
+ 
+ int
+@@ -5436,6 +5436,7 @@
+ 	if (channels != 1 && channels != 2) { result = -2; return reply (); }
+ 	const std::string suffix = channels == 1 ? "mono" : "stereo";
+ 	std::string uri;
++	ARDOUR::PluginType type = ARDOUR::LV2;
+ 	if (key == "eq") { uri = "http://lsp-plug.in/plugins/lv2/para_equalizer_x8_" + suffix; }
+ 	else if (key == "comp") { uri = "http://lsp-plug.in/plugins/lv2/compressor_" + suffix; }
+ 	else if (key == "reverb") { uri = "urn:dragonfly:room"; }
+@@ -5444,6 +5445,12 @@
+ 	else if (key == "warm") { uri = "http://plugin.org.uk/swh-plugins/valve"; }
+ 	else if (key == "tube") { uri = "urn:zamaudio:ZamTube"; }
+ 	else if (key == "tape") { uri = "https://github.com/jatinchowdhury18/AnalogTapeModel"; }
++	else if (key == "autotune") { uri = "http://gareus.org/oss/lv2/fat1"; }
++	else if (key == "pitch") { uri = "http://breakfastquay.com/rdf/lv2-rubberband#" + suffix; }
++	else if (key == "pump") { uri = "https://www.jahnichen.de/plugins/lv2/BShapr"; }
++	else if (key == "sidechain") { uri = "http://lsp-plug.in/plugins/lv2/sc_compressor_" + suffix; }
++	else if (key == "transient") { uri = "http://lsp-plug.in/plugins/lv2/beat_breather_" + suffix; }
++	else if (key == "vocoder") { uri = "ABCDEF019182FAEB566D624153465854"; type = ARDOUR::VST3; }
+ 	else { result = -2; return reply (); }
+ 
+ 	std::shared_ptr<Processor> before;
+@@ -5466,7 +5473,7 @@
+ 	if (index) { result = 1; return reply (); }
+ 	// Instantiate through the same API as Ardour's Lua actions. Route insertion
+ 	// owns graph/process locking. No session save and no engine reconfiguration.
+-	std::shared_ptr<Processor> processor = ARDOUR::LuaAPI::new_plugin (session, uri, ARDOUR::LV2, "");
++	std::shared_ptr<Processor> processor = ARDOUR::LuaAPI::new_plugin (session, uri, type, key == "pump" ? "ProControl - Pump 1 temps" : "");
+ 	if (!processor) { result = -4; return reply (); }
+ 	std::shared_ptr<PluginInsert> pi = std::dynamic_pointer_cast<PluginInsert> (processor);
+ 	std::map<std::string, float> initial;
+@@ -5495,6 +5502,17 @@
+ 		initial["Degrade On/Off"] = 0; initial["Chew On/Off"] = 0;
+ 		initial["Oversampling Factor"] = .25;
+ 	}
++	if (key == "autotune") { initial["Mode"] = 2; initial["Filter"] = .1; initial["Correction"] = .7; }
++	else if (key == "pitch") { initial["Formant Preserving"] = 1; }
++	else if (key == "pump") { initial["Base"] = 1; initial["Base value"] = 1; initial["Dry / wet"] = 0; initial["Shaper 1: smoothing"] = 20; }
++	else if (key == "sidechain") { initial["Ratio"] = 1; initial["Sidechain type"] = 2; }
++	else if (key == "transient") { initial["Dry gain"] = 1; initial["Wet gain"] = 0; }
++	else if (key == "vocoder") {
++        // Type changes are processed asynchronously by Surge. Restore the
++        // prepared vocoder state before insertion, including while bypassed.
++        const Plugin::PresetRecord* preset = pi->plugin ()->preset_by_label ("ProControl - Vocodeur 20 bandes");
++        if (!preset || !pi->plugin ()->load_preset (*preset)) { result = -5; return reply (); }
++    }
+ 	for (uint32_t n = 0; ; ++n) {
+ 		bool ok = false;
+ 		const uint32_t port = pi->plugin ()->nth_parameter (n, ok);
+@@ -5509,6 +5527,25 @@
+ 	if (!initial.empty ()) { result = -5; return reply (); }
+ 	const int added = before ? route->add_processor (processor, before) : route->add_processor (processor, ARDOUR::PreFader);
+ 	if (added != 0) { result = -6; return reply (); }
++	// A sidechain effect is not a complete routing preset. Expose the pins,
++	// but keep a new vocoder bypassed until a carrier/modulator are connected.
++	if ((key == "sidechain" || key == "vocoder") && !route->add_sidechain (processor)) {
++		route->remove_processor (processor); result = -6; return reply ();
++	}
++	if (key == "sidechain") {
++		// LSP's LV2 sidechain group is not automatically connected by Ardour.
++		// Feed its detector pins from the new mono sidechain buffer. On stereo
++		// variants both detector pins receive that same external kick signal.
++		const unsigned sc_buffer = pi->input_streams ().n_audio ();
++		for (unsigned n = 0; n < pi->get_count (); ++n) {
++			ChanMapping pins = pi->input_map (n);
++			for (unsigned c = channels; c < channels * 2; ++c) {
++				pins.set (DataType::AUDIO, c, sc_buffer);
++			}
++			pi->set_input_map (n, pins);
++		}
++	}
++	if (key == "vocoder" || key == "transient") { processor->enable (false); }
+ 	for (unsigned i = 0; ; ++i) {
+ 		std::shared_ptr<Processor> p = route->nth_plugin (i);
+ 		if (!p) { break; }

@@ -13,10 +13,17 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
       - name: Linux test and build dependencies
         run: sudo apt-get update && sudo apt-get install -y iproute2 util-linux libjack-jackd2-dev build-essential
       - name: Python regression suite
         run: python3 -m unittest discover -s tests -v
+      - name: Web meter and polling regressions
+        run: |
+          node tests/test_meter_ballistics.js
+          node tests/test_web_polling.js
       - name: Syntax and generated mapping inventory
         run: |
           python3 -m compileall -q tools tests integrations

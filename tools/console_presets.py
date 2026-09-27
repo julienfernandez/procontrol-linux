@@ -17,6 +17,14 @@ BUILTIN = 'ardour-current'
 LEVELS = {'unknown', 'documented', 'observed', 'confirmed'}
 # Only existing behaviors, routed through the normal bank/mode machinery.
 GUIDED = {
+    'sends': ('Départs auxiliaires de la piste', 'button.15.03'),
+    'effects_library': ('Bibliothèque d’effets', 'button.15.04'),
+    'dsp_select': ('Ouvrir / sélectionner en DSP', 'button.15.07'),
+    'dsp_enable': ('Activer le processeur / départ', 'button.15.05'),
+    'dsp_suspend': ('Désactiver le processeur / départ', 'button.15.08'),
+    'dsp_compare': ('Mémoriser / échanger les réglages A/B', 'button.15.09'),
+    'dsp_page': ('Page DSP suivante (Shift : précédente)', 'button.17.2a'),
+    'auto_suspend': ('Automation sélectionnée : Manual', 'button.08.15'),
     'play': ('Lecture', 'button.1c.10'), 'stop': ('Stop', 'button.1c.0f'),
     'record': ('Enregistrement', 'button.1c.11'), 'save': ('Enregistrer la session', 'button.19.07'),
     'undo': ('Annuler', 'button.19.06'), 'eq': ('Ouvrir EQ de la tranche', 'button.00.02'),

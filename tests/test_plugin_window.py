@@ -41,8 +41,20 @@ class PluginWindowTests(unittest.TestCase):
 
     def test_next_track_waits_for_valid_descriptors(self):
         self.update();self.confirm();self.e.sid=2;self.e.ready=False
+        self.assertEqual(self.update(),[('osc',PREFIX+'clear',[])])
+        self.assertIsNone(self.ui.target);self.assertIsNone(self.ui.confirmed)
         self.assertEqual(self.update(),[])
         self.e.ready=True
+        self.assertEqual(self.update()[0][2][1],'265')
+
+    def test_track_change_hides_previous_ui_during_catalog_refresh(self):
+        self.update();self.confirm();old=list(self.ui.target)
+        self.e.sid=2;self.r.ready=False;self.e.ready=False
+        self.assertEqual(self.update(),[('osc',PREFIX+'clear',[])])
+        self.ui.feed(PREFIX+'result',old+[1])
+        self.assertIsNone(self.ui.confirmed)
+        self.assertEqual(self.update(),[])
+        self.r.ready=True;self.e.ready=True
         self.assertEqual(self.update()[0][2][1],'265')
 
     def test_browser_and_escape_clear_only_once(self):

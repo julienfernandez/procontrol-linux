@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from eq_editor import EQEditor
+from send_editor import SendEditor
 from procontrol_mapping import mapping_tree, SOURCE_COMMIT
 from surface_feedback import SurfaceFeedback
 from surface_map import SurfaceMap
@@ -14,7 +15,7 @@ from track_monitor import TrackMonitor
 from navigation_controls import NAVIGATION_KEYS
 
 ROOT = Path(__file__).resolve().parents[1]
-MODES = ('normal', 'modifier', 'alpha', 'monitor', 'eq', 'browse', 'library', 'params', 'nudge', 'zoom')
+MODES = ('normal', 'modifier', 'alpha', 'monitor', 'eq', 'browse', 'library', 'params', 'sends', 'nudge', 'zoom')
 
 
 def mapper_for(mode):
@@ -24,6 +25,7 @@ def mapper_for(mode):
     routing = SurfaceRouting(mapper, feedback)
     eq = EQEditor(routing, feedback, lambda: 0.)
     monitor = TrackMonitor(routing, feedback, lambda: 0.)
+    sends = SendEditor(routing, feedback, lambda: 0.)
     mapper.alpha = mode == 'alpha'
     mapper.nudge = mode == 'nudge'
     mapper.editing.zoom_navigation = mode == 'zoom'
@@ -34,6 +36,7 @@ def mapper_for(mode):
     if mode in ('eq', 'browse', 'library', 'params'):
         eq.active = True
         eq.mode = mode
+    if mode == 'sends':sends.active=True
     return mapper
 
 
@@ -42,6 +45,9 @@ def inventory():
     groups = [(z, f'Channel {z+1}', tree[0]['Children']) for z in range(8)]
     groups += [(z, g.get('Address', 'Numeric keypad'), g.get('Children', {}))
                for z, g in tree[8]['Children'].items()]
+    for zone in range(14,21):
+        if zone not in {g[0] for g in groups}:
+            groups.append((zone,f'DSP {zone-12}',tree[8]['Children'][13]['Children']))
     groups.append((0x18, 'Navigation', {key: {'Address': label} for key, label in NAVIGATION_KEYS.items()}))
     rows = []
     for zone, group, children in groups:
@@ -53,7 +59,7 @@ def inventory():
             rows.append(dict(zone=zone, button=key, group=group,
                              label=node.get('Address', 'Unknown'),
                              mapped=any(value is not None for value in states.values()),
-                             actions=states, provenance=('docs/navigation-buttons-confirmed.json' if zone==0x18 else 'ReaControl24 ' + SOURCE_COMMIT),
+                             actions=states, provenance=('docs/navigation-buttons-confirmed.json' if zone==0x18 else 'docs/dsp-buttons-confirmed.json' if 13<=zone<=20 else 'ReaControl24 ' + SOURCE_COMMIT),
                              physical_validation='not asserted by inventory'))
     return rows
 
@@ -68,7 +74,7 @@ def documents():
              f'{len(rows)} entrées ; {normal} prises en charge en mode normal ; '
              f'{len(rows)-len(missing)} dans au moins un mode ; {len(missing)} sans gestionnaire.', '',
              'Modes inspectés : normal, Shift, ALPHA, monitoring, EQ, chaîne de plugins,',
-             'bibliothèque, paramètres, NUDGE et zoom. Les éditeurs de mode du daemon sont installés',
+             'bibliothèque, paramètres, départs auxiliaires, NUDGE et zoom. Les éditeurs de mode du daemon sont installés',
              'dans un contexte neuf pour chaque touche. Aucun message réseau n’est envoyé.', '',
              'Dans [le JSON](mapping-coverage.json), `null` signifie sans gestionnaire ; `[]`',
              'signifie touche consommée, éventuellement pour changer un état local ou bloquer',
@@ -81,8 +87,8 @@ def documents():
     lines += [f"| {r['zone']:02x} | {r['button']:02x} | {r['label']} | {r['group']} |" for r in missing]
     lines += ['', 'Les contrôles analogiques peuvent ne pas émettre en Ethernet. Les encodeurs,',
               'faders et commandes absentes de la table nécessitent un inventaire séparé.',
-              'La table tierce ne décrit notamment que la première rangée DSP ; les huit',
-              'rangées et les rotatifs ont leurs [captures dédiées](dsp-buttons-2026-09-14.md).',
+              'Les huit rangées DSP sont incluses ; les rangées supplémentaires viennent des',
+              '[captures dédiées](dsp-buttons-2026-09-14.md), et non de la table tierce.',
               'Les cinq touches de navigation autour de ZOOM/SEL sont identifiées par la',
               '[capture contrôlée](navigation-buttons-confirmed.json) du 20 septembre.',
               'Le [guide fonctionnel](control-map.md) décrit les usages actuels.']

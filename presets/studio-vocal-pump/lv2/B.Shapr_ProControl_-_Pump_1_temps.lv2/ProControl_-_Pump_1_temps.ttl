@@ -1,0 +1,233 @@
+@prefix atom: <http://lv2plug.in/ns/ext/atom#> .
+@prefix lv2: <http://lv2plug.in/ns/lv2core#> .
+@prefix pset: <http://lv2plug.in/ns/ext/presets#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix state: <http://lv2plug.in/ns/ext/state#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<>
+	a pset:Preset ;
+	lv2:appliesTo <https://www.jahnichen.de/plugins/lv2/BShapr> ;
+	rdfs:label "ProControl - Pump 1 temps" ;
+	lv2:port [
+		lv2:symbol "active_shape" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "base" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "base_value" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "bypass" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "dry_wet" ;
+		pset:value 0.5
+	] , [
+		lv2:symbol "midi_control" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "midi_keys" ;
+		pset:value 4095.0
+	] , [
+		lv2:symbol "midi_thru" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh1_dry_wet" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh1_input" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh1_input_amp" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh1_opt1" ;
+		pset:value 36.0
+	] , [
+		lv2:symbol "sh1_opt2" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh1_opt3" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh1_opt4" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh1_opt5" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh1_opt6" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh1_opt7" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh1_opt8" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh1_output" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh1_output_amp" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh1_smoothing" ;
+		pset:value 20.0
+	] , [
+		lv2:symbol "sh1_target" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh2_dry_wet" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh2_input" ;
+		pset:value 3.0
+	] , [
+		lv2:symbol "sh2_input_amp" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh2_opt1" ;
+		pset:value 36.0
+	] , [
+		lv2:symbol "sh2_opt2" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh2_opt3" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh2_opt4" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh2_opt5" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh2_opt6" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh2_opt7" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh2_opt8" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh2_output" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh2_output_amp" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh2_smoothing" ;
+		pset:value 20.0
+	] , [
+		lv2:symbol "sh2_target" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh3_dry_wet" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh3_input" ;
+		pset:value 4.0
+	] , [
+		lv2:symbol "sh3_input_amp" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh3_opt1" ;
+		pset:value 36.0
+	] , [
+		lv2:symbol "sh3_opt2" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh3_opt3" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh3_opt4" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh3_opt5" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh3_opt6" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh3_opt7" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh3_opt8" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh3_output" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh3_output_amp" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh3_smoothing" ;
+		pset:value 20.0
+	] , [
+		lv2:symbol "sh3_target" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh4_dry_wet" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh4_input" ;
+		pset:value 5.0
+	] , [
+		lv2:symbol "sh4_input_amp" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh4_opt1" ;
+		pset:value 36.0
+	] , [
+		lv2:symbol "sh4_opt2" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh4_opt3" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh4_opt4" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh4_opt5" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh4_opt6" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh4_opt7" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh4_opt8" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh4_output" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sh4_output_amp" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sh4_smoothing" ;
+		pset:value 20.0
+	] , [
+		lv2:symbol "sh4_target" ;
+		pset:value 0.0
+	] ;
+	state:state [
+		<https://www.jahnichen.de/plugins/lv2/BShapr#STATEshape> """Shape data:
+shp:0; met:0; typ:0; ptx:0.000000; pty:0.050000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+shp:0; met:0; typ:1; ptx:0.120000; pty:0.050000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+shp:0; met:0; typ:2; ptx:0.550000; pty:0.850000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+shp:0; met:0; typ:1; ptx:0.820000; pty:1.000000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+shp:0; met:0; typ:1; ptx:0.970000; pty:1.000000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+shp:0; met:0; typ:0; ptx:1.000000; pty:0.050000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+shp:1; met:0; typ:0; ptx:0.000000; pty:1.000000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+shp:1; met:0; typ:0; ptx:1.000000; pty:1.000000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+shp:2; met:0; typ:0; ptx:0.000000; pty:1.000000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+shp:2; met:0; typ:0; ptx:1.000000; pty:1.000000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+shp:3; met:0; typ:0; ptx:0.000000; pty:1.000000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+shp:3; met:0; typ:0; ptx:1.000000; pty:1.000000; h1x:0.000000; h1y:0.000000; h2x:0.000000; h2y:0.000000;
+"""
+	] .

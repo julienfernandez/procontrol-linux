@@ -25,7 +25,9 @@ class ConsoleController:
                     response['received_at']=time.time()
                     self.cached=response
                 except (OSError,ValueError) as exc:self.cached=dict(ok=False,error='Gateway indisponible : '+str(exc),events=[])
-                self.at=now
+                # Start the cache lifetime after the RPC, including a timeout.
+                # Otherwise clients queued behind a slow RPC each issue another one.
+                self.at=time.monotonic()
             return self.cached
 
     def request(self,request):

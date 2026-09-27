@@ -70,8 +70,17 @@ def prepare_usb(timeout=65):
     while time.monotonic() < deadline:
         state = api()
         busy = state.get('job', {}).get('state') in ('queued', 'running')
+        if busy:
+            requested = True  # Reuse this job, including its cancellation/failure.
+        if not busy and state.get('stale', True):
+            # Starting the web server precedes its first hardware observation.
+            # Unknown state is not evidence that an already prepared studio needs repair.
+            time.sleep(.5)
+            continue
         if usb_ready(state) and not busy:
             return True
+        if not busy and not state.get('stale', True) and state.get('recovery_wait'):
+            return False  # A missing cable/network cannot be repaired by preparing again.
         if not busy and not requested:
             try:
                 api('recover')
@@ -83,7 +92,7 @@ def prepare_usb(timeout=65):
                 if api().get('job', {}).get('state') not in ('queued', 'running'):
                     raise
                 requested = True
-        elif requested and not busy and state.get('job', {}).get('state') in ('failed', 'interrupted'):
+        elif requested and not busy and state.get('job', {}).get('state') in ('failed', 'interrupted', 'cancelled'):
             return False
         time.sleep(.5)
     return False
@@ -95,7 +104,9 @@ def finish_routing(timeout=40):
         state = api()
         if not state.get('stale') and state.get('route_allowed'):
             graph = state.get('graph', {})
-            if graph.get('tracks') == 16 and graph.get('master') == 2 and not graph.get('master_other'):
+            if (graph.get('tracks') == graph.get('input_channels', 16)
+                    and graph.get('input_channels', 16) > 0
+                    and graph.get('master') == 2 and not graph.get('master_other')):
                 return
             if usb_ready(state) and graph.get('behringer') and state.get('job', {}).get('state') not in ('queued', 'running'):
                 api('route')

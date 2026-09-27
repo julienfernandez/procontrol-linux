@@ -58,6 +58,8 @@ class TrackMonitor:
         return sid if self.clock() - at < self.TIMEOUT and self.track(sid) else None
 
     def enter(self):
+        sends = getattr(self.routing, 'sends', None)
+        if sends is not None and sends.active: sends.exit()
         eq = getattr(self.routing, 'eq', None)
         if eq is not None and eq.active: eq.exit()
         self.active = True; self.error = None; self.render()

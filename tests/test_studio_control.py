@@ -1,5 +1,6 @@
 """Recovery contracts: actual links, stale state, serialized writes, shutdown."""
 import json
+import fcntl
 import os
 from pathlib import Path
 import subprocess
@@ -13,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'tools'))
 from studio_control import StudioBackend, StudioController, graph_health, pcm_info, write_json
 
 
-def graph_fixture():
+def graph_fixture(channels=16):
     objects=[]
     def node(i,name):
         objects.append(dict(id=i,type='PipeWire:Interface:Node',info={'props':{'node.name':name}}))
@@ -21,8 +22,8 @@ def graph_fixture():
         objects.append(dict(id=i,type='PipeWire:Interface:Port',info={'props':{'node.id':str(node),'audio.channel':ch,'port.direction':direction,'port.alias':alias}}))
     def link(i,s,d,a,b):
         objects.append(dict(id=i,type='PipeWire:Interface:Link',info={'output-node-id':s,'input-node-id':d,'output-port-id':a,'input-port-id':b,'state':'active'}))
-    for i,n in [(1,'alsa_input.usb-Akai_Professional_MPC_One_USB_Audio_16ch_test'),(2,'alsa_output.usb-Akai_Professional_MPC_One_USB_Audio_16ch_test'),(3,'codex-mpc-usb-silence-v3'),(4,'codex-mpc-usb-capture-keepalive-v3'),(5,'ardour'),(6,'alsa_output.usb-Burr-Brown_from_TI_USB_Audio_CODEC-test')]:node(i,n)
-    for i in range(16):
+    for i,n in [(1,f'alsa_input.usb-Akai_Professional_MPC_One_USB_Audio_{channels}ch_test'),(2,f'alsa_output.usb-Akai_Professional_MPC_One_USB_Audio_{channels}ch_test'),(3,'codex-mpc-usb-silence-v3'),(4,'codex-mpc-usb-capture-keepalive-v3'),(5,'ardour'),(6,'alsa_output.usb-Burr-Brown_from_TI_USB_Audio_CODEC-test')]:node(i,n)
+    for i in range(channels):
         for base,n,d in [(100,1,'out'),(200,2,'in'),(300,3,'out'),(400,4,'in')]:port(base+i,n,f'AUX{i}',d)
         port(500+i,5,'', 'in',f'ardour:MPC {i//2*2+1:02d}-{i//2*2+2:02d}/audio_in {i%2+1}')
         link(1000+i,3,2,300+i,200+i);link(1100+i,1,4,100+i,400+i);link(1200+i,1,5,100+i,500+i)
@@ -63,6 +64,10 @@ class SupervisorTests(unittest.TestCase):
         p=self.root/'integrations/mpc_usb/studio.py';p.parent.mkdir(parents=True);p.write_text('')
         write_json(self.root/'studio.json',dict(data_root=str(self.data),host='192.0.2.1',session='/music/studio',automatic=False))
         self.c=StudioController(self.root)
+        (self.root/'run').mkdir(exist_ok=True)
+        self.guard=(self.root/'run/daemon.lock').open('a')
+        self.addCleanup(self.guard.close)
+        fcntl.flock(self.guard,fcntl.LOCK_EX|fcntl.LOCK_NB)
     def fresh_session(self,name='/music/studio'):
         write_json(self.root/'run/status.json',dict(running=True,ardour='responding',stereo={'session':name}))
     def snapshot(self,remote=REMOTE):
@@ -89,6 +94,38 @@ class SupervisorTests(unittest.TestCase):
         self.fresh_session();self.assertTrue(self.c.backend.route_allowed())
         p=self.root/'run/status.json';os.utime(p,(time.time()-10,)*2)
         self.assertFalse(self.c.backend.route_allowed())
+    def test_recent_status_without_worker_cannot_authorize_routing(self):
+        self.fresh_session()
+        self.guard.close()
+        self.assertFalse(self.c.backend.route_allowed())
+        with self.assertRaises(ValueError):self.c.request({'action':'route'})
+    def test_usb_disconnect_waits_even_if_midi_or_visibility_needs_repair(self):
+        remote={**REMOTE,'usb_state':'not attached','midi':'','visibility':''}
+        with patch.object(self.c.backend,'remote',return_value=remote),patch('studio_control.subprocess.check_output',return_value='[]'):
+            s=self.c.backend.snapshot()
+        self.assertFalse(s['repair_needed']);self.assertIn('câble',s['recovery_wait'])
+        self.assertTrue(self.snapshot(remote)['repair_needed'])  # PC graph still present: diagnose the mismatch.
+    def test_disable_automatic_cancels_queued_recovery_only(self):
+        self.c.config['automatic']=True
+        broken=self.snapshot({**REMOTE,'gadget':''})
+        with patch.object(self.c.backend,'snapshot',return_value=broken),patch.object(self.c,'run_command') as run:
+            self.c.tick();self.assertEqual(self.c.job['state'],'queued')
+            self.c.request({'action':'automatic','enabled':False})
+            self.assertIsNone(self.c.pending);self.assertEqual(self.c.job['state'],'cancelled')
+            self.c.tick();run.assert_not_called()
+            self.c.request({'action':'recover'})
+            self.c.request({'action':'automatic','enabled':False})
+            self.c.tick();run.assert_called_once_with('prepare')
+    def test_automatic_revalidates_before_start_if_device_disappeared_or_recovered(self):
+        for remote in ({},REMOTE):
+            with self.subTest(remote=bool(remote)):
+                self.c.config['automatic']=True
+                broken=self.snapshot({**REMOTE,'gadget':''})
+                with patch.object(self.c.backend,'snapshot',return_value=broken):self.c.tick()
+                self.assertEqual(self.c.job['state'],'queued')
+                with patch.object(self.c.backend,'snapshot',return_value=self.snapshot(remote)),patch.object(self.c,'run_command') as run:
+                    self.c.tick();run.assert_not_called()
+                self.assertEqual(self.c.job['state'],'cancelled');self.assertIsNone(self.c.pending)
     def test_automatic_toggle_preserves_new_launcher_settings(self):
         config=json.loads((self.root/'studio.json').read_text());config['launch_link']=True
         write_json(self.root/'studio.json',config)
@@ -125,6 +162,23 @@ class SupervisorTests(unittest.TestCase):
         for trigger,boot,expected in [('1','first-boot',0),('2','first-boot',1),('3','reboot',0)]:
             with patch.object(self.c.backend,'snapshot',return_value=snap(trigger,boot)):self.c.tick()
             self.assertEqual(self.c.state()['pcm_restarts'],expected);self.assertIsNone(self.c.pending)
+    def test_pcm_direction_and_identity_are_recorded_without_repair(self):
+        a='state: RUNNING\nowner_pid : 304\ntrigger_time: 1'
+        b=a.replace('time: 1','time: 2')
+        for remote in ({**REMOTE,'playback':a,'capture':a},{**REMOTE,'playback':b,'capture':a}):
+            with patch.object(self.c.backend,'snapshot',return_value=self.snapshot(remote)):self.c.tick()
+        change=self.c.state()['pcm_last_change']
+        self.assertEqual(set(change['directions']),{'playback'})
+        self.assertFalse(change['identity_changed']);self.assertIsNone(self.c.pending)
+        self.assertEqual(change['directions']['playback']['before']['trigger_time'],'1')
+    def test_closed_ardour_is_waiting_and_invalid_graph_cannot_authorize_repair(self):
+        with patch.object(self.c.backend,'remote',return_value=REMOTE),patch('studio_control.read_graph',return_value=[]):
+            s=self.c.backend.snapshot()
+        self.assertEqual(next(c for c in s['components'] if c['key']=='tracks')['detail'],'Ardour fermé/en attente')
+        with patch.object(self.c.backend,'remote',return_value=REMOTE),patch('studio_control.read_graph',side_effect=ValueError('unreadable')):
+            s=self.c.backend.snapshot()
+        self.assertEqual(s['graph'],{});self.assertFalse(s['repair_needed'])
+
     def test_shutdown_terminates_job_process_group(self):
         self.assert_shutdown_group(False)
     def test_shutdown_reaps_descendant_ignoring_sigterm(self):

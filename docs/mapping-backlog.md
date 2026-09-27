@@ -3,10 +3,10 @@
 Généré par `python3 tools/mapping_inventory.py` ; vérifier sans modifier avec `--check`.
 
 La table de référence est complétée par les cinq touches de navigation capturées ; ce total ne mesure pas la validation physique de toutes les fonctions.
-289 entrées ; 238 prises en charge en mode normal ; 250 dans au moins un mode ; 39 sans gestionnaire.
+310 entrées ; 247 prises en charge en mode normal ; 280 dans au moins un mode ; 30 sans gestionnaire.
 
 Modes inspectés : normal, Shift, ALPHA, monitoring, EQ, chaîne de plugins,
-bibliothèque, paramètres, NUDGE et zoom. Les éditeurs de mode du daemon sont installés
+bibliothèque, paramètres, départs auxiliaires, NUDGE et zoom. Les éditeurs de mode du daemon sont installés
 dans un contexte neuf pour chaque touche. Aucun message réseau n’est envoyé.
 
 Dans [le JSON](mapping-coverage.json), `null` signifie sans gestionnaire ; `[]`
@@ -43,15 +43,6 @@ moins un mode : cela ne prouve ni un effet dans Ardour ni une validation physiqu
 | 07 | 0b | Peak | Channel 8 |
 | 07 | 0c | Source Toggle | Channel 8 |
 | 07 | 0d | Roll Off | Channel 8 |
-| 08 | 0c | Assign | utility_misc_meterselect_automationenable |
-| 08 | 13 | Flip | utility_misc_meterselect_automationenable |
-| 08 | 15 | auto_suspend | utility_misc_meterselect_automationenable |
-| 08 | 16 | display_mode | utility_misc_meterselect_automationenable |
-| 08 | 1e | send_lvl | utility_misc_meterselect_automationenable |
-| 08 | 20 | send_mute | utility_misc_meterselect_automationenable |
-| 08 | 22 | Plugin | utility_misc_meterselect_automationenable |
-| 15 | 04 | Create | DSPEdit+Groups |
-| 15 | 07 | Select | DSPEdit+Groups |
 | 16 | 00 | MixToAux | ControlRoom |
 | 16 | 01 | StereoMix | ControlRoom |
 | 16 | 02 | SRC1_3-4 | ControlRoom |
@@ -61,8 +52,8 @@ moins un mode : cela ne prouve ni un effet dans Ardour ni une validation physiqu
 
 Les contrôles analogiques peuvent ne pas émettre en Ethernet. Les encodeurs,
 faders et commandes absentes de la table nécessitent un inventaire séparé.
-La table tierce ne décrit notamment que la première rangée DSP ; les huit
-rangées et les rotatifs ont leurs [captures dédiées](dsp-buttons-2026-09-14.md).
+Les huit rangées DSP sont incluses ; les rangées supplémentaires viennent des
+[captures dédiées](dsp-buttons-2026-09-14.md), et non de la table tierce.
 Les cinq touches de navigation autour de ZOOM/SEL sont identifiées par la
 [capture contrôlée](navigation-buttons-confirmed.json) du 20 septembre.
 Le [guide fonctionnel](control-map.md) décrit les usages actuels.

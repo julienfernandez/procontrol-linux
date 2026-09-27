@@ -17,6 +17,11 @@ status() {
     for attr in p_chmask c_chmask p_srate c_srate p_ssize c_ssize; do
         printf '%s: ' "$attr"; cat "$G/functions/uac2.audio/$attr"
     done
+    for attr in p_channels c_channels; do
+        if [ -f "$G/functions/uac2.audio/$attr" ]; then
+            printf '%s: ' "$attr"; cat "$G/functions/uac2.audio/$attr"
+        fi
+    done
     if [ -d "$G/functions/midi.usb" ]; then
         printf 'USB MIDI ports: '; cat "$G/functions/midi.usb/in_ports"
     fi
@@ -25,7 +30,7 @@ status() {
 
 stop() {
     [ -d "$G" ] || return 0
-    printf '\n' > "$G/UDC"
+    if [ -n "$(cat "$G/UDC")" ]; then printf '\n' > "$G/UDC"; fi
     [ ! -L "$G/configs/c.1/uac2.audio" ] || rm "$G/configs/c.1/uac2.audio"
     [ ! -L "$G/configs/c.1/midi.usb" ] || rm "$G/configs/c.1/midi.usb"
     [ ! -d "$G/functions/midi.usb" ] || rmdir "$G/functions/midi.usb"
@@ -45,7 +50,7 @@ start() {
     case "$midi_ports" in 0|1|2) ;; *) echo 'MIDI port count must be 0, 1 or 2' >&2; exit 2;; esac
     case "$channels" in
         2|4|8|16) mask=$(( (1 << channels) - 1 )); interval=2 ;;
-        32) mask=4294967295; interval=1 ;;
+        32) mask=0; interval=1 ;;
         *) echo 'Supported channel counts: 2 4 8 16 32' >&2; exit 2 ;;
     esac
     [ -d "/sys/class/udc/$UDC" ] || { echo 'MPC One controller missing' >&2; exit 1; }
@@ -55,7 +60,17 @@ start() {
     if [ -d "$G" ]; then
         existing_midi=0
         if [ -d "$G/functions/midi.usb" ]; then existing_midi=$(cat "$G/functions/midi.usb/in_ports"); fi
-        if [ "$(cat "$G/functions/uac2.audio/p_chmask")" = "$mask" ] &&
+        explicit_ok=true
+        if [ "$channels" -eq 32 ]; then
+            for attr in p_channels c_channels; do
+                if [ ! -f "$G/functions/uac2.audio/$attr" ] ||
+                   [ "$(cat "$G/functions/uac2.audio/$attr")" != 32 ]; then
+                    explicit_ok=false
+                fi
+            done
+        fi
+        if [ "$explicit_ok" = true ] &&
+           [ "$(cat "$G/functions/uac2.audio/p_chmask")" = "$mask" ] &&
            [ "$(cat "$G/functions/uac2.audio/c_chmask")" = "$mask" ] &&
            [ "$(cat "$G/functions/uac2.audio/p_ssize")" = "$sample_bytes" ] &&
            [ "$(cat "$G/functions/uac2.audio/c_ssize")" = "$sample_bytes" ] &&
@@ -73,7 +88,7 @@ start() {
         [ ! -d "$other" ] || { echo "Another gadget exists: $other; refusing to replace it." >&2; exit 1; }
     done
     mkdir "$G"
-    trap 'stop' EXIT
+    trap 'result=$?; stop; exit "$result"' EXIT
     echo 0x0200 > "$G/bcdUSB"
     echo 0x0101 > "$G/bcdDevice"
     echo 0xef > "$G/bDeviceClass"
@@ -93,6 +108,14 @@ start() {
     echo 0xc0 > "$G/configs/c.1/bmAttributes"
     mkdir "$G/functions/uac2.audio"
     f=$G/functions/uac2.audio
+    if [ "$channels" -eq 32 ]; then
+        if [ ! -f "$f/p_channels" ] || [ ! -f "$f/c_channels" ]; then
+            echo '32 channels require a UAC2 driver with explicit p_channels/c_channels support; this kernel only exposes channel masks.' >&2
+            exit 1
+        fi
+        echo 32 > "$f/p_channels"
+        echo 32 > "$f/c_channels"
+    fi
     echo "$mask" > "$f/p_chmask"
     echo "$mask" > "$f/c_chmask"
     echo 44100 > "$f/p_srate"

@@ -8,15 +8,15 @@ import tempfile
 from unittest.mock import patch
 
 with tempfile.TemporaryDirectory() as data_dir:
-    with patch.dict(os.environ, MPC_STUDIO_ROOT=data_dir, MPC_HOST='192.0.2.1', MPC_STUDIO_SESSION='/music/studio/studio.ardour'):
+    with patch.dict(os.environ, MPC_USB_CHANNELS='16', MPC_STUDIO_ROOT=data_dir, MPC_HOST='192.0.2.1', MPC_STUDIO_SESSION='/music/studio/studio.ardour'):
         MODULE = runpy.run_path(str(Path(__file__).resolve().parents[1] / 'integrations/mpc_usb/studio.py'))
 PLAN = MODULE['keepalive_link_plan']
 
-def fixture(playback=True):
+def fixture(playback=True, channels=16):
     nodes = [dict(id=i, type='PipeWire:Interface:Node', info={'props':{'node.name':n}})
              for i,n in [(1,'keepalive'),(2,'mpc'),(3,'behringer')]]
     ports=[]; links=[]
-    for c in range(16):
+    for c in range(channels):
         src,dst=(1,2) if playback else (2,1)
         ports.extend([
             dict(id=100+c,type='PipeWire:Interface:Port',info={'props':{'node.id':str(src),'audio.channel':'AUX%d'%c,'port.direction':'out'}}),
@@ -49,5 +49,27 @@ class Lifecycle(unittest.TestCase):
         func=MODULE['tune_output'];g=func.__globals__
         nodes=[dict(id=70,type='PipeWire:Interface:Node',info={'state':'running','props':{'node.name':'alsa_output.usb-Burr-Brown_from_TI_USB_Audio_CODEC-00.analog-stereo-output'},'params':{'Props':[{'params':['api.alsa.period-size',128,'api.alsa.headroom',512]}]}})]
         with patch.dict(g,{'graph':lambda:nodes,'command':lambda *a,**kw:self.fail('unchanged device was reopened')}):func()
+
+class MeterStartup(unittest.TestCase):
+    def test_read_failure_and_disappearing_link_are_rechecked(self):
+        from types import SimpleNamespace
+        from test_pipewire_graph import meter_fixture
+        func=MODULE['tune'];g=func.__globals__;clock=[0.]
+        def sleep(n):clock[0]+=n
+        clean=[o for o in meter_fixture() if o['id']!=10]
+        with tempfile.TemporaryDirectory() as data:
+            with patch.dict(g,{'RUN':Path(data),'ardour_pids':lambda:[123],
+                               'time':SimpleNamespace(monotonic=lambda:clock[0],sleep=sleep,time=lambda:clock[0])}), \
+                 patch.dict(g,{'graph':__import__('unittest.mock',fromlist=['Mock']).Mock(side_effect=[ValueError('Extra data'),meter_fixture(),clean,clean])}), \
+                 patch.dict(g,{'command':__import__('unittest.mock',fromlist=['Mock']).Mock(side_effect=__import__('subprocess').CalledProcessError(1,'pw-link'))}):
+                result=func(timeout=10,settle=2)
+                self.assertTrue(result['verified']);self.assertEqual(result['read_failures'],1)
+                g['command'].assert_called_once_with(['pw-link','-d','102','4'])
+    def test_missing_meter_is_not_reported_as_verified(self):
+        from types import SimpleNamespace
+        func=MODULE['tune'];g=func.__globals__;clock=[0.]
+        with patch.dict(g,{'graph':lambda:[],'ardour_pids':lambda:[],
+                           'time':SimpleNamespace(monotonic=lambda:clock[0],sleep=lambda n:clock.__setitem__(0,clock[0]+n))}):
+            with self.assertRaisesRegex(RuntimeError,'non vérifié'):func(timeout=2,settle=1)
 
 if __name__=='__main__':unittest.main()

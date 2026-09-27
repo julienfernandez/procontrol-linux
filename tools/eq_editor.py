@@ -47,6 +47,7 @@ class EQEditor:
         self.create_error = None
         self.create_armed = False
         self.cursor = 0
+        self.compare_state = None; self.notice = ''; self.notice_until = 0; self.flip = False; self.info = False
         routing.eq = self; routing.mapper.eq = self; feedback.eq = self
         self.exit(force=True)
 
@@ -62,7 +63,17 @@ class EQEditor:
                 return [('eq', 'browse_track', [zone + 1])] if down else []
             if (zone, key) in ((0x15, 2), (0x19, 4)):
                 return [('eq', 'browse', [])] if down else []
+            if (zone, key) in ((0x15, 4), (8, 12)):
+                return [('eq', 'library', [])] if down else []
+            if (zone, key) == (8, 34):
+                return [('eq', 'browse', [])] if down else []
+            if zone == 0x15 and key in (1,7,9) and not self.active:
+                return [('eq', 'browse', [])] if down else []
             if self.active:
+                globals = {(0x15,1):'info', (0x15,5):'activate', (0x15,6):'edit',
+                           (0x15,7):'select', (0x15,8):'deactivate', (0x15,9):'compare',
+                           (8,19):'flip'}
+                if (zone,key) in globals:return [('eq',globals[zone,key],[])] if down else []
                 if (zone, key) == (0x1a, 0x11) and self.mode in ('browse', 'library'):
                     return [('eq', 'open', [self.cursor % 8])] if down else []
                 if zone < 8 and key == 6:
@@ -76,10 +87,12 @@ class EQEditor:
                 if (zone, key) == (0x17, 0x30):
                     return [('eq', 'exit', [])] if down else []
                 if 0x0d <= zone <= 0x14 and key in (0, 1, 2):
-                    if self.mode in ('browse', 'library'):
-                        return [('eq', 'open' if key == 0 else 'plugin_enable', [zone - 0x0d])] if down else []
+                    if self.mode == 'library':
+                        return [('eq','browse',[])] if down and key==2 else [('eq','open',[zone-0x0d])] if down else []
+                    if self.mode == 'browse':
+                        return [('eq', 'open' if key == 0 else 'plugin_enable', [zone - 0x0d] if key==0 else [zone-0x0d,int(key==1)])] if down else []
                     if self.mode == 'params':
-                        return [('eq', 'focus', [zone - 0x0d])] if down and key == 0 else []
+                        return [('eq', ('focus','parameter_up','parameter_down')[key], [zone - 0x0d])] if down else []
                     return [('eq', 'filter' if key == 0 else 'enable', [zone - 0x0d])] if down else []
                 if (zone, key) == (0x15, 10):
                     return [('eq', 'bypass', [])] if down else []
@@ -98,6 +111,44 @@ class EQEditor:
         return None
 
     def handle(self, path, values):
+        if path in ('enter','compressor','browse','library','browse_track'):
+            sends=getattr(self.routing,'sends',None)
+            if sends is not None and sends.active:sends.exit()
+        if path == 'library':
+            initial=self.handle('browse', []) if not self.active else []
+            if self.active and not self.create_pending:
+                self.mode='library';self.family=None;self.cursor=0;self.plugin_page=0
+                self.create_armed=False;self.compare_state=None;self.render()
+            result=initial+self.outgoing;self.outgoing=[];return result
+        if self.active and path=='bypass' and self.mode=='browse':
+            return self.handle('plugin_enable',[self.cursor%8])
+        if self.active and path in ('select','edit'):
+            if self.mode in ('browse','library'):return self.handle('open',[self.cursor%8])
+            return self.handle('bypass',[]) if path=='edit' else self.handle('info',[])
+        if self.active and path in ('info','flip'):
+            if path=='info':self.info=not self.info
+            else:self.flip=not self.flip
+            self.render();return []
+        if self.active and path in ('activate','deactivate'):
+            if not self.usable() or not self.valid_target():return []
+            enabled=path=='activate'
+            if self.mode=='browse' and self.cursor<len(self.plugins):
+                pid,name,on=self.plugins[self.cursor];self.plugins[self.cursor]=(pid,name,enabled)
+            elif self.mode in ('eq','params'):pid=self.plugin;self.processor_enabled=enabled
+            else:return []
+            self.render();return [osc('/strip/plugin/activate' if enabled else '/strip/plugin/deactivate',self.sid,pid)]
+        if self.active and path=='compare':
+            if not self.usable() or not self.valid_target() or self.mode not in ('eq','params'):return []
+            signature=(self.session,self.identity,self.sid,self.plugin,self.plugin_name,
+                       tuple(sorted((k,p['id'],p['low'],p['high']) for k,p in self.params.items())))
+            current={label:p['value'] for label,p in self.params.items() if not p['flags']&256}
+            if self.compare_state and self.compare_state[0]==signature:
+                previous=self.compare_state[1]
+                for label,value in previous.items():self.write_label(label,value)
+                self.notice='A/B SWAP'
+            else:self.notice='A GARDE'
+            self.compare_state=(signature,current);self.notice_until=self.clock()+2
+            result=self.outgoing;self.outgoing=[];self.render();return result
         if path == 'browse_track':
             ids = self.routing.slots()
             if not values or not 1 <= values[0] <= len(ids): return []
@@ -184,6 +235,7 @@ class EQEditor:
                 elif self.mode == 'browse' and row == len(self.plugins):
                     self.mode = 'library'; self.cursor = 0; self.plugin_page = 0
                 elif self.mode == 'browse' and row < len(self.plugins):
+                    self.compare_state=None
                     self.plugin,self.plugin_name,self.processor_enabled = self.plugins[row]
                     self.explicit_plugin = True
                     self.mode = 'eq' if self.plugin_name in NAMES else 'params'
@@ -194,8 +246,15 @@ class EQEditor:
                 row = self.plugin_page*8+values[0]
                 if row < len(self.plugins):
                     pid,name,on = self.plugins[row]
-                    self.outgoing.append(osc('/strip/plugin/deactivate' if on else '/strip/plugin/activate',self.sid,pid))
-                    self.plugins[row] = (pid,name,not on)
+                    enabled=bool(values[1]) if len(values)>1 else not on
+                    self.outgoing.append(osc('/strip/plugin/activate' if enabled else '/strip/plugin/deactivate',self.sid,pid))
+                    self.plugins[row] = (pid,name,enabled)
+            elif path in ('parameter_up','parameter_down') and self.mode=='params' and self.usable() and self.valid_target():
+                index=self.page*8+values[0];rows=self.parameter_list()
+                if 0<=index<len(rows):
+                    label,p=rows[index];self.filter=values[0]
+                    if p['flags']&64:self.write_label(label,1 if path=='parameter_up' else 0)
+                    else:self.turn_parameter(values[0],1 if path=='parameter_up' else -1)
             elif path == 'focus' and self.mode == 'params': self.filter = values[0]
             elif path == 'filter': self.filter = values[0]
             elif self.usable() and self.valid_target():
@@ -227,6 +286,7 @@ class EQEditor:
         self.active = False; self.ready = False; self.stage = None; self.params = {}
         self.outgoing = []; self.pending = {}; self.error = reason
         self.create_pending = None; self.create_armed = False
+        self.compare_state = None; self.info = False; self.notice = ''; self.notice_until = 0
         self.create_reply = None; self.create_error = None
         self.routing.mapper.encoder_mode = getattr(self, 'previous_mode', 'pan')
         for ch in range(1, 9):
@@ -298,7 +358,7 @@ class EQEditor:
 
     def feed(self, path, values):
         if path == '/procontrol/plugin/version':
-            self.creation_version = values[0] if len(values) == 1 and type(values[0]) is int and values[0] in (1, 2) else 0
+            self.creation_version = values[0] if len(values) == 1 and type(values[0]) is int and values[0] in (1, 2, 3) else 0
             self.creation_supported = self.creation_version > 0; return
         if not self.active: return
         if path == '/procontrol/plugin/result':
@@ -368,7 +428,7 @@ class EQEditor:
             required = ([f'{prefix} {i}' for prefix in FIELDS.values() for i in range(8)] + ['Output gain','Enabled']) if self.mode == 'eq' else []
             required += [p[0] for p in profile_for_name(self.plugin_name)]
             if self.snapshot_invalid or not all(label in self.snapshot for label in required):
-                self.ready = False; self.error = 'Profil LSP incomplet'
+                self.ready = False; self.error = 'Profil incomplet / mode incompatible'
             else:
                 # A descriptor snapshot in flight must not rewind a newer turn.
                 for label, (value, edited_at) in list(self.pending.items()):
@@ -431,6 +491,8 @@ class EQEditor:
         profile = next((item for item in profile_for_name(getattr(self,'plugin_name','')) if item[0] == label), None)
         if profile and profile[2] == 'bool':
             value = 1 if delta > 0 else 0
+        elif profile and profile[2] == 'gain_db':
+            value = max(p['value'], 1e-3) * 10 ** (delta * profile[3] * (.1 if fine else 1) / 20)
         elif profile and profile[3] is not None:
             value = p['value'] + delta * profile[3] * (.1 if fine else 1)
         elif getattr(self,'plugin_name','').startswith('LSP Compressor') and label in ('Attack threshold','Knee','Makeup gain','Wet gain','Output gain'):
@@ -470,6 +532,9 @@ class EQEditor:
             if usable and self.value('mute',band): kind = 'MUTE'
             if self.error: kind = self.error
             text = ('>' if band == self.filter else ' ') + str(ch) + ' ' + kind
+            if self.flip:
+                self.feedback.put(('value',ch),scribble(ch,text,False))
+                text = self.knob_text(ch-1) if usable else 'ATTENTE'
             self.feedback.put(('dsp',ch),dsp_text(ch,text))
             for key, state in ((0, band == self.filter and blink), (1,enabled), (2,usable and not enabled)):
                 z = 0x0d+band; self.feedback.put(('led',z,key),button_led(z,key,state))
@@ -488,7 +553,7 @@ class EQEditor:
             rows = {'Non installe': ('PLUGIN', 'ABSENT', 'INSERTS'),
                     'Ajout non confirme': ('AJOUT', 'NON CONF', 'INSERTS'),
                     'Identite': ('ATTENDRE', 'LA VOIE'),
-                    'Profil LSP incomplet': ('PROFIL', 'INCOMPL.', 'INSERTS')}.get(reason, (str(reason)[:8], 'INSERTS'))
+                    'Profil incomplet / mode incompatible': ('PROFIL', 'INCOMPL.', 'INSERTS')}.get(reason, (str(reason)[:8], 'INSERTS'))
         else: rows = ('LECTURE', 'ARDOUR')
         slots = self.routing.display_slots(); blink = int(now*4)%2 == 0
         for ch in range(1,9):
@@ -550,6 +615,7 @@ class EQEditor:
             if self.create_pending: text = 'Ajout...'; value = ''
             elif self.create_error and ch == 1: text = self.create_error[:8]
             if self.mode in ('browse','library') and index == self.cursor and present: value = '>'+value[:7]
+            if self.flip:text,value=value,text
             self.feedback.put(('dsp',ch),dsp_text(ch,text))
             self.feedback.put(('value',ch),scribble(ch,value,False))
             for key,on in ((0,present and (self.mode in ('browse','library') or ch-1==self.filter and blink)),
@@ -565,6 +631,7 @@ class EQEditor:
         profile = next((item for item in profile_for_name(getattr(self,'plugin_name','')) if item[0] == label), None)
         if profile and profile[2]:
             unit = profile[2]
+            if unit == 'gain_db': return '-inf dB' if v <= 0 else f'{20*math.log10(v):+.1f}dB'
             if unit == 'bool': return 'ON' if v >= .5 else 'OFF'
             if unit == 'tape_out_db': return f'{v*60-30:+.1f}dB'
             if unit == 'tape_in_db': return f'{v*36-30:+.1f}dB'

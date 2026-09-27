@@ -23,6 +23,8 @@ from ardour_transport import ArdourTransport, message
 from surface_map import SurfaceMap
 from console_mapping import MappingRuntime, suspend_plugin_window
 from dsp_display_probe import DSPDisplayProbe
+from channel_group_display import ChannelGroupDisplay
+from control_audit import context as audit_context, relevant as audit_relevant, mix_change
 from surface_feedback import SurfaceFeedback
 from surface_osc import ArdourSurface
 from surface_routing import SurfaceRouting
@@ -31,11 +33,13 @@ from track_monitor import TrackMonitor
 from plugin_window import PluginWindowFollower
 from console_indicators import ConsoleIndicators
 from stereo_bridge import StereoBridge
+from send_editor import SendEditor
 from surface_settings import load as load_settings, validate as validate_settings, rpc
 from audit_diginet import candidate_header
 from inspect_pcap import CaptureError, mac_address
 from procontrol_mapping import decode_body, mapping_tree
 from session_probe import Session, drop_privileges, mac_bytes
+from runtime_status import lock_held, service_status
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / 'run'
@@ -64,23 +68,11 @@ def utc():
 
 
 def running(runtime):
-    if not (runtime / 'daemon.lock').exists():
-        return False
-    with (runtime / 'daemon.lock').open('a') as lock:
-        try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            return True
-    return False
+    return lock_held(runtime / 'daemon.lock')
 
 
 def status(runtime):
-    try:
-        result = json.loads((runtime / 'status.json').read_text())
-    except (OSError, ValueError):
-        result = {}
-    result['running'] = running(runtime)
-    return result
+    return service_status(runtime)
 
 
 class ConsoleSession:
@@ -231,8 +223,28 @@ def worker(args):
     logger = logging.getLogger('procontrold'); logger.setLevel(logging.INFO)
     handler = RotatingFileHandler(runtime / 'events.jsonl', maxBytes=8*1024*1024, backupCount=3)
     handler.setFormatter(logging.Formatter('%(message)s')); logger.addHandler(handler)
+    summary = logging.getLogger('procontrold.health'); summary.setLevel(logging.INFO)
+    summary.propagate = False
+    summary_handler = RotatingFileHandler(runtime / 'health.jsonl', maxBytes=1024*1024, backupCount=3)
+    summary_handler.setFormatter(logging.Formatter('%(message)s')); summary.addHandler(summary_handler)
+    summary_events = {'started', 'stopped', 'fatal', 'health', 'console_state',
+                      'ardour_connected', 'ardour_waiting', 'ethernet_waiting',
+                      'feedback_recovery', 'malformed'}
+    audit = logging.getLogger('procontrold.controls'); audit.setLevel(logging.INFO)
+    audit.propagate = False
+    audit_handler = RotatingFileHandler(runtime / 'control-audit.jsonl', maxBytes=2*1024*1024, backupCount=3)
+    audit_handler.setFormatter(logging.Formatter('%(message)s')); audit.addHandler(audit_handler)
+    audit_events = {'started', 'stopped', 'control_routing', 'mix_feedback', 'ardour_connected', 'ardour_waiting'}
     def event(kind, **details):
-        logger.info(json.dumps({'utc': utc(), 'event': kind, **details}, ensure_ascii=False))
+        line = json.dumps({'utc': utc(), 'event': kind, **details}, ensure_ascii=False)
+        logger.info(line)
+        if kind in audit_events or (kind == 'osc_sent' and any(
+                path.startswith('/procontrol/plugin_ui/') or path in (
+                    '/strip/plugin/parameter', '/strip/plugin/activate', '/strip/plugin/deactivate',
+                    '/procontrol/plugin/ensure') for action, path, values in details.get('actions', []))):
+            audit.info(line)
+        if kind in summary_events:
+            summary.info(line)
     flow = ConsoleSession(args.host, args.mac)
     surface = SurfaceMap()
     feedback = SurfaceFeedback(surface)
@@ -244,8 +256,10 @@ def worker(args):
     routing = SurfaceRouting(surface, feedback)
     eq = EQEditor(routing, feedback)
     monitor = TrackMonitor(routing, feedback)
+    sends = SendEditor(routing, feedback)
     plugin_window = PluginWindowFollower()
     display_probe = DSPDisplayProbe(feedback)
+    channel_group = ChannelGroupDisplay(feedback, surface, eq)
     stereo = StereoBridge(routing, feedback, settings, port=0 if args.interface.startswith('test') else 3820)
     next_catalog = 0; next_meter_render = 0
     mapping_tree()
@@ -264,13 +278,15 @@ def worker(args):
                  'connections': flow.connections, 'counts': dict(counts), 'last_action': last_action,
                  'surface': {'alpha': surface.alpha, 'encoder_mode': surface.encoder_mode,
                              'jog_mode': surface.jog_mode, 'bank_start': surface.bank_start,
+                             'matrix_mode': surface.matrix_mode, 'matrix_bank': surface.matrix_bank,
                              'feedback': dict(feedback.counts), 'output_error': feedback.error,
                              'output_timing': feedback.status(),
                              'queued_outputs': len(feedback.queue)},
                  'settings_revision': settings['revision'], 'settings': settings,
                  'routing': routing.status(), 'stereo': stereo.status(), 'dsp': eq.status(),
-                 'plugin_window': plugin_window.status(), 'track_monitor': monitor.status(),
+                 'sends': sends.status(), 'plugin_window': plugin_window.status(), 'track_monitor': monitor.status(),
                  'console_editing': indicators.status(),
+                 'channel_group': channel_group.status(),
                  'mapping': {'active': mapping.config['name'], 'learning': bool(mapping.learning)},
                  'jog': osc.jog.status() if osc else None,
                  'resources': process_resources(),
@@ -341,13 +357,15 @@ def worker(args):
                         mapping.feed(address,values,now)
                         indicators.feed(address, values, now)
                         plugin_window.feed(address, values)
+                        change = mix_change(routing, address, values)
+                        if change is not None: event('mix_feedback', **change)
                         routing.feed(address, values)
                         if address in ('/transport_play', '/transport_stop', '/transport_speed'):
                             event('osc_feedback', address=address, values=values)
                     if now - (last_osc if last_osc is not None else osc_started) >= OSC_TIMEOUT:
                         raise TimeoutError('Aucune réponse OSC depuis 20 secondes')
                     deferred = indicators.tick(now)
-                    if not mapping.learning:deferred += routing.drain() + monitor.tick(now) + eq.tick(now) + plugin_window.update(eq, routing, now)
+                    if not mapping.learning:deferred += routing.drain() + monitor.tick(now) + sends.tick(now) + eq.tick(now) + plugin_window.update(eq, routing, now)
                     if deferred:
                         addresses = osc.actions(deferred)
                         counts['osc_sent'] += len(addresses)
@@ -365,6 +383,8 @@ def worker(args):
             if mapping.tick(now,flow.phase=="online"):
                 event("mapping_guard",active=True)
             display_probe.tick(now)
+            channel_group.tick(now, osc is not None and last_osc is not None,
+                               learning=bool(mapping.learning))
             stereo.poll()
             if now >= next_meter_render:
                 stereo.render(now); next_meter_render = now + .020
@@ -397,6 +417,8 @@ def worker(args):
                         request = json.loads(data)
                         if request.get('command') == 'mapping':
                             reply=mapping.request(request)
+                        elif request.get('command') == 'meters':
+                            reply=stereo.meter_snapshot()
                         elif request.get('command') == 'configure':
                             new_settings = validate_settings(request['settings'])
                             stereo.configure(new_settings); settings = new_settings
@@ -439,6 +461,7 @@ def worker(args):
                             counts['control_frames'] += 1
                             event('controls', mapping_suppressed=mapping.suppress_pointer(), decoded=decoded)
                             if flow.session.online_acked:
+                                audit_before = audit_context(surface, routing)
                                 actions = mapping.route(h['sequence_candidate'], bytes.fromhex(h['body_hex']))
                                 for action in actions: feedback.local(action)
                                 routed_actions = routing.actions([a for a in actions if a[0]!="direct_osc"])
@@ -447,16 +470,24 @@ def worker(args):
                                 if inputs: event('input_events', actions=inputs)
                                 if actions: event('surface_actions', actions=actions)
                                 if surface.last_unknown: event('unmapped_surface', commands=surface.last_unknown)
+                                audit_after = audit_context(surface, routing)
+                                audit_record = dict(sequence=h['sequence_candidate'], body_hex=h['body_hex'],
+                                                    before=audit_before, after=audit_after, actions=actions,
+                                                    routed_actions=routed_actions, sent=None if osc else []) if audit_relevant(actions, audit_before, audit_after) else None
                                 if osc:
                                     try:
                                         addresses = osc.actions(routed_actions)
+                                        if audit_record is not None: audit_record['sent'] = addresses
                                         if addresses:
                                             indicators.accepted(routed_actions)
                                             feedback.pulse_buttons(surface.last_button_presses)
                                             counts['osc_sent'] += len(addresses)
                                             last_action = {'utc': utc(), 'address': addresses[-1]}
                                             event('osc_sent', addresses=addresses)
-                                    except OSError as exc: osc_failed(exc)
+                                    except OSError as exc:
+                                        if audit_record is not None: audit_record['delivery_error'] = str(exc)
+                                        osc_failed(exc)
+                                if audit_record is not None: event('control_routing', **audit_record)
                 except CaptureError as exc:
                     counts['malformed'] += 1; event('malformed', detail=str(exc))
                 except OSError as exc:
@@ -471,7 +502,8 @@ def worker(args):
             if now >= next_health:
                 event('health', resources=process_resources(), queued_outputs=len(feedback.queue),
                       cached_routes=len(routing.rows), cached_feedback=len(routing.cache),
-                      console=flow.phase, ardour=bool(osc and last_osc is not None))
+                      console=flow.phase, ardour=bool(osc and last_osc is not None),
+                      feedback=dict(feedback.counts))
                 next_health = now + 60
     except Exception as exc:
         error = str(exc); event('fatal', detail=error)

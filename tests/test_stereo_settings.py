@@ -21,6 +21,22 @@ class RoutingTests(unittest.TestCase):
         self.assertEqual(self.r.actions([('osc','/strip/select',[3,0])]),[])
         self.r.actions([('bank','delta',[1])]);self.assertEqual(self.r.slots(),[17,18])
         self.r.actions([('bank','master',[True])]);self.assertEqual(self.r.slots(),[19])
+    def test_master_view_buses_banking_and_fader_target(self):
+        self.r.begin_catalog()
+        self.r.feed('#reply',['AT','Audio',2,2,0,0,1,0])
+        for n in range(2,11):self.r.feed('#reply',['B','Bus '+str(n),2,2,0,0,n])
+        self.r.feed('#reply',['MA','Master',2,2,0,0,11])
+        self.r.feed('#reply',['end_route_list'])
+        self.r.actions([('bank','master',[True])])
+        self.assertEqual(self.r.slots(),[11,2,3,4,5,6,7,8])
+        self.assertEqual(self.r.actions([('osc','/strip/fader',[2,.4])]),[('osc','/strip/fader',[2,.4])])
+        self.r.actions([('bank','delta',[1])])
+        self.assertEqual(self.r.slots(),[9,10])
+        self.assertEqual(self.r.actions([('osc','/strip/fader',[2,.7])]),[('osc','/strip/fader',[10,.7])])
+        self.assertEqual(self.r.actions([('osc','/strip/fader',[3,.7])]),[])
+        self.r.actions([('bank','master',[False])])
+        self.assertEqual(self.r.slots(),list(range(1,9)))
+
     def test_cache_and_leds_follow_real_feedback(self):
         self.r.feed('/strip/solo',[17,1]);self.r.actions([('matrix','solo',[17])])
         self.assertEqual(self.r.actions([('matrix','solo',[17])]),[('osc','/strip/solo',[17,0])])

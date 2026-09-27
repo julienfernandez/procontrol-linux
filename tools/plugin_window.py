@@ -48,11 +48,18 @@ class PluginWindowFollower:
             self.waiting = False
             self.error = None
             return [('osc', PREFIX+'clear', [])]
-        # A selection triggers a brief catalogue refresh. Keep the old window
-        # while identities/descriptors settle; never reopen for every snapshot.
-        if not routing.ready or not editor.usable() or not editor.valid_target():
-            return []
+        # Preserve a window during refreshes of its own track only. Once the
+        # editor targets another track, the old native UI must not remain
+        # editable while the new descriptors are still being fetched.
         route_id = routing.identities.get(editor.sid)
+        if not routing.ready or not editor.usable() or not editor.valid_target():
+            if self.target is not None and (routing.session != self.target[0] or
+                    (route_id is not None and str(route_id) != self.target[1])):
+                self.target = self.confirmed = None
+                self.waiting = False
+                self.error = None
+                return [('osc', PREFIX+'clear', [])]
+            return []
         if not routing.session or not route_id or not editor.plugin:
             return []
         target = (routing.session, str(route_id), editor.plugin, editor.plugin_name)

@@ -191,6 +191,14 @@ support indépendant et une restauration matérielle restent à réaliser.
 
 ## Règle de continuité
 
+Le [rapport du 26 septembre 2026](studio-32-tracks-2026-09-26.md) décrit
+la réorganisation du projet par défaut en 16 pistes stéréo MPC nommées
+MPC 01-02 à MPC 31-32, suivies de Behringer et MIDI, sans modification des
+effets existants. Ces 32 canaux nommés dans le projet ne doivent pas être
+confondus avec la liaison USB MPC, observée à 16 canaux dans chaque sens.
+Les huit nouvelles paires gardent leurs entrées libres ; copie du projet et
+vérifications SHA-256 locales.
+
 Pour chaque nouvelle expérience ou correction :
 
 1. Ouvrir un rapport daté à partir de la [fiche d'expérience](experiment-template.md).
@@ -211,3 +219,158 @@ Pour chaque nouvelle expérience ou correction :
 Cette règle s'applique aussi lorsque l'expérience échoue ou reste incomplète.
 Le dépôt doit permettre à une autre personne de reprendre le travail sans
 reconstituer la conversation.
+
+## 26 septembre 2026 — Submix en vue Master, refus UAC2 à 32 canaux
+
+La vue MASTER FADERS inclut maintenant les bus, après le Master. Le bus
+stéréo `MPC SUB 1` reçoit le retour USB 11/12 déjà utilisé par les batteries.
+Les 14 sorties stéréo MPC sont préparées mais non activées : le noyau refuse
+le masque 32 bits et n'expose pas les attributs de compte explicite. Après un
+SIGSEGV de l'application pendant USB → Internal, la liaison 16 canaux et le
+XPJ original ont été restaurés. Voir le [rapport et les limites de validation](mpc-submix-master-2026-09-26.md).
+
+## 26 septembre 2026 — Arrêts, reprises et réponses lentes
+
+Un fichier récent ne suffit pas à prouver la présence du worker : vérifier
+aussi son verrou avant d'autoriser un routage ou d'afficher des niveaux. Une
+reprise automatique en attente doit pouvoir être annulée et doit revérifier
+le défaut avant de démarrer. Un gadget créé sans câble connecté appelle une
+attente explicite, pas une boucle de préparation. Enfin, un cache partagé
+doit dater la fin de sa réponse lente pour ne pas faire patienter chaque
+client derrière une nouvelle requête identique. Voir les
+[corrections et mesures de la passerelle](gateway-stability-2026-09-26.md).
+
+Le coredump du même jour a révélé un problème natif différent : déconnecter
+un signal ne retire pas automatiquement ses callbacks déjà en attente.
+Les observateurs OSC utilisent maintenant l'invalidation PBD par génération.
+Voir le [rapport natif, les témoins négatifs et les limites de charge](osc-callback-lifetime-2026-09-26.md).
+Les erreurs USB voisines ne suffisent pas à établir la cause de ce SIGSEGV.
+
+## 27 septembre 2026 — Graphe, vumètre interne et effets vocaux
+
+Un `pw-dump` invalide ne doit pas être traduit en disparition du matériel :
+lecture sans couleurs, validation structurelle et reprises bornées sont
+désormais communes au backend et à la supervision. Le port de mesure Ardour
+peut apparaître après le processus ; attendre puis vérifier les seuls liens
+PCI internes concernés a retiré quatre connexions sans toucher les pistes.
+La sortie Behringer a néanmoins produit des resynchronisations pendant la
+nouvelle passe : la disparition des messages d'entrée interne ne valide pas
+tous les chemins audio. Voir le [rapport daté](studio-vocal-pump-2026-09-27.md).
+
+Les transitions d'horodatage PCM conservent maintenant direction et identité
+du processus ; leur compteur n'est pas un compteur de crashs. Le journal de
+santé de la passerelle survit à la rotation rapide des traces OSC/Ethernet.
+Six profils et presets voix/pumping portent le catalogue à quatorze choix,
+avec capacité native 3 et contrôle du contexte vocodeur Surge. Descripteurs,
+insertion, non-duplication, fenêtres et réouverture ont été testés ; la
+validation auditive et le routage kick/voix restent distincts et en attente.
+
+Deux précautions reproductibles : l'auto-connexion Ardour des nouveaux bus
+est différée, donc vérifier leurs destinations exclusives après stabilisation ;
+les références Lua aux processeurs à sidechain doivent être libérées avant
+de fermer leur session de test. Un coredump du harnais isolé a révélé ce
+second cas. Ne pas l'effacer du bilan parce que le processus graphique a
+survécu. Trois processus de test ont rencontré cette même famille de pile.
+Le preset B.Shapr sauvegardait bien sa courbe, mais son interface
+ne recevait les points qu'après activation du DSP.
+
+Le test de signal a aussi révélé deux liaisons muettes malgré leur présence
+dans le graphe : les départs internes créés à −inf et les broches sidechain
+LV2 LSP non reliées au port externe. Départs à gain unité et mapping explicite
+du détecteur ont été ajoutés au constructeur de chaînes ; le mapping LSP est
+aussi dans l'insertion native. Mesure isolée après correction : 3,78 dB de
+réduction ; couper le modulateur du vocodeur fait perdre 38,81 dB de sortie.
+La sauvegarde et la réouverture conservent les broches. Ces mesures ne règlent
+pas automatiquement le seuil sur la vraie basse et le vrai kick.
+
+## 27 septembre 2026 — USB 32 canaux : capacité réelle et blocage noyau MPC
+
+Le signalement « 15–16 dernière paire audible » concorde avec les deux PCM
+MPC, les descripteurs USB PC et les ports PipeWire : 16 canaux réels, malgré
+32 entrées nommées dans Ardour. Le pilote UAC2 est intégré au noyau MPC et
+son image installée confirme le refus des masques au-delà de `0x07ffffff` ;
+l'option locale `named_channels=0` n'annule pas ce contrôle.
+
+Le backend et la supervision Linux Mint traitent désormais 16/32 canaux et
+affichent séparément capacité réelle, entrées attendues et liens raccordés.
+Le contrôle préalable refuse une demande 32 sans les attributs nécessaires
+du pilote MPC, avant toute écriture. 65 tests ciblés, puis relecture du graphe
+réel ; seule la supervision web a redémarré, audio et projet préservés.
+**Le transport 32×32 reste non déployé** : le pilote MPC compatible manque.
+Voir [preuves, modifications et suite](mpc-usb-32-production-2026-09-27.md).
+
+## 27 septembre 2026 — Neuvième afficheur DSP : Channel / Group
+
+L'ancien test `0x0d..0x14` / `0x2d..0x34` omettait le neuvième afficheur.
+Le firmware COMv1.37 archivé accepte les indices DSP **13 à 21 inclus** ;
+son chemin texte ignore le bit de ligne pour cette zone. `0x15` et `0x35`
+désignent donc le neuvième tampon. En revanche `0x08` / `0x28` sont ignorés.
+L'essai négatif `0x28` est confirmé par l'utilisateur malgré 48 ACK.
+L'utilisateur confirme aussi le bon fonctionnement matériel de Channel / Group
+en test LED / Vegas ; cela ne confirme pas encore notre commande réseau.
+
+Le retour de contexte à `0x35` est installé : piste, mode/bande/page, attente,
+ajout en cours, erreur. 63 tests ciblés passent ; Ardour et le fichier de
+session sont restés inchangés lors de la relance des trois services.
+L’utilisateur confirme ensuite `MPC01-02` au bon endroit : sortie réseau
+physiquement validée. Réverb/Delay sur bus et
+nouveau mode de départs sur les rotatifs DSP ne sont pas encore implémentés.
+Voir [méthode, firmware, captures et limites](channel-group-2026-09-27.md).
+
+
+## 27 septembre 2026 — zone DSP complète et vumètres web rapides
+
+Suite à la confirmation utilisateur « MPC01-02 ou le nom sélectionné », le neuvième
+LCD est utilisé pour modes / pages / attente / A/B. La passe suivante complète CREATE,
+SELECT, ENABLE, SUSPEND, INFO, COMPARE et l’éditeur des départs existants de la piste.
+Les huit rangées DSP sont incluses dans l’inventaire (310 entrées, 280 reconnues dans
+au moins un contexte ; sorties et commandes analogiques ne sont pas de faux boutons
+numériques). Aucun nouveau bus d’effet n’a été créé dans la session ouverte.
+
+Le web reprend un thème sombre sobre ; les vumètres quittent le polling général
+pour un flux compact indépendant. Mesure réelle avec trois clients : 24,86–24,88 Hz,
+422 octets médians ; la source Lua reste à environ 10 Hz. La fluidité du dessin ne
+constitue pas une augmentation de la fréquence des mesures audio. Expiration,
+cache partagé, pause des onglets masqués et absence de données synthétiques en
+production sont vérifiés. Suite générale 508 tests, tests ciblés de revue 21 et
+JavaScript réussis. Ardour 173019 et fichier de session conservés ; console Online,
+220/220 ACK sans timeout après le dernier redémarrage des seuls services Gateway.
+
+Détails, limites et archives : [rapport de cette passe](console-complete-2026-09-27.md).
+
+## 27 septembre 2026 — Juju Driver, SD temporaire et retrait USB
+
+Le transport USB 32×32 est confirmé par 32 signatures distinctes dans chaque sens,
+puis par la musique réelle sur 17–18 après redémarrage. La préférence MPC de
+stockage temporaire restait sans effet : vérifier les descripteurs ouverts et le
+périphérique du dossier, pas seulement le XML ou le choix visible. Un montage du
+dossier SD identifié par UUID fournit maintenant 29,4 Gio temporaires disponibles.
+Ne jamais masquer un dossier interne contenant encore une récupération.
+
+Sur HAKAI, les liens d'activation dans l'overlay tardif `/etc` ne suffisent pas au
+démarrage initial. Les dépendances précoces dans `/usr/lib/systemd/system` et le
+montage de la SD avant MPC sont vérifiés par redémarrage logiciel. BusyBox `blkid`
+ne reconnaît pas ici exFAT ; les propriétés udev identifient type et UUID.
+
+Le retrait USB a révélé un autre défaut : Ardour 9.8 convertissait un nom JACK
+nul en chaîne. Le callback corrigé est testé avec l'ancienne exception comme
+témoin, compilé dans le backend et chargé après récupération de la session.
+L'absence de redémarrage de l'application ne prouve pas une continuité audio ;
+les changements d'ouverture PCM et l'écoute restent des observations distinctes.
+Voir [preuves, sauvegardes et limites](juju-driver-deployment-2026-09-27.md).
+
+## 27 septembre 2026 — sélection MATRIX et fenêtre d'EQ
+
+Un changement de groupe par les touches 1/9/17/25 de CHANNEL MATRIX applique
+aussi son mode persistant SELECT/MUTE/SOLO/REC. Le modèle reproduit l'activation
+de la première piste dans ces modes, mais les journaux disponibles ne suffisent
+pas à attribuer l'incident utilisateur à ce mécanisme. Conserver désormais la
+trame d'entrée, le mode, la banque, la cible absolue après routage et le retour
+de mixage dans un journal dédié, sans le bruit des sondages de transport.
+
+Le suivi d'EQ conservait une ancienne fenêtre manipulable pendant l'attente des
+descripteurs de la nouvelle piste. Fermer cette fenêtre si l'identité cible
+change ; conserver les rafraîchissements ordinaires sur la même identité.
+L'ancien code échoue aux deux tests de transition, le nouveau les passe.
+L'utilisateur indisponible pour l'essai, la capture de repos n'est pas une
+validation physique. [Méthode et limites](matrix-selection-2026-09-27.md).

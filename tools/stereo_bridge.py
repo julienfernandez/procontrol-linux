@@ -87,6 +87,31 @@ class StereoBridge:
             self.feedback.meter_address(self.probe['address'],-193.);self.probe=None
         self.last_render={'large':large}
 
+    def meter_snapshot(self, now=None):
+        """Small, raw-dB web frame; never enqueue hardware output or OSC."""
+        now = time.monotonic() if now is None else now
+        slots = self.routing.display_slots()
+        active = self.last_seen is not None and now-self.last_seen <= 1 and self.routing.identity_ready
+        strips = []
+        for index in range(8):
+            rid = self.routing.identities.get(slots[index]) if index < len(slots) and active else None
+            strips.append([self.value(rid, side, now) for side in (0, 1)])
+        large = []
+        for assignment in self.settings['meter_assignments']:
+            source = assignment['source']; rid = None
+            if source == 'master':
+                rid = next((r['id'] for r in self.rows.values() if r['kind'] == 'MA'), None)
+            elif source:
+                try:
+                    session, candidate = json.loads(source)
+                    if session == self.session: rid = candidate
+                except (ValueError, TypeError): pass
+            channel = assignment['channel']
+            available = active and rid in self.rows and channel < self.rows[rid]['channels']
+            large.append({'db': self.value(rid, channel, now) if available else -193., 'available': available})
+        return {'ok': True, 'active': bool(active), 'at': now,
+                'sample_at': self.last_seen, 'strips': strips, 'large': large}
+
     def test_address(self,address,now=None):
         if type(address) is not int or not 0<=address<64:raise ValueError('Adresse de test invalide')
         now=time.monotonic() if now is None else now

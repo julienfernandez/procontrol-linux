@@ -18,8 +18,10 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 - [Essais asynchrones, navigation et voyants](console-test-workflow.md).
 - [Carte fonctionnelle](control-map.md) et [édition, cuts, sélection et boucles](console-editing.md).
 - [Écoute IN / DISK / AUTO](track-monitoring.md) et [automation du gain](automation-modes.md).
-- [Bibliothèque de huit effets](curated-plugins.md), [EQ / compresseur](eq-plugin-workflow.md),
+- [Bibliothèque initiale de huit effets](curated-plugins.md), [EQ / compresseur](eq-plugin-workflow.md),
   [Chaleur / Tube / Tape](warm-tape-plugins.md) et [INS/SEND par tranche](ins-send-browser-2026-09-20.md).
+- [Six effets voix et pumping supplémentaires : commandes et chaînes](vocal-pump-controls.md),
+  [presets installables](../presets/studio-vocal-pump/README.md).
 - [Compteur et synchronisation MPC / Link](counter-mpc-sync.md).
 - [Clavier et souris](keyboard-mouse.md), [lanceur](desktop-launcher.md),
   [réglages stéréo](stereo-settings.md) et [lancement sans root](rootless-launch.md).
@@ -27,13 +29,23 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 ## Développer et reconstruire
 
 - [Tests et structure du dépôt](../README.md#développement-et-tests).
-- [Ordre des six patches Ardour et compilation native](../native/README.md).
+- [Ordre des patches Ardour et compilation native](../native/README.md).
 - [Contrat OSC](ardour-osc-contract.md), [ordonnancement jog/moteurs](jog-motor-scheduling.md).
 - [Inventaire généré des boutons](mapping-backlog.md) et [actions par mode](mapping-coverage.json).
 - [Protocole observé](protocol.md), [capture contrôlée](capture-linux.md),
   [provenance des références](research.md).
 
 ## Vérifications récentes
+
+- [Channel / Group : neuvième afficheur DSP, analyse du firmware et essais](channel-group-2026-09-27.md).
+
+- [Studio : graphe PipeWire, vumètre interne, diagnostic PCM et préparation voix/pumping](studio-vocal-pump-2026-09-27.md).
+
+- [Supervision et page web : déconnexion, annulation et lectures concurrentes](gateway-stability-2026-09-26.md).
+- [Ardour : callbacks OSC périmés, correction native et limites des essais](osc-callback-lifetime-2026-09-26.md).
+
+- [Projet de test : 16 pistes stéréo MPC pour 32 canaux nommés ; USB encore à 16](studio-32-tracks-2026-09-26.md).
+- [Canaux USB 17–32 : diagnostic du noyau MPC et corrections déployées sur Linux Mint](mpc-usb-32-production-2026-09-27.md).
 
 - [Lecture RX fader : deux pilotes réels 16/32, gain et limites](fader-rx-benchmark-validation-2026-09-21.md),
   [mesures de chaque bloc et archive vérifiée](fader-rx-benchmark-validation-2026-09-21.json),
@@ -103,3 +115,11 @@ PID, réglages et sommes SHA ne décrivent pas nécessairement le runtime actuel
 Les autres fichiers datés documentent l’enquête et ses résultats intermédiaires,
 y compris des crashs ou hypothèses remplacées ensuite. Les captures brutes, sessions
 audio, sauvegardes, binaires et journaux restent locaux et ignorés par Git.
+
+- [Submix MPC en vue Master et limite réelle des 32 canaux USB](mpc-submix-master-2026-09-26.md).
+
+- [Console complète, départs et web — 27 septembre 2026](console-complete-2026-09-27.md)
+
+- [Juju Driver : USB 32×32, stockage temporaire SD et récupération Ardour](juju-driver-deployment-2026-09-27.md).
+
+- [CHANNEL MATRIX, solo/mute et suivi de fenêtre EQ](matrix-selection-2026-09-27.md).

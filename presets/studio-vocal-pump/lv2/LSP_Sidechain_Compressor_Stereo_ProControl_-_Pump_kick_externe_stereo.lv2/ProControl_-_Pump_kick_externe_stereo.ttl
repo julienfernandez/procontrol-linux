@@ -1,0 +1,139 @@
+@prefix atom: <http://lv2plug.in/ns/ext/atom#> .
+@prefix lv2: <http://lv2plug.in/ns/lv2core#> .
+@prefix pset: <http://lv2plug.in/ns/ext/presets#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix state: <http://lv2plug.in/ns/ext/state#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<>
+	a pset:Preset ;
+	lv2:appliesTo <http://lsp-plug.in/plugins/lv2/sc_compressor_stereo> ;
+	rdfs:label "ProControl - Pump kick externe stereo" ;
+	lv2:port [
+		lv2:symbol "al" ;
+		pset:value 0.25119001
+	] , [
+		lv2:symbol "at" ;
+		pset:value 2.0
+	] , [
+		lv2:symbol "bsa" ;
+		pset:value 1.99526
+	] , [
+		lv2:symbol "bth" ;
+		pset:value 0.000251
+	] , [
+		lv2:symbol "cdr" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "clear" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "cm" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "cr" ;
+		pset:value 4.0
+	] , [
+		lv2:symbol "cwt" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "elv_l" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "elv_r" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "enabled" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "g_in" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "g_out" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "grv_l" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "grv_r" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "ilv_l" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "ilv_r" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "kn" ;
+		pset:value 0.50117999
+	] , [
+		lv2:symbol "mk" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "olv_l" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "olv_r" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "pause" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "rrl" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "rt" ;
+		pset:value 180.0
+	] , [
+		lv2:symbol "scl" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "scm" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "scp" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "scr" ;
+		pset:value 10.0
+	] , [
+		lv2:symbol "scs" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sct" ;
+		pset:value 2.0
+	] , [
+		lv2:symbol "shpf" ;
+		pset:value 10.0
+	] , [
+		lv2:symbol "shpm" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "sla" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "slpf" ;
+		pset:value 20000.0
+	] , [
+		lv2:symbol "slpm" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "slv_l" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "slv_r" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "sscs" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "ssplit" ;
+		pset:value 0.0
+	] ;
+	state:state [
+		<http://lsp-plug.in/plugins/lv2/sc_compressor_stereo/KVT> [
+			a atom:Tuple ;
+			rdf:value ()
+		]
+	] .

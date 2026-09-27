@@ -15,6 +15,8 @@ from urllib.parse import urlsplit
 from surface_settings import load,save,validate,rpc
 from studio_control import StudioController
 from console_web import ConsoleController
+from runtime_status import service_status
+from web_meters import WebMeters
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -23,14 +25,11 @@ class App:
         self.root=Path(root);self.runtime=self.root/'run';self.path=self.root/'settings.json';self.lock=threading.Lock()
         self.studio=StudioController(self.root)
         self.console=ConsoleController(self.root)
+        self.meters=WebMeters(self.runtime)
     def state(self):
         data={}
-        for name,file in [('daemon','status.json'),('pointer','pointer-status.json')]:
-            try:
-                p=self.runtime/file;s=json.loads(p.read_text())
-                if time.time()-p.stat().st_mtime>5:s['running']=False
-                data[name]=s
-            except (OSError,ValueError):data[name]={'running':False}
+        for name,file,lock in [('daemon','status.json','daemon.lock'),('pointer','pointer-status.json','pointer.lock')]:
+            data[name]=service_status(self.runtime,file,lock)
         data['saved']=load(self.path)
         data['sources']=data['daemon'].get('stereo',{}).get('sources',[])
         return data
@@ -87,10 +86,25 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.allowed():return self.output(403,{'error':'Hôte non autorisé'})
         path=urlsplit(self.path).path
+        if path=='/api/meters':return self.output(200,self.server.app.meters.state())
+        if path=='/api/meters/events':
+            self.send_response(200);self.send_header('Content-Type','text/event-stream')
+            self.send_header('Cache-Control','no-store');self.send_header('X-Accel-Buffering','no');self.end_headers()
+            self.wfile.write(b'retry: 100\n\n');self.wfile.flush()
+            self.connection.settimeout(2)
+            try:
+                for _ in range(1500):
+                    started=time.monotonic()
+                    frame=self.server.app.meters.state()
+                    self.wfile.write(('data: '+json.dumps(frame,separators=(',',':'))+'\n\n').encode());self.wfile.flush()
+                    time.sleep(max(0,.04-(time.monotonic()-started)))
+            except (OSError,TimeoutError):pass
+            return
         if path=='/api/console/model':return self.output(200,self.server.app.console.model())
         if path=='/api/console/state':return self.output(200,self.server.app.console.state())
         if path=='/api/console/events':
             self.send_response(200);self.send_header('Content-Type','text/event-stream');self.send_header('Cache-Control','no-store');self.end_headers()
+            self.wfile.write(b'retry: 100\n\n');self.wfile.flush()
             last=None;last_cursor=None
             try:
                 # Bounded connection duration; EventSource reconnects automatically.
@@ -110,6 +124,9 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/api/studio/logs':return self.output(200,self.server.app.studio.logs())
         files={'/':('index.html','text/html; charset=utf-8'),'/app.js':('app.js','text/javascript; charset=utf-8'),'/style.css':('style.css','text/css; charset=utf-8')}
         files.update({'/mapping':('mapping.html','text/html; charset=utf-8'),'/mapping.js':('mapping.js','text/javascript; charset=utf-8'),'/mapping.css':('mapping.css','text/css; charset=utf-8')})
+        files['/meters.js']=('meters.js','text/javascript; charset=utf-8')
+        files['/theme.css']=('theme.css','text/css; charset=utf-8')
+        files['/polling.js']=('polling.js','text/javascript; charset=utf-8')
         if path not in files:return self.output(404,{'error':'Introuvable'})
         name,ctype=files[path];self.output(200,(self.server.app.root/'web'/name).read_bytes(),ctype)
     def do_POST(self):

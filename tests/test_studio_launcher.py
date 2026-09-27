@@ -43,9 +43,23 @@ class LauncherTests(unittest.TestCase):
             self.assertTrue(sl.prepare_usb())
         self.assertEqual([c.args for c in api.call_args_list],[(),()])
     def test_failed_recovery_does_not_repeat_forever(self):
-        with patch.object(sl,'api',side_effect=[{'job':{}},{'job':{'state':'queued'}},{'job':{'state':'failed'}}]) as api,patch.object(sl.time,'sleep'):
+        with patch.object(sl,'api',side_effect=[{'stale':False,'job':{}},{'job':{'state':'queued'}},{'stale':False,'job':{'state':'failed'}}]) as api,patch.object(sl.time,'sleep'):
             self.assertFalse(sl.prepare_usb())
         self.assertEqual(sum(c.args==('recover',) for c in api.call_args_list),1)
+    def test_reused_automatic_job_cancelled_does_not_become_manual_recovery(self):
+        with patch.object(sl,'api',side_effect=[{'job':{'state':'queued'}},{'stale':False,'job':{'state':'cancelled'}}]) as api,patch.object(sl.time,'sleep'):
+            self.assertFalse(sl.prepare_usb())
+        self.assertEqual([c.args for c in api.call_args_list],[(),()])
+    def test_disconnected_cable_does_not_delay_launch_with_useless_prepare(self):
+        with patch.object(sl,'api',return_value={'stale':False,'recovery_wait':'Câble USB en attente','job':{}}) as api:
+            self.assertFalse(sl.prepare_usb())
+        self.assertEqual([c.args for c in api.call_args_list],[()])
+    def test_first_diagnostic_pending_does_not_prepare_again(self):
+        states=[{'stale':True,'job':{}},
+                {'stale':False,'repair_needed':False,'graph':{'usb':True},'job':{}}]
+        with patch.object(sl,'api',side_effect=states) as api,patch.object(sl.time,'sleep'):
+            self.assertTrue(sl.prepare_usb())
+        self.assertEqual([c.args for c in api.call_args_list],[(),()])
     def test_no_routing_for_another_session(self):
         state={'stale':False,'route_allowed':False,'graph':{'usb':True,'behringer':True},'repair_needed':False}
         with patch.object(sl,'api',return_value=state) as api,patch.object(sl.time,'monotonic',side_effect=[0,0,50]),patch.object(sl.time,'sleep'):

@@ -53,14 +53,15 @@ zoom horizontal et hauteur des pistes. Voir [les essais et voyants](console-test
 | INPUT / OUTPUT | Forcer IN / DISK sur la piste sélectionnée ; DEFAULT rend la main à AUTO en page d’écoute |
 | EQ IN/EDIT / DYN IN/EDIT | Ouvrir l’EQ / compresseur adapté ; le créer s’il manque avec l’extension Ardour fournie |
 | INS/SEND par voie | Navigateur DSP ciblé sur cette voie, comme INSERTS/PARAM |
-| INSERTS/PARAM | Navigateur chaîne / bibliothèque ; huit effets proposés, sans catalogue VST général |
+| INSERTS/PARAM | Navigateur chaîne / bibliothèque ; quatorze effets avec la capacité 3, sans catalogue VST général |
 | Huit rotatifs DSP et boutons associés | Naviguer, ouvrir un effet, sélectionner et régler les paramètres selon le mode |
 | PAGES / MASTER BYPASS / ESCAPE | Pages de paramètres / bypass / sortie du mode DSP |
 | CHANNEL MATRIX | Sélection, mute, solo, armement selon le mode ; banques A–D |
-| MASTER FADERS | Vue master puis retour aux pistes |
+| MASTER FADERS | Master général puis bus audio/MIDI ; banques de huit, nouvel appui pour revenir aux pistes |
 
 Guides : [écoute IN/DISK](track-monitoring.md), [bibliothèque DSP](curated-plugins.md),
 [EQ et compresseur](eq-plugin-workflow.md), [Chaleur, Tube et Tape](warm-tape-plugins.md),
+[voix, harmonies et pumping](vocal-pump-controls.md),
 [automation](automation-modes.md). Les modifications de plugins exigent les patches
 natifs et des descripteurs compatibles ; voir [la reconstruction](../native/README.md).
 
@@ -92,3 +93,14 @@ séparée. Les grandes banques, l’endurance, l’écoute synchronisée MPC et 
 gestes physiques ne sont pas couverts par les tests unitaires.
 
 Les anciens états restent dans les [rapports datés](README.md) et l’historique Git.
+
+
+## Complément du 27 septembre : DSP et départs
+
+La bibliothèque CREATE / ASSIGN, SELECT, activation / suspension, INFO et A/B,
+les huit rangées DSP, l’éditeur SENDS et les dernières touches utilitaires sont
+raccordés. L’afficheur CHANNEL / GROUP donne la piste et le contexte de page.
+Voir le [tableau des fonctions et limites](console-complete-2026-09-27.md).
+FLIP échange les libellés et valeurs des afficheurs dans les éditeurs ; les faders
+conservent les gains de piste. Les commandes analogiques ne sont pas rebaptisées
+en fonctions numériques sans observation Ethernet.

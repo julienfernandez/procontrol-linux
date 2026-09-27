@@ -47,6 +47,7 @@ class SurfaceRouting:
         self.pending = {}; self.list_started = time.monotonic()
 
     def disconnect(self):
+        if getattr(self,'sends',None) is not None:self.sends.exit()
         if self.monitor is not None:self.monitor.disconnect()
         if getattr(self,'eq',None) is not None:
             self.eq.exit('Ardour déconnecté'); self.eq.creation_supported = False; self.eq.creation_version = 0
@@ -56,7 +57,12 @@ class SurfaceRouting:
         self.identities.clear(); self.pending = None; self.mapper.invalidate_selected(); self.render()
 
     def view_ids(self):
-        return [sid for sid, row in sorted(self.rows.items()) if (row['kind'] == 'MA') == self.master]
+        rows = sorted(self.rows.items())
+        if self.master:
+            # Master first, then real audio/MIDI buses in presentation order.
+            return ([sid for sid, row in rows if row['kind'] == 'MA'] +
+                    [sid for sid, row in rows if row['kind'] in ('B', 'MB')])
+        return [sid for sid, row in rows if row['kind'] != 'MA']
 
     def display_slots(self):
         # Keep the last committed view during an asynchronous catalogue read.
@@ -83,6 +89,7 @@ class SurfaceRouting:
                 else:pending=[]  # external GUI/direct-mode choice is authoritative
                 if pending:self.automation_pending[values[0]]=pending
                 else:self.automation_pending.pop(values[0],None)
+        if getattr(self,'sends',None) is not None:self.sends.feed(path,values)
         if getattr(self,'eq',None) is not None:
             self.eq.feed(path,values)
         if path.startswith('/strip/plugin/'):
@@ -174,6 +181,9 @@ class SurfaceRouting:
     def actions(self, actions):
         result=[]
         for kind,path,values in actions:
+            if kind=='sends':
+                if getattr(self,'sends',None) is not None:result.extend(self.sends.handle(path,values))
+                continue
             if kind=='monitor':
                 if self.monitor is not None:result.extend(self.monitor.handle(path,values))
                 continue

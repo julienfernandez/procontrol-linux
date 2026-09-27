@@ -13,10 +13,58 @@ CATALOG = (
     ('warm', 'Chaleur', ('Valve saturation',)),
     ('tube', 'Tube', ('ZamTube',)),
     ('tape', 'Tape', ('CHOWTapeModel',)),
+    ('autotune', 'Autotune', ('x42-Autotune',)),
+    ('pitch', 'Harmonie', ('Rubber Band Mono Pitch Shifter', 'Rubber Band Stereo Pitch Shifter')),
+    ('sidechain', 'Sidechain', ('LSP Sidechain Compressor Mono', 'LSP Sidechain Compressor Stereo')),
+    ('pump', 'Pump LFO', ('B.Shapr',)),
+    ('transient', 'Attaques', ('LSP Beat Breather Mono', 'LSP Beat Breather Stereo')),
+    ('vocoder', 'Vocodeur', ('Surge XT Effects',)),
 )
 
 # label, console caption, unit, per-detent increment (None = descriptor rule).
 PROFILES = {
+    'autotune': (
+        ('Correction', 'Quantite', '%01', .01), ('Filter', 'Suivi', 's', .005),
+        ('Bias', 'Biais', '%01', .01), ('Offset', 'Decalage', 'st', .05),
+        ('Tuning', 'Accord', 'Hz', .1), ('Mode', 'Mode', '', None),
+        ('Fast Correction', 'Rapide', 'bool', 1), ('Pitch Bend Range', 'Bend', 'st', None),
+    ),
+    'pitch': (
+        ('Semitones', 'Interval', 'st', 1), ('Cents', 'Fin', 'ct', 1),
+        ('Octaves', 'Octave', 'oct', 1), ('Wet-Dry Mix', 'Direct', '%01', .01),
+        ('Formant Preserving', 'Formants', 'bool', 1), ('Crispness', 'Texture', '', None),
+    ),
+    'sidechain': (
+        ('Attack threshold', 'Seuil', 'gain_db', .25), ('Ratio', 'Ratio', ':1', .1),
+        ('Attack time', 'Attaque', 'ms', .1), ('Release time', 'Relache', 'ms', 1),
+        ('Knee', 'Coude', 'gain_db', .25), ('Makeup gain', 'Compens', 'gain_db', .25),
+        ('Wet gain', 'Traite', 'gain_db', .25), ('Output gain', 'Sortie', 'gain_db', .25),
+    ),
+    'pump': (
+        ('Dry / wet', 'Melange', '%01', .01), ('Base value', 'Duree', '', 1),
+        ('Base', 'Unite', '', None), ('Shaper 1: smoothing', 'Lissage', 'ms', 1),
+        ('Shaper 1: dry / wet', 'Profonde', '%01', .01),
+        ('Shaper 1: output amplification', 'Sortie', 'gain_db', .25),
+    ),
+    'transient': (
+        ('Beat processor attack time 1', 'Attaque', 'ms', .1),
+        ('Beat processor release time 1', 'Relache', 'ms', 1),
+        ('Beat processor expand ratio 1', 'Ratio', ':1', .1),
+        ('Beat processor maximum gain 1', 'MaxGain', 'gain_db', .25),
+        ('Punch filter threshold 1', 'Seuil', 'gain_db', .25),
+        ('Band output gain 1', 'Bande1', 'gain_db', .25),
+        ('Dry gain', 'Direct', 'gain_db', .25), ('Wet gain', 'Traite', 'gain_db', .25),
+    ),
+    # Descriptor names change with Surge's effect type. Requiring these names
+    # gates this profile to the vocoder; normalized values stay percentages.
+    'vocoder': (
+        ('Input Gain', 'Entree', '%01', .01), ('Input Gate', 'Gate', '%01', .01),
+        ('Filter Bank Env Follow', 'Suivi', '%01', .01), ('Filter Bank Q', 'Q', '%01', .01),
+        ('Carrier Bands', 'Bandes', '%01', .01), ('Carrier Min Frequency', 'Bas', '%01', .01),
+        ('Carrier Max Frequency', 'Haut', '%01', .01), ('Output Mix', 'Melange', '%01', .01),
+        ('Modulator Input', 'ModIn', '%01', .01), ('Modulator Range', 'Etendue', '%01', .01),
+        ('Modulator Center', 'Centre', '%01', .01),
+    ),
     'warm': (
         ('Distortion level', 'Chaleur', '%01', .01),
         ('Distortion character', 'Caract.', '%01', .01),
@@ -63,6 +111,7 @@ PROFILES = {
 
 
 def minimum_version(key):
+    if key in ('autotune', 'pitch', 'sidechain', 'pump', 'transient', 'vocoder'): return 3
     return 2 if key in ('warm', 'tube', 'tape') else 1
 
 

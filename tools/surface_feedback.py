@@ -200,7 +200,7 @@ class SurfaceFeedback:
         elif path=='/strip/gain':
             body=scribble(channel,f'{float(value):+.1f} dB',False)
             self.mix_values[channel]=body
-            if (self.eq is None or not self.eq.active) and (self.monitor is None or not self.monitor.active):self.put(('value',channel),body)
+            if (self.eq is None or not self.eq.active) and (self.monitor is None or not self.monitor.active) and not getattr(getattr(self.mapper,'sends',None),'active',False):self.put(('value',channel),body)
         elif path in ('/strip/mute','/strip/solo','/strip/select','/strip/recenable'):
             k={'/strip/mute':8,'/strip/solo':7,'/strip/select':6,'/strip/recenable':0}[path]
             self.put(('led',channel-1,k),button_led(channel-1,k,bool(value)))

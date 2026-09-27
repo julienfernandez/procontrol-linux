@@ -1,0 +1,25 @@
+diff --git a/libs/backends/jack/jack_portengine.cc b/libs/backends/jack/jack_portengine.cc
+index 740316b..72b18f9 100644
+--- a/libs/backends/jack/jack_portengine.cc
++++ b/libs/backends/jack/jack_portengine.cc
+@@ -344,7 +344,19 @@ JACKAudioBackend::connect_callback (jack_port_id_t id_a, jack_port_id_t id_b, in
+ 	jack_port_t* a = jack_port_by_id (_priv_jack, id_a);
+ 	jack_port_t* b = jack_port_by_id (_priv_jack, id_b);
+ 
+-	manager.connect_callback (jack_port_name (a), jack_port_name (b), conn == 0 ? false : true);
++	/* A queued disconnect notification can outlive either port during
++	 * device removal. Never construct a std::string from a missing name.
++	 * The graph/registration callbacks reconcile the removed ports.
++	 */
++	if (!a || !b) {
++		return;
++	}
++	const char* name_a = jack_port_name (a);
++	const char* name_b = jack_port_name (b);
++	if (!name_a || !name_b) {
++		return;
++	}
++	manager.connect_callback (name_a, name_b, conn != 0);
+ }
+ 
+ bool

@@ -16,6 +16,9 @@ import subprocess
 import sys
 import threading
 import time
+from runtime_status import service_status
+from pipewire_graph import read_graph, unused_meter_links
+from mpc_channels import channel_count, usb_nodes, usb_channel_names
 
 
 def read_json(path, default=None):
@@ -58,8 +61,19 @@ def graph_health(objects):
     def node(prefix):
         found = [i for i, p in nodes.items() if p.get('node.name', '').startswith(prefix)]
         return found[0] if len(found) == 1 else None
-    source = node('alsa_input.usb-Akai_Professional_MPC_One_USB_Audio_16ch_')
-    sink = node('alsa_output.usb-Akai_Professional_MPC_One_USB_Audio_16ch_')
+    devices = usb_nodes(objects)
+    source = devices['capture']['id'] if devices['capture'] else None
+    sink = devices['playback']['id'] if devices['playback'] else None
+    inputs = usb_channel_names(objects, devices['capture'], 'out')
+    outputs = usb_channel_names(objects, devices['playback'], 'in')
+    session_inputs = set()
+    for p in ports.values():
+        m = re.fullmatch(r'ardour:MPC (\d{2})-(\d{2})/audio_in ([12])', p.get('port.alias', ''))
+        if m and p.get('port.direction') == 'in':
+            a, b, c = map(int, m.groups())
+            if a % 2 and b == a + 1 and 1 <= a < b <= 32:
+                session_inputs.add(a - 1 + c)
+    session_channels = max(session_inputs, default=0)
     behringer = node('alsa_output.usb-Burr-Brown_from_TI_USB_Audio_CODEC-')
     def owner(p):
         try:
@@ -71,7 +85,7 @@ def graph_health(objects):
                                 ('capture', 'codex-mpc-usb-capture-keepalive-v3', False)]:
         stream = node(name)
         src, dst = (stream, sink) if playback else (source, stream)
-        expected = {(f'AUX{i}', f'AUX{i}') for i in range(16)}
+        expected = {(ch, ch) for ch in (outputs if playback else inputs)}
         found, wrong = set(), 0
         for l in links:
             if stream is None or l.get('output-node-id' if playback else 'input-node-id') != stream:
@@ -85,12 +99,12 @@ def graph_health(objects):
                 found.add(pair)
             elif pair not in expected:
                 wrong += 1
-        keepalive[key] = {'channels': len(found), 'wrong': wrong, 'present': stream is not None}
+        keepalive[key] = {'channels': len(found), 'expected': len(expected), 'wrong': wrong, 'present': stream is not None}
     track_pairs, master_pairs, master_wrong = set(), set(), 0
     for l in links:
         a, b = ports.get(l.get('output-port-id'), {}), ports.get(l.get('input-port-id'), {})
         alias = b.get('port.alias', '')
-        for i in range(16):
+        for i in range(32):
             track = f'ardour:MPC {(i//2)*2+1:02d}-{(i//2)*2+2:02d}/audio_in {i%2+1}'
             if owner(a) == source and a.get('audio.channel') == f'AUX{i}' and alias == track:
                 track_pairs.add(i)
@@ -101,6 +115,10 @@ def graph_health(objects):
                 else:
                     master_wrong += 1
     return {'usb': source is not None and sink is not None,
+            'input_channels': len(inputs), 'output_channels': len(outputs),
+            'session_channels': session_channels,
+            'ardour_present': any(p.get('node.name') == 'ardour' for p in nodes.values()),
+            'internal_meter_links': len(unused_meter_links(objects)[1]),
             'behringer': behringer is not None, 'keepalive': keepalive,
             'tracks': len(track_pairs), 'master': len(master_pairs), 'master_other': master_wrong}
 
@@ -120,19 +138,20 @@ class StudioBackend:
         address = int(address, 16) if re.fullmatch(r'0x[0-9a-fA-F]{1,16}', str(address)) else 0
         script = '''
 echo @@boot; cat /proc/sys/kernel/random/boot_id
-echo @@gadget; cat /sys/kernel/config/usb_gadget/codex_mpc_audio/UDC 2>/dev/null
+echo @@gadget; cat /sys/kernel/config/usb_gadget/juju_driver/UDC /sys/kernel/config/usb_gadget/codex_mpc_audio/UDC 2>/dev/null
 echo @@usb_state; cat /sys/class/udc/ff580000.usb/state 2>/dev/null
 echo @@cards; cat /proc/asound/cards
 echo @@mpc_pid; systemctl show -p MainPID --value acvs
 for c in /proc/asound/card[0-9]*; do
-  if [ "$(cat "$c/id" 2>/dev/null)" = UAC2Gadget ]; then
+  case "$(cat "$c/id" 2>/dev/null)" in UAC2Gadget|JujuDriver)
+    echo @@audio_id; cat "$c/id"
     echo @@playback; cat "$c/pcm0p/sub0/status" "$c/pcm0p/sub0/hw_params"
     echo @@capture; cat "$c/pcm0c/sub0/status" "$c/pcm0c/sub0/hw_params"
-  fi
+  ;; esac
 done
 echo @@midi; if [ -x /tmp/aconnect ]; then /tmp/aconnect -l; fi
 '''
-        if address:
+        if address and self.config.get('usb_channels', 16) != 32:
             script += ('echo @@visibility; p=$(systemctl show -p MainPID --value acvs); '
                        f'dd if=/proc/$p/mem bs=1 skip={address} count=11 2>/dev/null; echo\n')
         args = ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=4',
@@ -142,13 +161,8 @@ echo @@midi; if [ -x /tmp/aconnect ]; then /tmp/aconnect -l; fi
         return sections(subprocess.check_output(args, text=True, stderr=subprocess.PIPE, timeout=12))
 
     def route_allowed(self):
-        status_path = self.root/'run/status.json'
-        d = read_json(status_path)
-        try:
-            fresh = time.time() - status_path.stat().st_mtime < 5
-        except OSError:
-            fresh = False
-        return bool(fresh and d.get('running') and d.get('ardour') == 'responding' and
+        d = service_status(self.root/'run')
+        return bool(d['live'] and d.get('ardour') == 'responding' and
                     self.config.get('session') and
                     d.get('stereo', {}).get('session') == self.config['session'])
 
@@ -167,15 +181,17 @@ echo @@midi; if [ -x /tmp/aconnect ]; then /tmp/aconnect -l; fi
         except (OSError, subprocess.SubprocessError) as exc:
             remote = {}
             result['error'] = str(exc)[:600]
+            result['recovery_wait'] = 'MPC injoignable : la reprise automatique attend son retour sur le réseau.'
             add('network', 'MPC sur le réseau', 'error', 'MPC injoignable ou authentification SSH indisponible')
         if remote:
             gadget = bool(remote.get('gadget'))
             connected = gadget and remote.get('usb_state') == 'configured'
             add('gadget', 'Interface USB de la MPC', 'ok' if connected else 'warning' if gadget else 'error',
                 ('Connexion USB établie' if connected else 'Créée ; connexion USB au PC en attente') if gadget else 'À recréer après le redémarrage')
-            visible = remote.get('visibility') == 'XAC2_Gadget'
+            juju = remote.get('audio_id') == 'JujuDriver'
+            visible = juju or remote.get('visibility') == 'XAC2_Gadget'
             add('visibility', 'Périphérique proposé sur la MPC', 'ok' if visible else 'warning',
-                'UAC2_Gadget autorisé dans la liste Audio Device' if visible else 'Préparation de la liste audio nécessaire')
+                'Juju Driver disponible dans Audio Device' if juju else 'UAC2_Gadget autorisé dans la liste Audio Device' if visible else 'Préparation de la liste audio nécessaire')
             pcms = [pcm_info(remote.get(k, '')) for k in ('playback', 'capture')]
             active = all(p.get('state') == 'RUNNING' and p.get('owner_pid') == remote.get('mpc_pid') for p in pcms)
             result['pcm_running'] = active
@@ -183,7 +199,7 @@ echo @@midi; if [ -x /tmp/aconnect ]; then /tmp/aconnect -l; fi
             for label, p in zip(('Sortie', 'Entrée'), pcms):
                 details.append(f"{label} : {('active' if p.get('state') == 'RUNNING' else 'fermée')}, période {p.get('period_size', '—')}, tampon {p.get('buffer_size', '—')}")
             add('pcm', 'Audio sélectionné sur la MPC', 'ok' if active else 'warning',
-                ' · '.join(details) if active else 'Sélectionner UAC2_Gadget 0 dans Preferences → Audio Device')
+                ' · '.join(details) if active else 'Sélectionner %s dans Preferences → Audio Device' % ('Juju Driver' if juju else 'UAC2_Gadget 0'))
             midi = remote.get('midi', '')
             target = re.search(r"client (\d+): 'f_midi'", midi)
             source = re.search(r"client \d+: 'MPC One MIDI'.*?(?=\nclient |\Z)", midi, re.S)
@@ -193,25 +209,42 @@ echo @@midi; if [ -x /tmp/aconnect ]; then /tmp/aconnect -l; fi
                 'Connexion ALSA vérifiée' if midi_ok else 'Connexion absente')
             result['repair_needed'] = not gadget or not visible or not midi_ok
         try:
-            objects = json.loads(subprocess.check_output(['pw-dump'], text=True, stderr=subprocess.PIPE, timeout=4))
+            objects = read_graph()
             graph = graph_health(objects)
             result['graph'] = graph
-            add('usb', 'Interface USB sur le PC', 'ok' if graph['usb'] else 'error',
-                'Entrée et sortie 16 canaux présentes' if graph['usb'] else 'Interface absente ; vérifier aussi le câble USB-B')
+            if remote.get('gadget') and remote.get('usb_state') != 'configured' and not graph['usb']:
+                result['recovery_wait'] = 'Interface créée sur la MPC ; connexion USB au PC en attente. Vérifier le câble USB-B.'
+            wanted = channel_count(self.config.get('usb_channels', 16))
+            width_ok = graph['input_channels'] == graph['output_channels'] == wanted
+            add('usb', 'Interface USB sur le PC', 'ok' if graph['usb'] and width_ok else 'warning' if graph['usb'] else 'error',
+                f"{graph['input_channels']} entrées / {graph['output_channels']} sorties USB réelles" if graph['usb'] else 'Interface absente ; vérifier aussi le câble USB-B')
+            if graph['usb'] and not width_ok:
+                result['recovery_wait'] = f'Configuration demandée : {wanted} canaux ; capacité USB différente. Bascule manuelle du pilote MPC nécessaire.'
+            required = max(graph['session_channels'], wanted)
+            if graph['usb'] and graph['input_channels'] < required:
+                add('capacity', 'Canaux MPC manquants', 'warning',
+                    f"La session attend {required} canaux, la MPC en fournit {graph['input_channels']}. "
+                    f"Les canaux {graph['input_channels'] + 1}–{required} ne sont pas transmis par USB ; pilote MPC à adapter.")
             for key, label in [('playback', 'Maintien PC → MPC'), ('capture', 'Maintien MPC → PC')]:
                 k = graph['keepalive'][key]
-                ok = k['channels'] == 16 and k['wrong'] == 0
-                add(key, label, 'ok' if ok else 'error', f"{k['channels']}/16 canaux actifs · {k['wrong']} liaison(s) erronée(s)")
+                ok = k['expected'] > 0 and k['channels'] == k['expected'] and k['wrong'] == 0
+                add(key, label, 'ok' if ok else 'error', f"{k['channels']}/{k['expected']} canaux actifs · {k['wrong']} liaison(s) erronée(s)")
                 if remote and graph['usb'] and not ok:
                     result['repair_needed'] = True
-            add('tracks', 'Entrées des pistes Ardour', 'ok' if graph['tracks'] == 16 else 'warning',
-                f"{graph['tracks']}/16 canaux raccordés à la session studio")
-            add('master', 'Master → Behringer', 'ok' if graph['master'] == 2 and not graph['master_other'] else 'warning',
-                f"{graph['master']}/2 canaux raccordés · {graph['master_other']} autre(s) destination(s)")
+            if not graph['ardour_present']:
+                add('tracks', 'Entrées des pistes Ardour', 'unknown', 'Ardour fermé/en attente')
+                add('master', 'Master → Behringer', 'unknown', 'Ardour fermé/en attente')
+            else:
+                add('tracks', 'Entrées des pistes Ardour', 'ok' if graph['tracks'] == required else 'warning',
+                    f"{graph['tracks']}/{required} canaux raccordés à la session studio")
+                add('master', 'Master → Behringer', 'ok' if graph['master'] == 2 and not graph['master_other'] else 'warning',
+                    f"{graph['master']}/2 canaux raccordés · {graph['master_other']} autre(s) destination(s)")
+                add('internal_meter', 'Vumètre entrée interne', 'warning' if graph['internal_meter_links'] else 'ok',
+                    f"{graph['internal_meter_links']} connexion(s) de mesure interne inutilisée(s)")
         except (OSError, ValueError, subprocess.SubprocessError) as exc:
             add('pipewire', 'Audio du PC', 'error', 'Graphe PipeWire indisponible')
             result['error'] = str(exc)[:600]
-        result['repair_needed'] = bool(remote and result['repair_needed'])
+        result['repair_needed'] = bool(remote and result['repair_needed'] and not result.get('recovery_wait'))
         return result
 
 
@@ -232,6 +265,8 @@ class StudioController:
         self.next_retry, self.failures = 0, 0
         self.pcm_identity = None
         self.pcm_times = {}
+        self.pcm_observation = {}
+        self.pcm_last_change = None
         self.pcm_restarts = 0
         self.log_path = self.runtime/'studio.log'
 
@@ -268,7 +303,9 @@ class StudioController:
 
     def logs(self):
         result = {}
-        for label, path in [('supervision', self.log_path), ('derniere_operation', self.runtime/'studio-operation.log'),
+        for label, path in [('supervision', self.log_path), ('sante_console', self.runtime/'health.jsonl'),
+                            ('lancement_ardour', self.runtime/'ardour-studio-launch.log'),
+                            ('vumetre_interne', self.backend.home/'run/input-meter-tune.log'), ('derniere_operation', self.runtime/'studio-operation.log'),
                             ('maintien_sortie', self.backend.home/'run/duplex.log'),
                             ('maintien_entree', self.backend.home/'run/capture-keepalive.log')]:
             try:
@@ -299,6 +336,8 @@ class StudioController:
                 self.config['automatic'] = values['enabled']
                 write_json(self.root/'studio.json', self.config)
                 self.log('Reprise automatique '+('activée' if values['enabled'] else 'désactivée'))
+                if not values['enabled'] and self.pending and self.job.get('automatic'):
+                    self.cancel_automatic('Reprise automatique désactivée avant son démarrage.')
             elif action != 'check':
                 if not self.backend.available:
                     raise ValueError('Backend studio indisponible')
@@ -312,12 +351,20 @@ class StudioController:
         self.wake.set()
         return self.state()
 
+    def cancel_automatic(self, reason):
+        # Caller owns self.lock. A running operation is allowed to finish safely.
+        self.pending = None
+        self.job.update(state='cancelled', error=None, reason=reason, finished_at=time.time())
+        write_json(self.runtime/'studio-job.json', self.job)
+        self.log(reason)
+
     def run_command(self, action):
         if self.stopping.is_set():
             raise RuntimeError('Supervision en cours d’arrêt ; aucune nouvelle commande lancée')
         session = Path(self.config['session'])
         env = dict(os.environ, MPC_HOST=self.backend.host, PYTHONUNBUFFERED='1',
                    MPC_STUDIO_ROOT=str(self.backend.home),
+                   MPC_USB_CHANNELS=str(channel_count(self.config.get('usb_channels', 16))),
                    MPC_STUDIO_SESSION=str(session/(session.name+'.ardour')))
         with (self.runtime/'studio-operation.log').open('a') as output:
             p = subprocess.Popen([sys.executable, str(self.backend.path), action], cwd=self.backend.home,
@@ -376,6 +423,13 @@ class StudioController:
 
     def tick(self):
         with self.lock:
+            automatic = bool(self.pending and self.job.get('automatic'))
+        # The device may have disappeared or recovered since the queued observation.
+        preflight = self.backend.snapshot() if automatic else None
+        with self.lock:
+            if (automatic and self.pending and self.job.get('automatic') and
+                    (not self.config.get('automatic') or not preflight.get('repair_needed'))):
+                self.cancel_automatic('Reprise annulée : aucun défaut réparable confirmé à présent.')
             action, self.pending = self.pending, None
             if action:
                 self.job['state'] = 'running'
@@ -383,28 +437,34 @@ class StudioController:
             self.operate(action)
         if self.stopping.is_set():
             return
-        snapshot = self.backend.snapshot()
+        snapshot = preflight if preflight is not None and not action else self.backend.snapshot()
         snapshot['checked_at'] = time.time()
         remote = snapshot.get('remote', {})
         identity = (remote.get('boot'), remote.get('mpc_pid'))
-        times = {k: pcm_info(remote.get(k, '')).get('trigger_time') for k in ('playback', 'capture')}
+        observations = {k: {field: pcm_info(remote.get(k, '')).get(field)
+                                  for field in ('state', 'owner_pid', 'trigger_time', 'period_size', 'buffer_size')}
+                        for k in ('playback', 'capture')}
+        times = {k: value.get('trigger_time') for k, value in observations.items()}
         if remote:
-            if identity != self.pcm_identity:
+            identity_changed = identity != self.pcm_identity
+            changed = {k: {'before': self.pcm_observation.get(k), 'after': observations[k]}
+                       for k in observations if observations[k] != self.pcm_observation.get(k)}
+            if identity_changed:
                 self.pcm_restarts = 0
-            else:
-                # One observation may include a restart in both PCM directions.
-                if any(times[k] and self.pcm_times.get(k) and times[k] != self.pcm_times[k] for k in times):
-                    self.pcm_restarts += 1
-                    self.log('Changement du démarrage PCM observé ; sélection manuelle ou reprise audio possible.')
+            elif any(times[k] and self.pcm_times.get(k) and times[k] != self.pcm_times[k] for k in times):
+                self.pcm_restarts += 1
+            if changed or identity_changed:
+                self.pcm_last_change = dict(checked_at=snapshot['checked_at'],
+                    identity_before=self.pcm_identity, identity_after=identity,
+                    identity_changed=identity_changed, directions=changed,
+                    interpretation='Observation PCM ; cause manuelle ou récupération non déterminée')
+                self.log('PCM '+json.dumps(self.pcm_last_change, ensure_ascii=False))
             self.pcm_identity, self.pcm_times = identity, times
+            self.pcm_observation = observations
+        snapshot['pcm_last_change'] = copy.deepcopy(self.pcm_last_change)
         snapshot['pcm_restarts'] = self.pcm_restarts
-        path = self.runtime/'status.json'
-        d = read_json(path)
-        try:
-            fresh = time.time()-path.stat().st_mtime < 5 and d.get('running') and d.get('ardour') == 'responding'
-        except OSError:
-            fresh = False
-        snapshot['monitoring'] = d.get('track_monitor', {}).get('tracks', []) if fresh else []
+        d = service_status(self.runtime)
+        snapshot['monitoring'] = d.get('track_monitor', {}).get('tracks', []) if d['live'] and d.get('ardour') == 'responding' else []
         with self.lock:
             old = [(c['key'], c['state']) for c in self.current.get('components', [])]
             new = [(c['key'], c['state']) for c in snapshot['components']]

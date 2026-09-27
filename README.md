@@ -62,7 +62,7 @@ l’image pour l’ouvrir en grand.*
   vumètres stéréo et master sur les grandes colonnes calibrées.
 - Trackpad, clics, mode clavier ALPHA et pavé numérique via X11.
 - Section DSP ouverte par INS/SEND sur chaque voie : EQ et compresseur ajoutés
-  s’ils manquent, puis bibliothèque de huit effets avec paramètres mappés sur
+  s’ils manquent, puis bibliothèque de quatorze effets avec paramètres mappés sur
   les encodeurs et afficheurs ; nécessite les patches Ardour fournis.
 - Démarrage et redémarrage idempotents, réglages locaux à
   `http://127.0.0.1:8765`.
@@ -114,7 +114,7 @@ et [les réglages stéréo](docs/stereo-settings.md).
 ## Ardour, DSP et retours
 
 - [Édition, sélection et boucles](docs/console-editing.md)
-- [Bibliothèque DSP de huit effets](docs/curated-plugins.md)
+- [Bibliothèque DSP](docs/curated-plugins.md) et [voix/pumping : six ajouts](docs/vocal-pump-controls.md)
 - [Contrat OSC et commandes](docs/ardour-osc-contract.md)
 - [Automatisation et LEDs](docs/automation-modes.md)
 - [Écoute IN / DISK depuis la console](docs/track-monitoring.md)

@@ -16,12 +16,16 @@ RUN = ROOT / 'run'
 RUN.mkdir(mode=0o700, exist_ok=True)
 sys.path.insert(0, str(TOOLS))
 from jack_ports import Jack
+sys.path.insert(0, str(TOOLS.parents[1] / "tools"))
+from pipewire_graph import read_graph, unused_meter_links
+from mpc_channels import channel_count, usb_nodes, usb_channel_names
 HOST = os.environ['MPC_HOST']
 SSH = ['ssh', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=8',
        '-o', 'StrictHostKeyChecking=yes', '-o', 'ServerAliveInterval=3', '-o', 'ServerAliveCountMax=1',
        '-o', 'UserKnownHostsFile=' + str(RUN / 'known_hosts'), 'root@' + HOST]
-MPC_NODE = 'alsa_output.usb-Akai_Professional_MPC_One_USB_Audio_16ch_MPCONE-USB-AUDIO-TEST-00.pro-output-0'
-MPC_SOURCE = 'alsa_input.usb-Akai_Professional_MPC_One_USB_Audio_16ch_MPCONE-USB-AUDIO-TEST-00.pro-input-0'
+CONFIG = TOOLS.parents[1] / 'studio.json'
+CONFIG_VALUES = json.loads(CONFIG.read_text()) if CONFIG.exists() else {}
+CHANNELS = channel_count(os.environ.get('MPC_USB_CHANNELS', CONFIG_VALUES.get('usb_channels', 16)))
 SESSION = Path(os.environ['MPC_STUDIO_SESSION'])
 
 def command(args, **kwargs):
@@ -32,12 +36,23 @@ def remote(cmd):
     return command(SSH + [cmd], stdout=S.PIPE).stdout
 
 def graph():
-    return json.loads(S.check_output(['pw-dump'], timeout=4))
+    return read_graph()
+
+def usb_target(playback):
+    node = usb_nodes(graph())['playback' if playback else 'capture']
+    if node is None:
+        raise RuntimeError('Interface USB MPC absente ou ambiguë')
+    return node['info']['props']['node.name']
+
+def driver_command(action):
+    if CHANNELS == 32:
+        return '/usr/local/sbin/juju-usb ' + action
+    return '/tmp/codex-mpc-usb-audio.sh ' + action
 
 def mpc_pcm_status():
     return remote('for c in /proc/asound/card[0-9]*; do '
-                  'if [ "$(cat "$c/id" 2>/dev/null)" = UAC2Gadget ]; then '
-                  'cat "$c/pcm0p/sub0/status"; exit; fi; done; exit 1').strip()
+                  'case "$(cat "$c/id" 2>/dev/null)" in UAC2Gadget|JujuDriver) '
+                  'cat "$c/pcm0p/sub0/status"; exit;; esac; done; exit 1').strip()
 
 def ardour_pids():
     result = []
@@ -77,9 +92,9 @@ def keepalive_link_plan(objects, name, target, playback):
                 and not props[o['id']].get('port.monitor')}
     source = ports(stream if playback else device, 'out')
     dest = ports(device if playback else stream, 'in')
-    channels = ['AUX%d' % i for i in range(16)]
+    channels = ['AUX%d' % i for i in range(CHANNELS)]
     if not all(ch in source and ch in dest for ch in channels):
-        raise RuntimeError('Maintien USB : les 16 canaux ne sont pas disponibles')
+        raise RuntimeError('Maintien USB : les %d canaux ne sont pas disponibles' % CHANNELS)
     expected = {(source[ch], dest[ch]) for ch in channels}
     existing = set()
     active = set()
@@ -119,18 +134,18 @@ def ensure_keepalive_links(name, target, playback):
 
 def keepalive(playback):
     base = 'codex-mpc-usb-silence' if playback else 'codex-mpc-usb-capture-keepalive'
-    name = base + '-v3'
-    target = MPC_NODE if playback else MPC_SOURCE
+    name = base + ('-v3-32ch' if CHANNELS == 32 else '-v3')
+    target = usb_target(playback)
     stem = 'duplex' if playback else 'capture-keepalive'
     statefile = RUN / (stem + '.json')
     previous = json.loads(statefile.read_text()) if statefile.exists() else {}
     alive = process_alive(previous, base)
-    if alive and previous.get('version') == 3:
+    if alive and previous.get('version') == 3 and previous.get('channels', 16) == CHANNELS:
         ensure_keepalive_links(name, target, playback)
         return
     args = ['pw-cat', '--playback' if playback else '--record', '--target', target,
-            '--rate', '44100', '--channels', '16', '--channel-map',
-            ','.join('AUX%d' % i for i in range(16)), '--format', 's32', '--latency', '512',
+            '--rate', '44100', '--channels', str(CHANNELS), '--channel-map',
+            ','.join('AUX%d' % i for i in range(CHANNELS)), '--format', 's32', '--latency', '512',
             '--properties', '{ node.name = '+name+' node.dont-fallback = true '
             'node.dont-reconnect = true state.restore-target = false '
             'node.dont-move = true stream.dont-remix = true }', '-']
@@ -145,7 +160,7 @@ def keepalive(playback):
         p.terminate()
         raise
     # Migrate old clients only after their replacement is actually connected.
-    statefile.write_text(json.dumps({'pid': p.pid, 'version': 3,
+    statefile.write_text(json.dumps({'pid': p.pid, 'version': 3, 'channels': CHANNELS,
         'start_ticks': Path('/proc/%d/stat' % p.pid).read_text().split()[21]}))
     if alive:
         os.kill(previous['pid'], signal.SIGTERM)
@@ -192,13 +207,24 @@ def route():
     j = Jack()
     try:
         ports = j.ports()
-        for i in range(8):
+        prefixes = {p.split(':capture_AUX', 1)[0] for p in ports
+                    if re.fullmatch(r'(?:MPC One USB Audio (?:16|32)ch|Juju Driver 32ch) Pro:capture_AUX[0-9]+', p)}
+        if len(prefixes) != 1:
+            raise RuntimeError('Interface USB absente ou ambiguë ; aucune liaison modifiée')
+        prefix = prefixes.pop()
+        required = [(f'{prefix}:capture_AUX{i}',
+                     'ardour:MPC %02d-%02d/audio_in %d' % (i//2*2+1, i//2*2+2, i%2+1))
+                    for i in range(CHANNELS)]
+        missing = [p for pair in required for p in pair if p not in ports]
+        if missing:
+            raise RuntimeError('Routage USB incomplet ; aucune liaison modifiée : ' + ', '.join(missing))
+        for i in range(CHANNELS // 2):
             for c in range(2):
                 name = 'MPC %02d-%02d' % (i*2+1, i*2+2)
                 dest = 'ardour:%s/audio_in %d' % (name, c+1)
                 if dest not in ports:
                     raise RuntimeError('Ouvrir la session studio-mpc-usb avant le raccordement : ' + dest)
-                j.connect('MPC One USB Audio 16ch Pro:capture_AUX%d' % (2*i+c), dest)
+                j.connect(f'{prefix}:capture_AUX{2*i+c}', dest)
         for c, ch in enumerate(['FL', 'FR']):
             j.connect('PCM2902 Audio Codec Stéréo analogique:capture_' + ch,
                       'ardour:Behringer stereo/audio_in %d' % (c+1))
@@ -206,47 +232,75 @@ def route():
             # Remove the first-device auto-connection added by Ardour on initial setup.
             # Playback monitoring goes to the mixer; the MPC only receives our silent support stream.
             for destination in j.connections(master):
-                if destination.startswith('MPC One USB Audio 16ch Pro:playback_'):
+                if re.match(r'(?:MPC One USB Audio (16|32)ch|Juju Driver 32ch) Pro:playback_', destination):
                     j.disconnect(master, destination)
             j.connect(master, 'PCM2902 Audio Codec Stéréo analogique:playback_' + ch)
-        src = next(p for p in ports if 'MPC One USB' in p and '(capture_1)' in p)
+        src = next(p for p in ports if ('MPC One USB' in p or 'Juju Driver' in p) and '(capture_1)' in p)
         dest = 'ardour:Roland RS-9 MIDI/midi_in 1'
         j.connect(src, dest)
-        print('Routage : 16 canaux MPC + Behringer stéréo + Roland MIDI USB 2.')
+        print('Routage : %d canaux MPC + Behringer stéréo + Roland MIDI USB 2.' % CHANNELS)
     finally:
         j.close()
 
-def tune():
-    """Stop unused laptop input metering, keeping every real track connection."""
-    # Ardour meters all physical inputs by default, including the unused PCH
-    # microphone. That device repeatedly resynced against the MPC USB clock.
-    # Only disconnect its dummy meter port, never an audio track or USB input.
+def tune(timeout=45, settle=15):
+    """Verify the unused internal input meter is disconnected after startup."""
+    deadline = time.monotonic() + timeout
     first_seen = None
-    count = 0
-    for _ in range(45):
-        objects = graph()
-        props = {o['id']: o.get('info', {}).get('props', {}) for o in objects}
-        meters = {o['id'] for o in objects if o.get('type') == 'PipeWire:Interface:Port'
-                  and props[o['id']].get('port.name') == 'physical_audio_input_monitor_enable'
-                  and props.get(int(props[o['id']].get('node.id', -1)), {}).get('node.name') == 'ardour'}
+    count = failures = 0
+    print('Vumètre interne : attente du port Ardour, PID(s) %s.' % ardour_pids(), flush=True)
+    while time.monotonic() < deadline:
+        try:
+            meters, pairs = unused_meter_links(graph())
+        except (OSError, ValueError, S.SubprocessError) as exc:
+            failures += 1
+            print('Vumètre interne : lecture à reprendre : %s' % exc, flush=True)
+            time.sleep(1)
+            continue
         if meters:
             if first_seen is None:
                 first_seen = time.monotonic()
-            for obj in objects:
-                if obj.get('type') != 'PipeWire:Interface:Link':
-                    continue
-                link = obj['info']
-                source = props.get(link['output-node-id'], {}).get('node.name', '')
-                if link['input-port-id'] in meters and source.startswith('alsa_input.pci-'):
-                    command(['pw-link', '-d', str(link['output-port-id']), str(link['input-port-id'])])
+            for source, dest in sorted(pairs):
+                try:
+                    command(['pw-link', '-d', str(source), str(dest)])
                     count += 1
-            # The port appears before Ardour finishes restoring its links.
-            # Cover that startup window instead of returning on an empty graph.
-            if time.monotonic() - first_seen >= 15:
-                print('Vu-mètre micro interne : %d connexions inutilisées retirées.' % count)
-                return
+                except (OSError, S.SubprocessError) as exc:
+                    # A port may disappear between the snapshot and disconnect.
+                    # Re-read the graph; never assume the failed command succeeded.
+                    print('Vumètre interne : lien à revérifier : %s' % exc, flush=True)
+            if not pairs and time.monotonic() - first_seen >= settle:
+                result = dict(checked_at=time.time(), ardour_pids=ardour_pids(),
+                              removed=count, read_failures=failures, verified=True)
+                (RUN/'input-meter-tune.json').write_text(json.dumps(result)+'\n')
+                print('Vumètre interne vérifié : %d connexions retirées, aucune restante.' % count, flush=True)
+                return result
+        else:
+            first_seen = None
         time.sleep(1)
-    print('Réglage vu-mètre terminé : %d connexions inutilisées retirées.' % count)
+    raise RuntimeError('Vumètre interne non vérifié dans le délai ; consulter input-meter-tune.log')
+
+def preflight():
+    """Reject unavailable 32-channel kernels before any remote or local write."""
+    if CHANNELS != 32:
+        return
+    result = remote('f=/sys/kernel/config/usb_gadget/juju_driver/functions/juju.audio; '
+                    'if [ -f "$f/p_channels" ] && [ -f "$f/c_channels" ]; then '
+                    'echo explicit-channel-count; elif [ -x /usr/local/sbin/juju-usb ] && '
+                    '[ -s /usr/lib/modules/$(uname -r)/extra/juju_driver.ko ]; then '
+                    'echo explicit-channel-count; fi').strip()
+    if result != 'explicit-channel-count':
+        raise RuntimeError('32 canaux indisponibles : le pilote UAC2 de la MPC ne fournit pas '
+                           'p_channels/c_channels. Liaison existante conservée. '
+                           'Installer et valider un pilote MPC compatible avant la bascule.')
+
+
+def verify_usb_width(objects):
+    nodes = usb_nodes(objects)
+    for direction, port_direction in (('capture', 'out'), ('playback', 'in')):
+        actual = len(usb_channel_names(objects, nodes[direction], port_direction))
+        if actual != CHANNELS:
+            raise RuntimeError('USB %s : %d canaux réels, %d demandés ; maintien non lancé' %
+                               (direction, actual, CHANNELS))
+
 
 def prepare():
     """Prepare hardware without opening Ardour or changing a session's routing."""
@@ -254,20 +308,17 @@ def prepare():
                  ROOT/'tools/vendor/coreutils-armhf/bin/dd']:
         if not path.is_file():
             raise RuntimeError('Dépendance locale absente : '+str(path))
-    # This installed HAKAI preload reads its legacy pathname each time ALSA
-    # opens a device. Without the file, this build selected 64-sample USB
-    # periods and repeatedly recovered its capture/playback streams under load.
-    # The 192 setting requests a 768-sample ring buffer. The gadget still
-    # caps 16 x S16 periods at 128, leaving six periods of scheduling margin.
-    # Verify hw_params after device selection; writing the file is not live.
-    # Never restart the MPC application here.
-    # /media is volatile here, so normal launch must re-establish the setting.
+    preflight()
+    # The installed HAKAI hook accepts 64/96/128/192 only. MPC 3.9.1 crashed
+    # in its audio thread when the hardware accepted the non-power-of-two 192
+    # period (Internal and Juju). 128 works with 32 channels and a 512-frame ring.
+    # This volatile setting must be re-established without restarting the app.
     buffer_hook_hash = '5609484183b9c1859c8c7db2a0613fd13e9ec7d72d4a459503bf27d8663d73ac'
     actual = remote('sha256sum /usr/lib/customBufferSizeMPC.so 2>/dev/null || true').split()
     if actual and actual[0] == buffer_hook_hash:
         remote('mkdir -p /media/az01-internal-sd; '
-               'printf "192\\n" > /media/az01-internal-sd/custtomBuffer.txt')
-        print('HAKAI : tampon audio 768 demandé pour la prochaine ouverture du périphérique ; vérifier hw_params après sélection.')
+               'printf "128\\n" > /media/az01-internal-sd/custtomBuffer.txt')
+        print('HAKAI : tampon audio 512 / période 128 demandés pour la prochaine ouverture du périphérique ; vérifier hw_params après sélection.')
     else:
         print('HAKAI : version du réglage de tampon différente ; aucun réglage imposé.')
     # Files are sent only to volatile /tmp on the MPC.
@@ -280,7 +331,7 @@ def prepare():
                  str(src), 'root@'+HOST+':'+dest])
     # 16 x S32 forced 64-sample periods on the MPC gadget's 4096-byte limit.
     # S16 keeps all 16 channels and permits the requested 128-sample period.
-    print(remote('chmod 700 /tmp/aconnect /tmp/codex-dd /tmp/codex-mpc-usb-audio.sh; /tmp/codex-mpc-usb-audio.sh start 16 2 2'))
+    print(remote('chmod 700 /tmp/aconnect /tmp/codex-dd /tmp/codex-mpc-usb-audio.sh; ' + driver_command('start') + ('' if CHANNELS == 32 else ' %d 2 2' % CHANNELS)))
     listing = remote('/tmp/aconnect -l')
     din = re.search(r"client (\d+): 'MPC One MIDI'", listing)
     usb = re.search(r"client (\d+): 'f_midi'", listing)
@@ -292,7 +343,8 @@ def prepare():
     if usb[1]+':1' not in section: raise RuntimeError('Pont DIN vers USB 2 non établi')
     for _ in range(20):
         devices = [o for o in graph() if o.get('type') == 'PipeWire:Interface:Device'
-                   and 'MPCONE-USB-AUDIO-TEST' in o.get('info', {}).get('props', {}).get('device.name', '')]
+                   and any(serial in o.get('info', {}).get('props', {}).get('device.name', '')
+                           for serial in ('MPCONE-USB-AUDIO-TEST', 'JUJU-MPCONE-32'))]
         if devices: break
         time.sleep(.5)
     if not devices: raise RuntimeError('MPC USB absente du PC; vérifier le câble USB vers le PC')
@@ -303,15 +355,25 @@ def prepare():
     for key, value in [('clock.force-rate', '44100'), ('clock.force-quantum', '512')]:
         if not re.search(r"key:'" + re.escape(key) + r"' value:'" + value + "'", metadata):
             command(['pw-metadata', '-n', 'settings', '0', key, value], stdout=S.DEVNULL)
+    # The profile change can expose its ports asynchronously.
+    for attempt in range(20):
+        try:
+            verify_usb_width(graph())
+            break
+        except RuntimeError:
+            if attempt == 19:
+                raise
+            time.sleep(.1)
     silence()
     capture_keepalive()
     tune_output()
-    command([sys.executable, str(TOOLS/'mpc_audio_visibility.py'), 'apply'])
-    print('MPC USB prête : 16 canaux audio et pont MIDI DIN vers USB 2.')
+    if CHANNELS != 32:
+        command([sys.executable, str(TOOLS/'mpc_audio_visibility.py'), 'apply'])
+    print('MPC USB prête : %d canaux audio et pont MIDI DIN vers USB 2.' % CHANNELS)
     selection = RUN/'mpc-selection-required'
     state = mpc_pcm_status()
     if state == 'closed':
-        selection.write_text('Sélectionner UAC2_Gadget 0 dans Preferences > Audio Device sur la MPC.\n')
+        selection.write_text('Sélectionner le périphérique USB MPC (Juju Driver en 32 canaux) dans Preferences > Audio Device sur la MPC.\n')
         print(selection.read_text().strip())
     else:
         selection.unlink(missing_ok=True)
@@ -337,23 +399,23 @@ def start():
     state = mpc_pcm_status()
     if state == 'closed':
         print('Interface et pistes raccordées. Application MPC encore sur Internal : '
-              'fermer puis rouvrir Preferences > Audio Device et sélectionner UAC2_Gadget 0.')
+              'fermer puis rouvrir Preferences > Audio Device et sélectionner le périphérique USB MPC (Juju Driver en 32 canaux).')
     else:
         print('Interface et pistes raccordées. Sortie USB ouverte côté MPC; vérifier le signal musical.')
 
 def status():
-    print(remote('/tmp/codex-mpc-usb-audio.sh status; /tmp/aconnect -l'))
+    print(remote(driver_command('status') + '; /tmp/aconnect -l'))
     print('Application MPC : sortie USB\n'+mpc_pcm_status())
     print('Ardour PID :', ardour_pids())
     p = RUN/'duplex.json'
     print('Support USB bidirectionnel :', bool(p.exists() and process_alive(json.loads(p.read_text()))))
     p = RUN/'capture-keepalive.json'
     print('Maintien capture USB :', bool(p.exists() and process_alive(json.loads(p.read_text()), 'codex-mpc-usb-capture-keepalive')))
-    for playback, base, target in [(True, 'codex-mpc-usb-silence', MPC_NODE),
-                                    (False, 'codex-mpc-usb-capture-keepalive', MPC_SOURCE)]:
+    for playback, base, target in [(True, 'codex-mpc-usb-silence', usb_target(True)),
+                                    (False, 'codex-mpc-usb-capture-keepalive', usb_target(False))]:
         try:
-            missing, wrong = keepalive_link_plan(graph(), base + '-v3', target, playback)
-            print(base, ': %d/16 canaux raccordés, %d liens erronés' % (16-len(missing), len(wrong)))
+            missing, wrong = keepalive_link_plan(graph(), base + ('-v3-32ch' if CHANNELS == 32 else '-v3'), target, playback)
+            print(base, ': %d/%d canaux raccordés, %d liens erronés' % (CHANNELS-len(missing), CHANNELS, len(wrong)))
         except RuntimeError as exc:
             print(base, ':', exc)
     j = Jack()
@@ -377,16 +439,17 @@ def stop():
             state = json.loads(p.read_text())
             if process_alive(state, name): os.kill(state['pid'], signal.SIGTERM)
             p.unlink()
-    command([sys.executable, str(TOOLS/'mpc_audio_visibility.py'), 'restore'])
-    print(remote('/tmp/codex-mpc-usb-audio.sh stop'))
+    if CHANNELS != 32:
+        command([sys.executable, str(TOOLS/'mpc_audio_visibility.py'), 'restore'])
+    print(remote(driver_command('stop')))
     for key in ['clock.force-rate', 'clock.force-quantum']:
         command(['pw-metadata', '-n', 'settings', '0', key, '0'], stdout=S.DEVNULL)
     print('Test USB arrêté; horloge PipeWire remise en mode automatique.')
 
 if __name__ == '__main__':
-    actions = {'prepare': prepare, 'start': start, 'status': status, 'route': route, 'stop': stop, 'tune': tune}
+    actions = {'check': preflight, 'prepare': prepare, 'start': start, 'status': status, 'route': route, 'stop': stop, 'tune': tune}
     if len(sys.argv) != 2 or sys.argv[1] not in actions:
-        raise SystemExit('Usage : studio prepare | start | status | route | stop | tune')
+        raise SystemExit('Usage : studio check | prepare | start | status | route | stop | tune')
     lock = open(RUN/('tune.lock' if sys.argv[1] == 'tune' else 'studio.lock'), 'w')
     try:
         # Normal launch uses an outer timeout; wait for a concurrent prepare there.

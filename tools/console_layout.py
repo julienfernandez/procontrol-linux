@@ -10,7 +10,7 @@ from pathlib import Path
 from procontrol_mapping import mapping_tree, SOURCE_COMMIT
 
 ROOT = Path(__file__).resolve().parents[1]
-MODES = ['normal', 'modifier', 'alpha', 'monitor', 'eq', 'browse', 'library', 'params', 'nudge', 'zoom']
+MODES = ['normal', 'modifier', 'alpha', 'monitor', 'eq', 'browse', 'library', 'params', 'sends', 'nudge', 'zoom']
 
 
 def button_id(zone, key):
@@ -88,7 +88,10 @@ def layout():
     for idx,k in enumerate(range(9)):
         btn(21,k,globals[21]['Children'][k]['Address'].replace('_',' '),'dsp',769,195+idx*31,43,22)
     for k,x in [(9,1043),(10,1085)]:btn(21,k,globals[21]['Children'][k]['Address'],'dsp',x,494,34,20)
-    add('dsp.channel','Channel / Group','display','dsp',[894,493,130,23],note='Adresse de sortie à identifier.')
+    add('dsp.channel','Channel / Group','display','dsp',[894,493,130,23],
+        output=dict(family='display',address=0x35),
+        evidence=['Firmware comm 1.37 : 0x2a574 et 0x25d8c', 'docs/channel-group-2026-09-27.md'],
+        note='Contexte de piste et de page ; neuvième afficheur DSP.')
     for idx,(label,x,y) in enumerate([('AUX',1165,206),('TALKBACK',1165,272),('ALT',1165,339),('MAIN',1165,410),('HEADPHONE',1359,410)]):
         add('analog.'+str(idx),label,'knob','monitor',[x,y,35,35],note='Commande analogique ; aucun encodage Ethernet établi.')
     for k,(x,y) in enumerate([(1240,212),(1357,212),(1357,259),(1357,297),(1357,335),(1271,335),(1271,379),(1271,422)]):

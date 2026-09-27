@@ -1,7 +1,8 @@
 # EQ/DYN automatiques et bibliothèque de console
 
-Mise à jour le 20 septembre 2026. La passerelle utilise une bibliothèque explicite de huit
-effets. Elle ne parcourt pas le catalogue VST/LV2 installé pour proposer des ajouts.
+Mise à jour le 27 septembre 2026. La passerelle utilise une bibliothèque explicite de
+quatorze effets : les huit décrits ici et [six choix voix/pumping](vocal-pump-controls.md).
+Elle ne parcourt pas le catalogue VST/LV2 installé pour proposer des ajouts.
 
 ## Gestes
 
@@ -36,7 +37,7 @@ effet sur la nouvelle voie**. Appuyer explicitement sur EQ/DYN ou confirmer dans
 la bibliothèque pour insérer. Les effets existants hors bibliothèque restent
 consultables dans la chaîne de la voie ; ils ne deviennent pas des choix d'ajout.
 
-## Les huit choix
+## Les huit choix initiaux
 
 | Choix | Plugin | Première page |
 |---|---|---|
@@ -71,17 +72,20 @@ Sources des effets : [Dragonfly](https://github.com/michaelwillis/dragonfly-reve
 
 `native/ardour-9.8-curated-plugins.patch` s'applique après les deux patches
 `ardour-9.8-plugin-ui.patch` et `ardour-9.8-osc-stability.patch` sur Ardour 9.8.
-Ajouter ensuite `native/ardour-9.8-warm-tape.patch` pour les huit effets.
+Ajouter les patches suivants dans [l'ordre de reconstruction actuel](../native/README.md).
+`warm-tape` fournit les huit choix initiaux ; `vocal-pump` complète les quatorze.
 Compilation : `python3 waf build --targets=libardour_osc -j2`.
 
 | Message | Arguments |
 |---|---|
-| `/procontrol/plugin/version` | Aucun ; réponse entière `2` (`1` pour les cinq effets initiaux) |
+| `/procontrol/plugin/version` | Aucun ; réponse entière `3` (`1` pour cinq effets, `2` pour huit) |
 | `/procontrol/plugin/ensure` | `ssss` : chemin session, ID route persistant, clé, jeton de requête |
 | `/procontrol/plugin/result` | `ssssiis` : mêmes quatre chaînes, résultat, index 1-based, nom |
 
 Clés autorisées : `eq`, `comp`, `reverb`, `delay`, `phaser`, `warm`, `tube`, `tape`.
 Les trois dernières demandent la version native 2.
+La version 3 ajoute `autotune`, `pitch`, `sidechain`, `pump`, `transient`, `vocoder`.
+Les versions anciennes gardent les choix qu'elles connaissent.
 Résultats : `1` réutilisé, `2` créé, `-1` identité refusée, `-2` format/clé non
 supporté, `-3` plusieurs instances, `-4` absent du catalogue Ardour, `-5` valeurs
 initiales incompatibles, `-6` échec insertion. Master/monitor et voies autres que

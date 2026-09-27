@@ -172,6 +172,7 @@ class MappingRuntime:
         if s.modifiers:return 'modifier'
         if s.alpha:return 'alpha'
         if getattr(s,'monitor',None) and s.monitor.active:return 'monitor'
+        if getattr(s,'sends',None) and s.sends.active:return 'sends'
         if eq and eq.active:return eq.mode if eq.mode in ('browse','library','params') else 'eq'
         if s.nudge:return 'nudge'
         if s.editing.zoom_navigation:return 'zoom'

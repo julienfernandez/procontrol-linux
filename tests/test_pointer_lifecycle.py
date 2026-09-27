@@ -13,6 +13,7 @@ import time
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'tools'))
 WORKER = r'''
 import json, sys
 from pathlib import Path
@@ -52,7 +53,7 @@ class PointerLifecycleTests(unittest.TestCase):
         fcntl.flock(self.lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         target = self.runtime / 'status.json'
         temp = target.with_suffix('.tmp')
-        temp.write_text(json.dumps({'pid': pid, 'started_utc': str(pid), 'console': 'online'}))
+        temp.write_text(json.dumps({'pid': pid, 'started_utc': str(pid), 'console': 'online', 'running': True}))
         temp.replace(target)
 
     def start(self, log=True):
